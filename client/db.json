@@ -1,0 +1,146 @@
+{
+    "destinations": [
+      {
+        "destinations_id": 1,
+        "title": "Wadi Rum, Jordan",
+        "image": "wadi_rum.jpg",
+        "destinations_details": "Wadi Rum is a protected desert wilderness in southern Jordan known for its dramatic sandstone mountains, narrow canyons, and ancient petroglyphs. It offers eco-friendly camping and hiking opportunities.",
+        "destinations_type": "Desert"
+      },
+      {
+        "destinations_id": 2,
+        "title": "Dana Biosphere Reserve, Jordan",
+        "image": "dana_reserve.jpg",
+        "destinations_details": "Dana Biosphere Reserve is a nature reserve in Jordan that features a variety of ecosystems, including mountains, canyons, and desert. It's an excellent destination for eco-conscious travelers.",
+        "destinations_type": "Nature Reserve"
+      },
+      {
+        "destinations_id": 3,
+        "title": "Masada, Palestine",
+        "image": "masada.jpg",
+        "destinations_details": "Masada is an ancient fortress in Israel perched atop a dramatic plateau overlooking the Dead Sea. It offers a glimpse into history and stunning views of the surrounding landscape.",
+        "destinations_type": "Historical Site"
+      },
+      {
+        "destinations_id": 4,
+        "title": "Dead Sea, Jordan",
+        "image": "dead_sea.jpg",
+        "destinations_details": "The Dead Sea is a unique saltwater lake known for its high salinity and healing properties. Travelers can enjoy floating in the mineral-rich waters while taking in the beautiful surroundings.",
+        "destinations_type": "Natural Wonder"
+      },
+      {
+        "destinations_id": 5,
+        "title": "Petra, Jordan",
+        "image": "petra.jpg",
+        "destinations_details": "Petra is a famous archaeological site in Jordan, known for its rock-cut architecture and ancient history. It's a must-visit destination for those interested in history and culture.",
+        "destinations_type": "Historical Site"
+      },
+      {
+        "destinations_id": 6,
+        "title": "Costa Rica Rainforests, Costa Rica",
+        "image": "costa_rica.jpg",
+        "destinations_details": "Costa Rica is known for its lush rainforests and diverse wildlife. Visitors can explore eco-friendly lodges, go hiking, and experience the rich biodiversity of the rainforest.",
+        "destinations_type": "Rainforest"
+      },
+      {
+        "destinations_id": 7,
+        "title": "Galápagos Islands, Ecuador",
+        "image": "galapagos.jpg",
+        "destinations_details": "The Galápagos Islands are a UNESCO World Heritage site famous for their unique wildlife. Travelers can take eco-friendly cruises and guided tours to observe the amazing flora and fauna.",
+        "destinations_type": "Island"
+      },
+      {
+        "destinations_id": 8,
+        "title": "Bhutan, Land of Gross National Happiness",
+        "image": "bhutan.jpg",
+        "destinations_details": "Bhutan, with its focus on Gross National Happiness, is a leader in sustainable tourism. Explore the Himalayan kingdom, experience its rich culture, and enjoy stunning mountain landscapes.",
+        "destinations_type": "Mountain"
+      },
+      {
+        "destinations_id": 9,
+        "title": "Borneo Rainforest, Malaysia",
+        "image": "borneo.jpg",
+        "destinations_details": "Borneo is home to some of the world's oldest rainforests and diverse wildlife, including orangutans. Eco-tourism options include jungle treks and wildlife conservation programs.",
+        "destinations_type": "Rainforest"
+      },
+      {
+        "destinations_id": 10,
+        "title": "Aoraki / Mount Cook National Park, New Zealand",
+        "image": "mount_cook.jpg",
+        "destinations_details": "Aoraki / Mount Cook National Park offers stunning alpine landscapes, glaciers, and pristine lakes. It's a great place for eco-friendly hiking and stargazing.",
+        "destinations_type": "National Park"
+      },
+      {
+        "destinations_id": 11,
+        "title": "Torres del Paine National Park, Chile",
+        "image": "torres_del_paine.jpg",
+        "destinations_details": "Torres del Paine is a Chilean national park known for its dramatic granite peaks, glaciers, and pristine lakes. Visitors can explore the park through eco-friendly treks and wildlife viewing.",
+        "destinations_type": "National Park"
+      },
+      {
+        "destinations_id": 12,
+        "title": "Santorini, Greece",
+        "image": "santorini.jpg",
+        "destinations_details": "Santorini is a picturesque island in the Aegean Sea with stunning sunsets and unique architecture. It offers sustainable tourism options, including eco-lodges and organic vineyards.",
+        "destinations_type": "Island"
+      },
+      {
+        "destinations_id": 13,
+        "title": "Tongariro Alpine Crossing, New Zealand",
+        "image": "tongariro.jpg",
+        "destinations_details": "The Tongariro Alpine Crossing is a famous one-day hike through volcanic terrain in New Zealand. It provides a thrilling and eco-friendly adventure with breathtaking landscapes.",
+        "destinations_type": "Hiking Trail"
+      },
+      {
+        "destinations_id": 14,
+        "title": "Aletsch Glacier, Switzerland",
+        "image": "aletsch.jpg",
+        "destinations_details": "Aletsch Glacier is the largest glacier in the Alps, and it's a UNESCO World Heritage site. Visitors can explore this natural wonder through eco-conscious guided tours.",
+        "destinations_type": "Glacier"
+      },
+      {
+        "destinations_id": 15,
+        "title": "Machu Picchu, Peru",
+        "image": "machu_picchu.jpg",
+        "destinations_details": "Machu Picchu is an ancient Inca citadel nestled in the Andes Mountains. Sustainable travel options include guided treks like the Inca Trail with an emphasis on preserving the site.",
+        "destinations_type": "Historical Site"
+      }
+    ],
+    "testimonials": [
+      {
+        "testimonial_id": 1,
+        "name": "Sarah Anderson",
+        "location": "Los Angeles, USA",
+        "text": "My eco-adventure in Costa Rica was a life-changing experience. The rainforests, wildlife, and sustainable lodges were truly magical. I'll cherish these memories forever.",
+        "rating": 5
+      },
+      {
+        "testimonial_id": 2,
+        "name": "John Smith",
+        "location": "London, UK",
+        "text": "Exploring the Galápagos Islands was a dream come true. The natural beauty and wildlife are unparalleled. I was amazed by the commitment to conservation.",
+        "rating": 4.95
+      },
+      {
+        "testimonial_id": 3,
+        "name": "Mira Patel",
+        "location": "Toronto, Canada",
+        "text": "Bhutan's Gross National Happiness philosophy resonated with me. The serene mountains and culture left a lasting impact. It's a hidden gem for eco-travelers.",
+        "rating": 4.5
+      },
+      {
+        "testimonial_id": 4,
+        "name": "Alex Rodriguez",
+        "location": "Brisbane, Australia",
+        "text": "Borneo's rainforests are a treasure trove of biodiversity. The orangutan encounters were unforgettable. I appreciate the eco-conscious approach to tourism.",
+        "rating": 4
+      },
+      {
+        "testimonial_id": 5,
+        "name": "Sophia Chavez",
+        "location": "New York, USA",
+        "text": "New Zealand's Tongariro Alpine Crossing was an adrenaline rush. The landscapes are out of this world, and eco-tourism made it even more rewarding.",
+        "rating": 5
+      }
+    ]
+  }

@@ -1,0 +1,93 @@
+const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleSlideChange = (index) => {
+    setActiveIndex(index);
+  };
+
+  return (
+    <div
+      id="carouselExampleCaptions"
+      className="relative"
+      data-te-carousel-init
+      data-te-ride="carousel"
+    >
+      {/* Carousel indicators */}
+      <div
+        className="absolute bottom-0 left-0 right-0 z-[2] mx-[15%] mb-4 flex list-none justify-center p-0"
+        data-te-carousel-indicators
+      >
+        {[0, 1, 2].map((index) => (
+          <button
+            key={index}
+            type="button"
+            onClick={() => handleSlideChange(index)}
+            className={`mx-[3px] box-content h-[3px] w-[30px] flex-initial cursor-pointer border-0 border-y-[10px] border-solid border-transparent bg-white bg-clip-padding p-0 -indent-[999px] ${
+              activeIndex === index
+                ? 'opacity-100'
+                : 'opacity-50'
+            } transition-opacity duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] motion-reduce:transition-none`}
+            aria-current={activeIndex === index}
+            aria-label={`Slide ${index + 1}`}
+          ></button>
+        ))}
+      </div>
+
+      {/* Carousel items */}
+      <div className="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
+        {[0, 1, 2].map((index) => (
+          <div
+            key={index}
+            className={`relative float-left ${
+              activeIndex === index
+                ? '-ml-[100%]'
+                : '-mr-[100%]'
+            } w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none`}
+            data-te-carousel-active={activeIndex === index}
+            data-te-carousel-item
+            style={{ backfaceVisibility: 'hidden' }}
+          >
+            {/* Replace the image source and content as needed */}
+            <img
+              src={`https://tecdn.b-cdn.net/img/Photos/Slides/img%20(${index + 15}).jpg`}
+              className="block w-full"
+              alt={`Slide ${index + 1}`}
+            />
+            <div
+              className="absolute inset-x-[15%] bottom-5 hidden py-5 text-center text-white md:block"
+            >
+              <h5 className="text-xl">
+                {`Slide ${index + 1} label`}
+              </h5>
+              <p>
+                {`Some representative placeholder content for the slide ${index + 1}.`}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Carousel controls - prev item */}
+      <button
+        className="absolute bottom-0 left-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
+        type="button"
+        onClick={() =>
+          handleSlideChange(
+            (activeIndex - 1 + 3) % 3
+          )
+        }
+      >
+        {/* Previous button content */}
+      </button>
+
+      {/* Carousel controls - next item */}
+      <button
+        className="absolute bottom-0 right-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
+        type="button"
+        onClick={() =>
+          handleSlideChange((activeIndex + 1) % 3)
+        }
+      >
+        {/* Next button content */}
+      </button>
+    </div>
+  );
