@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import BookFlightModal from "./BookFlightModal";
+import { useBooking } from "../Context/BookingContext";
 
 const Flights = () => {
   const [flights, setFlights] = useState([]);
@@ -11,8 +13,11 @@ const Flights = () => {
   const [pagination, setPagination] = useState([]);
   const queryParams = new URLSearchParams(location.search);
   const destination = queryParams.get("destination");
-
+  const [bookFilght, setBookFilght] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [price, setPrice] = useState(0);
+  const { bookData, onBooking } = useBooking();
+  const navigate = useNavigate();
   const openFilter = () => {
     setFilterOpen(!filterOpen);
   };
@@ -85,6 +90,29 @@ const Flights = () => {
   //         flight.destinations_id && `${item.title}`
   //   )}
 
+  const openModal = (cost) => {
+    setBookFilght(true);
+    setPrice(cost);
+  };
+  const closeModal = () => {
+    setBookFilght(false);
+  };
+  const bookingFlight = (id, seat) => {
+    let cost = 0;
+    if (seat === "Economy") {
+      cost = price;
+    } else if (seat === "Business") {
+      cost = price * 3;
+    } else if (seat === "First") {
+      cost = price * 5;
+    }
+    onBooking({
+      ...bookData,
+      cost: cost,
+      flights_id: id,
+    });
+    navigate("/payment");
+  };
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPagesToShow = 3;
@@ -328,15 +356,17 @@ const Flights = () => {
                       )}
                   </h1>
                   <div className="flex flex-col md:flex-row items-center justify-between gap-1 w-full">
-                    <div className="w-full flex flex-col justify-center items-start md:w-1/3 p-4">
+                    <div className="w-full flex flex-col justify-center items-center md:w-1/3 p-5">
                       <img
                         src={flight.imagecomp}
                         alt="Airline"
-                        className="h-auto w-24 md:w-2/5"
+                        className="h-32 object-cover w-32 md:w-4/5"
                       />
-                      <h1><strong>Operated by:</strong> {flight.operatedby}</h1>
+                      <h1>
+                        <strong>Operated by:</strong> {flight.operatedby}
+                      </h1>
                     </div>
-                    <div className="w-full md:w-1/3">
+                    <div className="w-full md:w-1/3 p-5">
                       <div className="felx flex-col justify-start items-center">
                         {/* <h1 className="text-start">Depart: {flight.depart}</h1> */}
                         <div className="flex justify-between items-center gap-5">
@@ -347,7 +377,7 @@ const Flights = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="w-10 h-10 text-xl"
+                            class="w-10 h-10 text-xl text-gray-600"
                           >
                             <path
                               fill-rule="evenodd"
@@ -371,7 +401,7 @@ const Flights = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="w-10 h-10 text-xl"
+                            class="w-10 h-10 text-xl text-gray-600"
                           >
                             <path
                               fill-rule="evenodd"
@@ -385,14 +415,99 @@ const Flights = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="w-full text-2xl md:w-1/3 md:text-3xl">
+                    <div className="w-full text-2xl md:w-1/3 md:text-3xl p-5">
                       <h1>{flight.best} JOD</h1>
-                      <button className="sm:mt-3 my-2 py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md">
+                      <button
+                        onClick={(e) => openModal(flight.best)}
+                        className="sm:mt-3 my-2 py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md"
+                      >
                         Book Now
                       </button>
                     </div>
                   </div>
                 </div>
+                {bookFilght && (
+                  <BookFlightModal onClose={closeModal}>
+                    <h1 className="text-3xl text-center text-sky-900">
+                      Book Your Flight
+                    </h1>
+                    <div className="flex flex-wrap justify-center my-5 items-center gap-5">
+                      <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+                          Economy class
+                        </h5>
+                        <div class="flex items-baseline text-gray-900 dark:text-white">
+                          <span class="text-3xl font-semibold">$</span>
+                          <span class="text-5xl font-extrabold tracking-tight">
+                            {price}
+                          </span>
+                          <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                            Per Person
+                          </span>
+                        </div>
+                        <div class="space-y-5 my-7"></div>
+                        <button
+                          onClick={(e) =>
+                            bookingFlight(flight.flights_id, "Economy")
+                          }
+                          type="button"
+                          class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                        >
+                          Book Now
+                        </button>
+                      </div>
+                      <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+                          Business class
+                        </h5>
+                        <div class="flex items-baseline text-gray-900 dark:text-white">
+                          <span class="text-3xl font-semibold">$</span>
+                          <span class="text-5xl font-extrabold tracking-tight">
+                            {price * 3}
+                          </span>
+                          <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                            Per Person
+                          </span>
+                        </div>
+                        <div class="space-y-5 my-7"></div>
+                        <button
+                          onClick={(e) =>
+                            bookingFlight(flight.flights_id, "Business")
+                          }
+                          type="button"
+                          class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                        >
+                          Book Now
+                        </button>
+                      </div>
+                      <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+                          First class
+                        </h5>
+                        <div class="flex items-baseline text-gray-900 dark:text-white">
+                          <span class="text-3xl font-semibold">$</span>
+                          <span class="text-5xl font-extrabold tracking-tight">
+                            {price * 5}
+                          </span>
+                          <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                            Per Person
+                          </span>
+                        </div>
+                        <div class="space-y-5 my-7"></div>
+                        <button
+                          onClick={(e) =>
+                            bookingFlight(flight.flights_id, "First")
+                          }
+                          type="button"
+                          class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                        >
+                          Book Now
+                        </button>
+                      </div>
+                    </div>
+                  </BookFlightModal>
+                )}
+                <div id="root"></div>
               </div>
             ))}
         </div>

@@ -27,7 +27,7 @@ router.post('/sendEmail', userController.sendEmail);
 
 router.post('/verificationCode', userController.verificationCode);
 
-router.get('/getUserId/:id', userController.getUserId);
+router.get('/getUserId', verifyJWT.authorize([1,2]), userController.getUserId);
 
 router.put('/updateUserData', upload.single('image'), verifyJWT.authorize([1, 2]), userController.updateUserData);
 

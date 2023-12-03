@@ -418,13 +418,13 @@ const Accommodations = () => {
               <div key={id}>
                 <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-sky-200 mx-auto max-w-3xl md:w-[650px] group transform duration-500 mb-2">
                   <img
-                    className="w-full sm:w-52 h-auto object-cover"
+                    className="w-full sm:w-60 h-auto object-cover"
                     src={accommodation.imageurl[0]}
                     alt=""
                   />
                   <div className="h-auto w-full flex flex-col justify-between">
                     <div className="p-5 text-start">
-                      <h1 className="text-xl font-semibold text-gray-800 mt-4">
+                      <h1 className="text-xl font-semibold text-gray-800">
                         {accommodation.title}
                       </h1>
                       <p className="text-md overflow-hidden text-gray-900 mt-2 leading-relaxed">

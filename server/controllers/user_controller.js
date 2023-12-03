@@ -244,6 +244,7 @@ const getUserData = async (req, res) => {
 
 const getUserId = async (req, res) => {
     const user_id = req.user.user_id;
+    console.log(user_id);
     try {
         const result = await db.query(userQueries.getUserByIdQuery, [user_id]);
         if (!result.rowCount) {
@@ -344,7 +345,7 @@ const getBookingOfUser = async (req, res) => {
     try {
         const result = await userQueries.getBookingOfUser(user_id);
 
-        if (!result || result.length === 0) {
+        if (!result) {
             return res.status(404).json({ error: "Booking not found for the user" });
         } else {
             res.status(200).json(result);
@@ -359,7 +360,7 @@ const getFlightsOfUser = async (req, res) => {
     try {
         const result = await userQueries.getFlightsOfUser(user_id);
 
-        if (!result || result.length === 0) {
+        if (!result) {
             return res.status(404).json({ error: "Ticket not found for the user" });
         } else {
             res.status(200).json(result);

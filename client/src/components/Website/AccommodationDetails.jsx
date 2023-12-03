@@ -27,6 +27,7 @@ const AccommodationDetails = () => {
     accommodation_id: 0,
   });
   const [accommodation, setAccommodation] = useState(null);
+  const [similarPlace, setSimilarPlace] = useState([]);
 
   //   carousel images
   const images = [
@@ -41,9 +42,9 @@ const AccommodationDetails = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const nextSlide = () => {
     if (accommodation) {
-      if (currentImage === accommodation.imageurl.length-1) {
-      setCurrentImage(0);
-      }else {
+      if (currentImage === accommodation.imageurl.length - 1) {
+        setCurrentImage(0);
+      } else {
         setCurrentImage(currentImage + 1);
       }
     }
@@ -51,11 +52,11 @@ const AccommodationDetails = () => {
   const prevSlide = () => {
     if (accommodation) {
       if (currentImage === 0) {
-      setCurrentImage(accommodation.imageurl.length-1);
-      }else {
+        setCurrentImage(accommodation.imageurl.length - 1);
+      } else {
         setCurrentImage(currentImage - 1);
       }
-    } 
+    }
   };
   //   end carousel images
   function handleChange(e) {
@@ -78,10 +79,30 @@ const AccommodationDetails = () => {
       .catch((error) => {
         // Handle errors here
         console.error("Error:", error);
+      });      
+    }, [id]);
+    
+    useEffect(()=>{
+      axios
+      .get(`http://localhost:3999/getAccommodations`)
+      .then((response) => {
+        // setSimilarPlace(response.data[0]);
+        if (accommodation) {
+          let filtered = response.data.filter(
+            (item) => item.country === accommodation.country
+          );
+          filtered = filtered.filter(
+            (item) => item.accommodation_id !== accommodation.accommodation_id
+          );
+          setSimilarPlace(filtered);
+        }
+      })
+      .catch((error) => {
+        // Handle errors here
+        console.error("Error:", error);
       });
-  }, []);
+    },[accommodation])
 
-  useEffect(()=>{console.log(currentImage);},[currentImage])
   async function handleSubmit(e) {
     let total =
       booking.adults * booking.cost + (booking.children * booking.cost) / 2;
@@ -128,7 +149,7 @@ const AccommodationDetails = () => {
             ))}
         </div>
         <button
-          onClick={()=>prevSlide()}
+          onClick={() => prevSlide()}
           type="button"
           className="absolute top-0 left-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-prev
@@ -153,7 +174,7 @@ const AccommodationDetails = () => {
           </span>
         </button>
         <button
-          onClick={()=>nextSlide()}
+          onClick={() => nextSlide()}
           type="button"
           className="absolute top-0 right-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-next
@@ -187,7 +208,7 @@ const AccommodationDetails = () => {
                 {accommodation.title}
               </h1>
               <h5 className="text-start text-xl">
-                {accommodation.accommodations_details}
+                {accommodation.accommodation_details}
               </h5>
               <div className="flex justify-between">
                 {/* amenities */}
@@ -224,27 +245,30 @@ const AccommodationDetails = () => {
               </div>
               {/* others */}
               <div className="py-12">
-                <h5 className="text-start text-sky-700 text-2xl font-bold pb-10">
-                  Other Accommodations in Jordan
-                </h5>
-                <div className="flex flex-col md:flex-row flex-wrap gap-8 justify-center items-center mx-auto">
-                  {/* {destinations.map((destination, id)=>( */}
-                  {/* <Link key={id} to="/"> */}
-                  <Link to="/">
-                    <article className="w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[410px] transform duration-500 hover:-translate-y-2 cursor-pointer group bg-[url('https://afhomeph.com/cdn/shop/files/Website_Banner_Direct_from_the_Factory_1.png?v=1685417210&width=2800')]">
-                      <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
-                        <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
-                          {accommodation.title}
-                        </h1>
-                        <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                        <p className="my-3 py-3 opacity-0 max-h-[100px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
-                          {accommodation.accommodations_details}
-                        </p>
-                      </div>
-                    </article>
-                  </Link>
-                  {/* ))} */}
-                </div>
+                {similarPlace && similarPlace.length > 0 && (
+                  <>
+                    <h5 className="text-start text-sky-700 text-2xl font-bold pb-10">
+                      Other Accommodations in {accommodation.country}
+                    </h5>
+                    <div className="flex flex-col md:flex-row flex-wrap gap-8 justify-start items-center mx-auto">
+                      {similarPlace&&similarPlace.length>0&& similarPlace.map((item, id)=>(
+                        <Link key={id} to={`/accommodation/${item.accommodation_id}`}>
+                        <article className="w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[410px] transform duration-500 hover:-translate-y-2 cursor-pointer group" style={{ backgroundImage: `url(${item.imageurl[0]})`}}>
+                          <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
+                            <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
+                              {item.title}
+                            </h1>
+                            <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                            <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
+                              {item.accommodation_details}
+                            </p>
+                          </div>
+                        </article>
+                      </Link>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
               <div className="py-12">
                 <Comments id={id} type="Accommodations"></Comments>

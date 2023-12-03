@@ -36,7 +36,7 @@ const Popular = () => {
       <div className="flex flex-col md:flex-row flex-wrap gap-8 justify-center items-center mx-auto">
         {destinations.map((destination, id)=>(
         <Link key={id} to={`/destination/${destination.destinations_id}`}>
-          <article data-aos="fade-up" className="max-w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[490px] transform duration-500 hover:-translate-y-2 cursor-pointer group bg-[url('https://afhomeph.com/cdn/shop/files/Website_Banner_Direct_from_the_Factory_1.png?v=1685417210&width=2800')]">
+          <article data-aos="fade-up" className="max-w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[490px] transform duration-500 hover:-translate-y-2 cursor-pointer group" style={{ backgroundImage: `url(${destination.destinationimage})` }}>
             <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-60 hover:bg-opacity-75 transform duration-300">
               <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
                 {destination.title}

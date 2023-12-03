@@ -102,7 +102,7 @@ const Header = () => {
               isLoggedIn ? "flex" : "hidden"
             } my-1 items-center lg:my-0 lg:ml-auto`}
           >
-            <Link to="/dashboard">
+            <Link to="/profile">
               <button
                 type="button"
                 className="mr-2 inline-block rounded px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white hover:text-sky-900 transition duration-150 ease-in-out hover:bg-white hover:text-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700 dark:text-primary-400 dark:hover:bg-neutral-700 dark:hover:bg-opacity-60 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600"
