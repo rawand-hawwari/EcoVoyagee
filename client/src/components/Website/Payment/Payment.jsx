@@ -19,8 +19,10 @@ function Payment() {
   const { bookData, onBooking } = useBooking();
   const { booking, setBooking } = useState();
 
-  const handleChange = () => {};
-  const handleSubmit = () => {};
+  const handleChange = (e) => {
+
+  };
+  const handleSubmit = (e) => {};
   if (bookData && bookData.flights_id) {
     return (
       <div className="flex flex-wrap justify-center items-center my-5">
@@ -64,7 +66,7 @@ function Payment() {
                       name="first_name"
                       placeholder="First Name"
                       value={booking && booking.first_name}
-                      onChange={handleChange}
+                      onChange={(e)=>handleChange(e)}
                       className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                     />
                     <input
@@ -72,7 +74,7 @@ function Payment() {
                       name="last_name"
                       placeholder="Last Name"
                       value={booking && booking.last_name}
-                      onChange={handleChange}
+                      onChange={(e)=>handleChange(e)}
                       className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                     />
                   </div>
@@ -84,7 +86,7 @@ function Payment() {
                     name="date"
                     placeholder="date"
                     value={booking && booking.address}
-                    onChange={handleChange}
+                    onChange={(e)=>handleChange(e)}
                     className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                   />
 
@@ -95,7 +97,7 @@ function Payment() {
                     name="first_name"
                     placeholder="First Name"
                     value={booking && booking.first_name}
-                    onChange={handleChange}
+                    onChange={(e)=>handleChange(e)}
                     className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                   />
 
@@ -106,7 +108,7 @@ function Payment() {
                     name="phone"
                     placeholder="Phone"
                     value={booking && booking.phone}
-                    onChange={handleChange}
+                    onChange={(e)=>handleChange(e)}
                     className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                   />
                 </div>
@@ -119,19 +121,13 @@ function Payment() {
                         src="https://cdn-icons-png.flaticon.com/512/293/293265.png"
                         alt="Suitcase icon"
                       />
-                      <div class="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                        <input
-                          class="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-primary checked:after:bg-primary checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-primary checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-primary dark:checked:after:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                          type="radio"
-                          name="inlineRadioOptions"
-                          id="inlineRadio1"
-                          value="option1"
-                        />
+                      <div className="flex gap-1 justify-center items-center">
+                        <input id="luggage-option-1" type="radio" name="luggage" value="20kg" class="h-6 w-6 border-gray-300 focus:ring-2 focus:ring-blue-300" aria-labelledby="country-option-1" aria-describedby="country-option-1" checked="true" />
                         <label
                           class="mt-px inline-block pl-[0.15rem] hover:cursor-pointer text-[12px] md:text-lg"
                           for="inlineRadio1"
                         >
-                          1 X 20KG (40 JOD)
+                          1 X 20KG (<span className="text-green-500">Included</span>)
                         </label>
                       </div>
                     </div>
@@ -144,19 +140,13 @@ function Payment() {
                         src="https://cdn-icons-png.flaticon.com/512/293/293265.png"
                         alt="Suitcase icon"
                       />
-                      <div class="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                        <input
-                          class="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-primary checked:after:bg-primary checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-primary checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-primary dark:checked:after:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                          type="radio"
-                          name="inlineRadioOptions"
-                          id="inlineRadio1"
-                          value="option1"
-                        />
+                      <div className="flex gap-1 justify-center items-center">
+                      <input id="luggage-option-1" type="radio" name="luggage" value="20kg" class="h-6 w-6 border-gray-300 focus:ring-2 focus:ring-blue-300" aria-labelledby="country-option-1" aria-describedby="country-option-1" checked="true" />
                         <label
                           class="mt-px inline-block pl-[0.15rem] hover:cursor-pointer text-[12px] md:text-lg"
                           for="inlineRadio1"
                         >
-                          1 X 25KG (80 JOD)
+                          1 X 25KG (40 JOD)
                         </label>
                       </div>
                     </div>
@@ -169,19 +159,13 @@ function Payment() {
                         src="https://cdn-icons-png.flaticon.com/512/293/293265.png"
                         alt="Suitcase icon"
                       />
-                      <div class="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                        <input
-                          class="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-primary checked:after:bg-primary checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-primary checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-primary dark:checked:after:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                          type="radio"
-                          name="inlineRadioOptions"
-                          id="inlineRadio1"
-                          value="option1"
-                        />
+                      <div className="flex gap-1 justify-center items-center">
+                      <input id="luggage-option-1" type="radio" name="luggage" value="20kg" class="h-6 w-6 border-gray-300 focus:ring-2 focus:ring-blue-300" aria-labelledby="country-option-1" aria-describedby="country-option-1" checked="true" />
                         <label
                           class="mt-px inline-block pl-[0.15rem] hover:cursor-pointer text-[12px] md:text-lg"
                           for="inlineRadio1"
                         >
-                          1 X 30KG (120 JOD)
+                          1 X 30KG (80 JOD)
                         </label>
                       </div>
                     </div>
