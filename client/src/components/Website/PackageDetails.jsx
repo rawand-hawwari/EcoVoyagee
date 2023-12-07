@@ -5,6 +5,9 @@ import Comments from "./Comments";
 import { useBooking } from "../Context/BookingContext";
 import { useNavigate } from "react-router-dom";
 
+import DatetimePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 const PackageDetails = () => {
   const { id } = useParams();
   const [packageData, setPackageData] = useState([]);
@@ -14,6 +17,9 @@ const PackageDetails = () => {
   const [exclusions, setExclusions] = useState([]);
   const [highlights, setHighlights] = useState([]);
   const history = useNavigate();
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const [booking, setBooking] = useState({
     first_name: "",
@@ -31,11 +37,21 @@ const PackageDetails = () => {
       [name]: value,
     });
   }
+
+  const handleDate = (date) => {
+    setStartDate(date);
+    let newDate = new Date(date);
+    newDate.setDate(date.getDate()+5);
+    setEndDate(newDate);
+  };
+
   async function handleSubmit(e) {
     let total =
       booking.adults * booking.cost + (booking.children * booking.cost) / 2;
     booking.cost = total;
     booking.packages_id = id;
+    booking.date_to = endDate;
+    booking.date_from = startDate;
 
     e.preventDefault();
     try {
@@ -122,7 +138,6 @@ const PackageDetails = () => {
                 </span>{" "}
                 <br />
               </h5>
-
               <ol className="text-start text-xl px-5">
                 {itinerary && Object.keys(itinerary).length > 0 ? (
                   renderAttributes(itinerary)
@@ -202,13 +217,13 @@ const PackageDetails = () => {
                   Book your trip
                 </h5>
                 <form
-                  action=""
                   onSubmit={handleSubmit}
                   className="bg-gray-100 border border-sky-700 rounded-xl"
                 >
                   <div className="min-h-screen flex justify-center items-start md:items-center">
                     <div className="p-8 w-full">
                       <div className="space-y-4 flex flex-col justify-center items-center">
+                        {/* name */}
                         <label className="px-3 self-start">Name</label>
                         <div className="flex w-full gap-5">
                           <input
@@ -228,6 +243,8 @@ const PackageDetails = () => {
                             className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                           />
                         </div>
+
+                        {/* address */}
                         <label className="px-3 self-start">Address</label>
                         <input
                           type="text"
@@ -237,6 +254,8 @@ const PackageDetails = () => {
                           onChange={handleChange}
                           className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                         />
+
+                        {/* phone */}
                         <label className="px-3 self-start">Phone</label>
                         <input
                           type="number"
@@ -246,6 +265,37 @@ const PackageDetails = () => {
                           onChange={handleChange}
                           className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                         />
+
+                        {/* date from-to */}
+                        <label className="px-3 self-start">Date</label>
+                        <div className="flex gap-4 w-full items-center">
+                          <label className="px-3">From:</label>
+                          <DatetimePicker
+                            selected={startDate}
+                            onChange={(date) => handleDate(date)}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                            // dateFormat="yyyy-mm-dd"
+                            placeholderText="Start Date"
+                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                          />
+
+                          <label className="px-3">To:</label>
+                          <DatetimePicker
+                            selected={endDate}
+                            name="date_to"
+                            disabled
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            placeholderText="End Date"
+                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                          />
+                        </div>
+
+                        {/* guests */}
                         <label className="px-3 self-start">Guests</label>
                         <div className="flex self-start w-1/2 gap-5">
                           <input

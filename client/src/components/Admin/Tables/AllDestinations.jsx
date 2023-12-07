@@ -99,7 +99,6 @@ export const AllDestinations = () => {
             });
           });
       }
-      fetchData();
     });
   };
   return (

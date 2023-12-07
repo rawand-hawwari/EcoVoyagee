@@ -97,7 +97,7 @@ const markPackagesAsDeleted = async (req, res) => {
 };
 
 const addCommentPac = async (req, res) => {
-    const comment_text = req.body;
+    const comment_text = req.body.comment_text;
     const packages_id = req.params.id;
     const user_id = req.user.user_id;
 
@@ -123,11 +123,11 @@ const getPackagesWithComments = async (req, res) => {
 
 const BookPackage = async (req, res) => {
     const packages_id = req.params.id;
-    const { address, phone, room_preference, adults, children, date_from, date_to } = req.body;
+    const { address, phone, room_preference, cost, adults, children, date_from, date_to } = req.body;
     const user_id = req.user.user_id;
 
     try {
-        const result = await packagesModel.BookPackage(packages_id, user_id, address, phone, room_preference, adults, children, date_from, date_to);
+        const result = await packagesModel.BookPackage(packages_id, user_id, address, phone, room_preference, cost, adults, children, date_from, date_to);
         res.json(result);
     } catch (err) {
         console.error(err);

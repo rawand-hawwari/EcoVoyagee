@@ -32,9 +32,9 @@ const SideBar = () => {
   }
   return (
     <div className="fixed z-50">
-      <div className="relative w-[260px]">
+      <div className={`relative w-[257px] h-screen`}>
         <div
-          className={`peer absolute z-50 top-0 border ${position} lg:left-0 h-full w-full object-cover transition-all delay-50 duration-500`}
+          className={`peer absolute z-50 top-0 border h-screen ${position} lg:left-0 h-full w-full object-cover transition-all delay-50 duration-500`}
         >
           <button
             aria-label="toggle sidebar"
@@ -93,7 +93,7 @@ const SideBar = () => {
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
-          <aside className="flex flex-col bg-sky-700 w-64 h-auto px-5 py-8 overflow-y-auto border-r border-b rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+          <aside className="flex flex-col h-screen bg-sky-700 w-64 h-auto px-5 py-8 overflow-y-auto border-r border-b rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
             <div className="w-auto flex justify-around items-center mx-6">
               <img
                 className='w-1/4 '

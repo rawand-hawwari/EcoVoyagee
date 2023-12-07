@@ -1,7 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+// import env from "../../../../env"
+
 // import { Link } from "react-router-dom";
 
 const Hero = () => {
+  const [isSearch, setIsSearch] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
+  const [flights, setFlights] = useState([]);
+  const [formData, setFormData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3999/getFlights`)
+      .then((response) => {
+        setFlights(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleChange = (e) => {
+    let { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setIsSearch(true);
+    setSearchResult(
+      flights.filter(
+        (flight) =>
+          flight.destination_name
+            .toLowerCase()
+            .includes(formData.destination.toLowerCase()) ||
+          flight.best <= formData.price ||
+          new Date(flight.departure_date * 1000).toDateString() >=
+            new Date(formData.from).toDateString()
+      )
+    );
+  };
+  
   return (
     <>
       <section class="mb-16">
@@ -16,32 +59,44 @@ const Hero = () => {
                   </span>
                 </h1>
               </div>
-              <div className="flex flex-col gap-6 md:flex-row items-center justify-center p-12 container mx-auto rounded-lg md:h-24 bg-[#7dafbfb3]">
+              <form
+                onSubmit={(e) => handleSubmit(e)}
+                className="flex flex-col gap-6 md:flex-row items-center justify-center p-12 container mx-auto rounded-lg md:h-24 bg-[#7dafbfb3]"
+              >
                 <input
                   class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
                   type="text"
+                  name="destination"
+                  onChange={(e) => handleChange(e)}
                   placeholder="Where are you going?"
                 />
                 <input
                   class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
                   type="number"
+                  name="price"
+                  onChange={(e) => handleChange(e)}
                   placeholder="Enter your budget"
                 />
                 <input
                   class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
+                  name="from"
                   type="date"
+                  onChange={(e) => handleChange(e)}
                 />
                 <input
                   class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
+                  name="to"
                   type="date"
+                  onChange={(e) => handleChange(e)}
                 />
                 <button class="border-sky-900 border-2 hover:bg-white bg-sky-900 hover:text-sky-900 text-white font-bold py-2 px-4 rounded w-full md:w-1/4">
                   Search
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
+        <div id="search"></div>
       </section>
     </>
   );

@@ -16,6 +16,9 @@ const Flights = () => {
   const [bookFilght, setBookFilght] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [price, setPrice] = useState(0);
+  const [economy, setEconomy] = useState(0);
+  const [business, setBusiness] = useState(0);
+  const [first, setFirst] = useState(0);
   const { bookData, onBooking } = useBooking();
   const navigate = useNavigate();
   const openFilter = () => {
@@ -24,7 +27,7 @@ const Flights = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     axios
-      .get(`http://localhost:3999/getFlightsPaginated/${currentPage}`)
+      .get(`http://localhost:3999/getFlights`)
       .then((response) => {
         setPagination(response.data);
         let newData = response.data.map((data) => ({
@@ -90,33 +93,37 @@ const Flights = () => {
   //         flight.destinations_id && `${item.title}`
   //   )}
 
-  const openModal = (cost) => {
+  const openModal = (id, type) => {
     setBookFilght(true);
-    setPrice(cost);
+    setPrice(flights[id].best);
+    setEconomy(flights[id].economy);
+    setBusiness(flights[id].business);
+    setFirst(flights[id].first);
   };
   const closeModal = () => {
     setBookFilght(false);
   };
   const bookingFlight = (id, seat) => {
     let cost = 0;
-    if (seat === "Economy") {
+    if (seat === "economy") {
       cost = price;
-    } else if (seat === "Business") {
+    } else if (seat === "business") {
       cost = price * 3;
-    } else if (seat === "First") {
+    } else if (seat === "first") {
       cost = price * 5;
     }
     onBooking({
       ...bookData,
       cost: cost,
       flights_id: id,
+      ticket_type: seat
     });
     navigate("/payment");
   };
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPagesToShow = 3;
-
+    // console.log(flights);
     // Calculate the range of page numbers to display
     let start = Math.max(1, currentPage - 1);
     const end = Math.min(pagination.totalPages, start + maxPagesToShow - 1);
@@ -172,6 +179,7 @@ const Flights = () => {
   };
   return (
     <div className="flex flex-col md:flex-row justify-center">
+      {/* filter and searach */}
       <div>
         <div
           className={`${
@@ -326,6 +334,8 @@ const Flights = () => {
           </div>
         </div>
       </div>
+
+      {/* flights list */}
       <div className="md:w-2/3 w-full">
         <div className="flex flex-col my-3 md:my-16 w-full justify-center items-center md:justify-start md:items-start gap-5 min-h-[844px]">
           {flights &&
@@ -348,12 +358,7 @@ const Flights = () => {
                         d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
                       />
                     </svg>
-                    {destinations &&
-                      destinations.map(
-                        (item) =>
-                          item.destinations_id === flight.destinations_id &&
-                          `${item.country}`
-                      )}
+                    {flight.destination_name}
                   </h1>
                   <div className="flex flex-col md:flex-row items-center justify-between gap-1 w-full">
                     <div className="w-full flex flex-col justify-center items-center md:w-1/3 p-5">
@@ -418,7 +423,7 @@ const Flights = () => {
                     <div className="w-full text-2xl md:w-1/3 md:text-3xl p-5">
                       <h1>{flight.best} JOD</h1>
                       <button
-                        onClick={(e) => openModal(flight.best)}
+                        onClick={(e) => openModal(id)}
                         className="sm:mt-3 my-2 py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md"
                       >
                         Book Now
@@ -436,73 +441,109 @@ const Flights = () => {
                         <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
                           Economy class
                         </h5>
-                        <div class="flex items-baseline text-gray-900 dark:text-white">
-                          <span class="text-3xl font-semibold">$</span>
-                          <span class="text-5xl font-extrabold tracking-tight">
-                            {price}
-                          </span>
-                          <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                            Per Person
-                          </span>
-                        </div>
-                        <div class="space-y-5 my-7"></div>
-                        <button
-                          onClick={(e) =>
-                            bookingFlight(flight.flights_id, "Economy")
-                          }
-                          type="button"
-                          class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
-                        >
-                          Book Now
-                        </button>
+                        {economy === 0 ? (
+                          <>
+                            <div class="flex items-baseline text-gray-900 dark:text-white w-60 h-28">
+                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                                Not Available
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="w-60 h-28">
+                            <div class="flex items-baseline text-gray-900 dark:text-white">
+                              <span class="text-5xl font-extrabold tracking-tight">
+                                {price}
+                              </span>
+                              <span class="text-3xl font-semibold">JOD</span>
+                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                                Per Person
+                              </span>
+                            </div>
+                            <div class="space-y-5 my-7"></div>
+                            <button
+                              onClick={(e) =>
+                                bookingFlight(flight.flights_id, "economy")
+                              }
+                              type="button"
+                              class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                            >
+                              Book Now
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                         <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
                           Business class
                         </h5>
-                        <div class="flex items-baseline text-gray-900 dark:text-white">
-                          <span class="text-3xl font-semibold">$</span>
-                          <span class="text-5xl font-extrabold tracking-tight">
-                            {price * 3}
-                          </span>
-                          <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                            Per Person
-                          </span>
-                        </div>
-                        <div class="space-y-5 my-7"></div>
-                        <button
-                          onClick={(e) =>
-                            bookingFlight(flight.flights_id, "Business")
-                          }
-                          type="button"
-                          class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
-                        >
-                          Book Now
-                        </button>
+                        {business === 0 ? (
+                          <>
+                            <div class="flex items-baseline text-gray-900 dark:text-white w-60 h-28">
+                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                                Not Available
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="w-60 h-28">
+                            <div class="flex items-baseline text-gray-900 dark:text-white">
+                              <span class="text-5xl font-extrabold tracking-tight">
+                                {price * 3}
+                              </span>
+                              <span class="text-3xl font-semibold">JOD</span>
+                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                                Per Person
+                              </span>
+                            </div>
+                            <div class="space-y-5 my-7"></div>
+                            <button
+                              onClick={(e) =>
+                                bookingFlight(flight.flights_id, "business")
+                              }
+                              type="button"
+                              class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                            >
+                              Book Now
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                         <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
                           First class
                         </h5>
-                        <div class="flex items-baseline text-gray-900 dark:text-white">
-                          <span class="text-3xl font-semibold">$</span>
-                          <span class="text-5xl font-extrabold tracking-tight">
-                            {price * 5}
-                          </span>
-                          <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                            Per Person
-                          </span>
-                        </div>
-                        <div class="space-y-5 my-7"></div>
-                        <button
-                          onClick={(e) =>
-                            bookingFlight(flight.flights_id, "First")
-                          }
-                          type="button"
-                          class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
-                        >
-                          Book Now
-                        </button>
+                        {first === 0 ? (
+                          <>
+                            <div class="flex items-baseline text-gray-900 dark:text-white w-60 h-28">
+                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                                Not Available
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="w-60 h-28">
+                            <div class="flex items-baseline text-gray-900 dark:text-white">
+                              <span class="text-5xl font-extrabold tracking-tight">
+                                {price * 3}
+                              </span>
+                              <span class="text-3xl font-semibold">JOD</span>
+                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                                Per Person
+                              </span>
+                            </div>
+                            <div class="space-y-5 my-7"></div>
+                            <button
+                              onClick={(e) =>
+                                bookingFlight(flight.flights_id, "first")
+                              }
+                              type="button"
+                              class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                            >
+                              Book Now
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </BookFlightModal>

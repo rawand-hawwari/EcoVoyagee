@@ -104,7 +104,6 @@ export const AllPackages = () => {
           });
       }
     });
-    fetchData();
   };
   return (
     <Card className="lg:ml-80 p-2 w-screen lg:w-full h-full border border-sky-700">

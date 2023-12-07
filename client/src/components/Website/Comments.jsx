@@ -77,8 +77,8 @@ const Comments = (id) => {
     } else if (id.type === "Packages") {
       axios
         .post(
-          `http://localhost:3999/addCommentPac`,
-          { packages_id: id.id, comment_text: formData.comment_text },
+          `http://localhost:3999/addCommentPac/${id.id}`,
+          { comment_text: formData.comment_text },
           {
             headers: {
               authorization: `${token}`,
@@ -148,7 +148,7 @@ const Comments = (id) => {
         <div className="p-5">
           {comments.map((comment, index) => (
             <div className="p-5 border border-sky-700 rounded-xl my-3 w-3xl">
-              <div className="flex gap-4 flex-wrap">
+              <div className="flex gap-2 flex-wrap">
                 <h5 className="text-start text-xl font-bold">
                   {comment.first_name}
                 </h5>

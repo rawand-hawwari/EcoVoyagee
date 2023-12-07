@@ -52,9 +52,9 @@ const Header = () => {
   // }, []);
 
   return (
-    <div>
+    <div className="absolute w-full z-50">
       {/* logo need change */}
-      <nav className="bg-sky-700 border-gray-200 dark:bg-gray-900">
+      <nav className="bg-Base-color border-gray-200 dark:bg-gray-900">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
           <div className="flex">
             {/* Toggle button */}
@@ -164,7 +164,7 @@ const Header = () => {
           {/* <!-- Collapsible wrapper --> */}
         </div>
       </nav>
-      <nav className="bg-white dark:bg-gray-900 border-b-2 hidden md:block">
+      <nav className="bg-second-color dark:bg-gray-900 border-b-2 hidden md:block">
         <div className="max-w-screen-xl px-4 py-3 mx-auto">
           <div className="flex items-center">
             <ul className="flex flex-row w-full justify-between font-medium mt-0 mr-6 space-x-8 text-sm">

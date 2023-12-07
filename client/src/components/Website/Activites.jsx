@@ -61,9 +61,8 @@ const Activites = () => {
       <div className="flex flex-col md:flex-row justify-center">
         <div className="">
           <div
-            className={`${
-              filterOpen ? "h-auto" : "h-16 overflow-hidden"
-            } md:overflow-visible md:h-auto my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
+            className={`${filterOpen ? "h-auto" : "h-16 overflow-hidden"
+              } md:overflow-visible md:h-auto my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
           >
             <div className="w-full flex justify-between">
               <h2 className="mb-3 text-start text-sky-700 text-xl font-bold">
@@ -71,9 +70,8 @@ const Activites = () => {
               </h2>
               <svg
                 onClick={openFilter}
-                class={`w-4 h-auto ${
-                  filterOpen ? "hidden" : "block"
-                } md:hidden`}
+                class={`w-4 h-auto ${filterOpen ? "hidden" : "block"
+                  } md:hidden`}
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -97,9 +95,8 @@ const Activites = () => {
               </svg>
               <svg
                 onClick={openFilter}
-                class={`w-4 h-auto ${
-                  filterOpen ? "block" : "hidden"
-                } md:hidden`}
+                class={`w-4 h-auto ${filterOpen ? "block" : "hidden"
+                  } md:hidden`}
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -123,40 +120,40 @@ const Activites = () => {
               </svg>
             </div>
             <form class="flex items-center">
-                <label for="simple-search" class="sr-only">
-                  Search
-                </label>
-                <div class="relative w-full">
-                  <input
-                    type="text"
-                    id="simple-search"
-                    class="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search branch name..."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              <label for="simple-search" class="sr-only">
+                Search
+              </label>
+              <div class="relative w-full">
+                <input
+                  type="text"
+                  id="simple-search"
+                  class="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search branch name..."
+                />
+              </div>
+              <button
+                type="submit"
+                class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                <svg
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                    />
-                  </svg>
-                  <span class="sr-only">Search</span>
-                </button>
-              </form>
-          <hr className="my-6 hidden md:block" />
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+                <span class="sr-only">Search</span>
+              </button>
+            </form>
+            <hr className="my-6 hidden md:block" />
             <div className="w-full">
               <p className="mb-3 text-lg text-start">Price</p>
               <input
@@ -181,9 +178,8 @@ const Activites = () => {
                   >
                     {selectedType}
                     <svg
-                      className={`-mr-1 h-5 w-5 text-gray-400 transform ${
-                        typeMenuOpen ? "rotate-180" : ""
-                      }`}
+                      className={`-mr-1 h-5 w-5 text-gray-400 transform ${typeMenuOpen ? "rotate-180" : ""
+                        }`}
                       viewBox="0 0 20 20"
                       fill="currentColor"
                       aria-hidden="true"
@@ -205,8 +201,8 @@ const Activites = () => {
                     aria-labelledby="menu-button"
                     tabIndex="-1"
                   >
-                    <div className="py-1" role="none">
-                    <button
+                    <div className="py-1 h-40 overflow-auto" role="none">
+                      <button
                         onClick={() => {
                           setSelectedType("Select type");
                           toggleTypeMenu();
@@ -218,19 +214,19 @@ const Activites = () => {
                       >
                         Select type
                       </button>
-                      {types.map((type, id)=>(
-                      <button
-                        onClick={() => {
-                          setSelectedType(type);
-                          toggleTypeMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        {type}
-                      </button>))}
+                      {types.map((type, id) => (
+                        <button
+                          onClick={() => {
+                            setSelectedType(type);
+                            toggleTypeMenu();
+                          }}
+                          className="text-gray-700 block px-4 py-2 text-sm"
+                          role="menuitem"
+                          tabIndex="-1"
+                          id="menu-item-0"
+                        >
+                          {type}
+                        </button>))}
                     </div>
                   </div>
                 )}
@@ -239,17 +235,17 @@ const Activites = () => {
           </div>
         </div>
         <div className="my-16 mx-8 md:w-2/3">
-          <div className="flex flex-col flex-wrap justify-start items-center md:flex-row gap-8">
-            {destinations.map((destination, id) => (
-              <Link key={id} to={`/activity/${destination.activities_id}`}>
-                <article className="md:max-w-[15rem] max-w-[20rem] shadow-xl bg-cover bg-center overflow-hidden md:h-[350px] h-[400px] transform duration-500 hover:-translate-y-2 cursor-pointer group bg-[url('https://afhomeph.com/cdn/shop/files/Website_Banner_Direct_from_the_Factory_1.png?v=1685417210&width=2800')]">
+          <div className="flex flex-col flex-wrap justify-start items-center md:flex-row gap-4">
+            {destinations.map((activity, id) => (
+              <Link key={id} to={`/activity/${activity.activities_id}`}>
+                <article className="md:w-[15rem] w-[20rem] shadow-xl bg-cover bg-center overflow-hidden md:h-[350px] h-[400px] transform duration-500 hover:-translate-y-2 cursor-pointer group" style={{ backgroundImage: `url(${activity.imageactivity[0]})` }}>
                   <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-40 md:pt-28 hover:bg-opacity-75 transform duration-300">
                     <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
-                      {destination.title}
+                      {activity.title}
                     </h1>
                     <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                    <p className="my-3 py-3 opacity-0 max-h-[100px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
-                      {destination.activity_details}
+                    <p className="my-3 py-3 opacity-0 max-h-[70px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
+                      {activity.activity_details}
                     </p>
                   </div>
                 </article>

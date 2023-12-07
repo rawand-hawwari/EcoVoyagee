@@ -19,8 +19,6 @@ const getTickets = async () => {
 
 const getTicketByID = async (ticket_id) => {
     try {
-
-
         return await db('ticketbooking')
             .select('*')
             .where({
@@ -32,8 +30,9 @@ const getTicketByID = async (ticket_id) => {
         throw new Error('Error fetching Ticket by ID');
     }
 };
-
 const addTicket = async (ticketData, user_id) => {
+    const transaction = await db.transaction();
+
     try {
         const userResult = await db('users')
             .where({ user_id: user_id })
@@ -43,13 +42,70 @@ const addTicket = async (ticketData, user_id) => {
             throw new Error('User not found');
         }
 
-        const insertedTicket = await db('ticketbooking')
-            .insert({ ...ticketData, user_id: user_id, is_shown: true })
-            .returning('*');
+        // Determine the column to decrement based on ticket_type
+        let columnToDecrement;
+        switch (ticketData.ticket_type) {
+            case 'business':
+                columnToDecrement = 'business';
+                break;
+            case 'economy':
+                columnToDecrement = 'economy';
+                break;
+            case 'first':
+                columnToDecrement = 'first';
+                break;
+            default:
+                throw new Error('Invalid ticket_type');
+        }
 
-        return insertedTicket;
+        const flightId = ticketData.flights_id; // Assuming flight_id is present in ticketData
 
+        // Check if the value for the specified type is greater than zero before decrementing
+        const currentCount = await transaction('flights')
+            .where('flights_id', flightId)
+            .select(columnToDecrement, 'available')
+            .first();
+
+        if (currentCount && currentCount[columnToDecrement] > 0) {
+            // Decrement the corresponding column in the flights table based on flight_id
+            await transaction('flights')
+                .where('flights_id', flightId)
+                .decrement(columnToDecrement, 1);
+
+            // Insert the ticket into the ticketbooking table
+            const insertedTicket = await transaction('ticketbooking')
+                .insert({ ...ticketData, user_id: user_id, is_shown: true })
+                .returning('*');
+
+            const currentCounts = await transaction('flights')
+                .where('flights_id', flightId)
+                .select('business', 'economy', 'first', 'available')
+                .first();
+
+            // Check if all types are now zero and update the 'available' column
+            const allTypesZero =
+                currentCounts.business === 0 &&
+                currentCounts.economy === 0 &&
+                currentCounts.first === 0;
+
+
+            if (allTypesZero) {
+                await transaction('flights')
+                    .where('flights_id', flightId)
+                    .update({ available: false });
+            }
+
+            // Commit the transaction
+            await transaction.commit();
+            // console.log(currentCounts);
+            // console.log(currentCounts.business, currentCounts.economy, currentCounts.first);
+            return insertedTicket;
+        } else {
+            throw new Error('No available tickets for the specified flight.');
+        }
     } catch (err) {
+        // Rollback the transaction if an error occurs
+        await transaction.rollback();
         console.error(err);
         throw new Error('Error adding Ticket');
     }

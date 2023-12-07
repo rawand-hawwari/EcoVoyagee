@@ -58,6 +58,7 @@ const Packages = () => {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center">
+        {/* filter and search */}
         <div className="">
           <div
             className={`${

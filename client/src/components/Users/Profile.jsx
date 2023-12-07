@@ -2,6 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 
+import {
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from "@material-tailwind/react";
+import ProfileData from "./ProfileData";
+import BookingHistory from "./BookingHistory";
+
 const Profile = () => {
   const [user, setUser] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -13,6 +23,25 @@ const Profile = () => {
   const [email, setEmail] = useState(true);
   const [password, setPassword] = useState(true);
   const { headers } = useAuth();
+
+  const [activeTab, setActiveTab] = React.useState("html");
+  const data = [
+    {
+      label: "Profile",
+      value: "profile",
+      element: <ProfileData></ProfileData>,
+    },
+    {
+      label: "Flights",
+      value: "flights",
+      element: <Profile></Profile>,
+    },
+    {
+      label: "Bookings",
+      value: "bookings",
+      element: <BookingHistory></BookingHistory>,
+    },
+  ];
 
   async function fetchData() {
     await axios
@@ -37,7 +66,6 @@ const Profile = () => {
         headers: headers,
       });
     } else {
-      // setPreviewSrc("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
       setPreviewSrc(user.profileimage);
     }
     output.onload = function () {
@@ -67,7 +95,7 @@ const Profile = () => {
     });
   };
   const updateData = (e) => {
-    if (userData||userData.length>0) {
+    if (userData || userData.length > 0) {
       axios.put("http://localhost:3999/updateUserData", userData, {
         headers: headers,
       });
@@ -80,16 +108,15 @@ const Profile = () => {
         <div class="w-full pt-4 pr-5 pb-6 pl-5 my-0 mx-auto space-y-5 sm:py-8 md:py-12 sm:space-y-8 md:space-y-16 max-w-7xl">
           <div class="flex flex-col items-center sm:px-5 md:flex-row">
             <div class="flex flex-col items-start justify-center w-full h-full pt-6 pr-0 pb-6 pl-0 mb-6 md:mb-0 ">
-              <div
-                class="flex flex-col items-start justify-center h-full space-y-3 transform md:pr-10 lg:pr-16 md:space-y-5"
-              ></div>
+              <div class="flex flex-col items-start justify-center h-full space-y-3 transform md:pr-10 lg:pr-16 md:space-y-5"></div>
             </div>
           </div>
         </div>
       </div>
       <div className="h-[420px]"></div>
-      <div className="flex bg-gray-100 justify-center absolute top-1/4 left-1/2 transform -translate-x-1/2 border border-solid p-6 md:p-8 w-3/4 rounded-3xl mb-40 h-[700px]">
+      <div className="flex bg-gray-100 justify-center z-0 absolute top-1/4 left-1/2 transform -translate-x-1/2 border border-solid p-6 md:p-8 w-3/4 rounded-3xl mb-40 h-[700px]">
         <div className="w-full h-full">
+          {/* profile info */}
           <div className="flex flex-col md:flex-row gap-12 pb-4 justify-center items-center">
             <div className="shrink-0 flex flex-col justify-center items-center">
               <img
@@ -121,7 +148,36 @@ const Profile = () => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col justify-center items-center w-full md:mt-5">
+
+          {/* tab bar */}
+          {/* <Tabs value={activeTab}>
+            <TabsHeader
+              // className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
+              // indicatorProps={{
+              //   className:
+              //     "bg-transparent border-b-2 border-sky-700 shadow-none rounded-none",
+              // }}
+            >
+              {data.map(({ label, value }) => (
+                <Tab
+                  key={value}
+                  value={value}
+                  onClick={() => setActiveTab(value)}
+              className = {`${activeTab===value?"bg-transparent border-b-2 text-sky-700 font-bold border-sky-700 shadow-none rounded-none":"rounded-none border-b border-blue-gray-50 bg-transparent font-bold"}`}
+                >
+                  {label}
+                </Tab>
+              ))}
+            </TabsHeader>
+            <TabsBody>
+              {data.map(({ value, element }) => (
+                <TabPanel key={value} value={value}>
+                  {element}
+                </TabPanel>
+              ))}
+            </TabsBody>
+          </Tabs> */}
+          {/* <div className="flex flex-col justify-center items-center w-full md:mt-5">
             <div className="w-full md:w-2/3 flex flex-col justify-center items-center gap-2">
               <label className="px-3 self-start">Name</label>
               <div className="flex w-full gap-5">
@@ -275,7 +331,9 @@ const Profile = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
+          <ProfileData />
+          <BookingHistory />
         </div>
       </div>
     </div>

@@ -13,12 +13,15 @@ const addFlight = async (flightsData) => {
 
 const getFlights = async () => {
     try {
-        return await db
-            .select('*')
+        const flights = await db
+            .select('flights.*', 'destinations.country as destination_name')
             .from('flights')
             .where({
-                is_deleted: false,
+                'flights.is_deleted': false,
             })
+            .join('destinations', 'flights.destinations_id', 'destinations.destinations_id');
+
+        return flights;
     } catch (err) {
         console.error(err);
         throw new Error('Error fetching Flights');
@@ -28,16 +31,19 @@ const getFlights = async () => {
 const getFlightsByID = async (flights_id) => {
     try {
         return await db('flights')
-            .select('*')
+            .select('flights.*', 'destinations.country as destination_name')
             .where({
-                is_deleted: false,
-                flights_id: flights_id
-            });
+                'flights.is_deleted': false,
+                'flights.flights_id': flights_id
+            })
+            .join('destinations', 'flights.destinations_id', 'destinations.destinations_id');
+
     } catch (err) {
         console.error(err);
         throw new Error('Error fetching destination by ID');
     }
 };
+
 
 const softDeleteFlights = async (flights_id) => {
     try {

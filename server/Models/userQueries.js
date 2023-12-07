@@ -37,6 +37,7 @@ const getBookingOfUser = async (user_id) => {
                 'book_id',
                 'phone',
                 'room_preference',
+                'cost',
                 'adults',
                 'children',
                 'user_id',

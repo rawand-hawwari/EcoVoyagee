@@ -5,15 +5,19 @@ import Comments from "./Comments";
 import { useBooking } from "../Context/BookingContext";
 import { useNavigate } from "react-router-dom";
 
+import DatetimePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format, parse } from 'date-fns';
+
 const AccommodationDetails = () => {
   const { id } = useParams();
   const [room, setRoom] = useState("Standard");
   const { bookData, onBooking } = useBooking();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleSlideChange = (index) => {
-    setActiveIndex(index);
-  };
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
   const history = useNavigate();
   const [booking, setBooking] = useState({
     first_name: "",
@@ -24,21 +28,13 @@ const AccommodationDetails = () => {
     adults: 0,
     children: 0,
     cost: 0,
+    date_from: 0,
+    date_to: 0,
     accommodation_id: 0,
   });
   const [accommodation, setAccommodation] = useState(null);
   const [similarPlace, setSimilarPlace] = useState([]);
 
-  //   carousel images
-  const images = [
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/385542203.jpg?k=44f98623a32195ef2c7ce0fcd0f4d4fd99057a6277d1b54fc884f1756670396a&o=&hp=1",
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/453833024.jpg?k=31d4a578139ec96d135c27eaf0ff787adce55b533ebffddddf8c31c6b6c8818e&o=&hp=1",
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/432525446.jpg?k=d17d4e47362bc172ac80b56f63c11632b2c14407380636caae54bd3cb1d9dd2d&o=&hp=1",
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/359056434.jpg?k=065fb27e9abcb4f61f1c6932e9cb57b2eb46af7f062c602522400b9f391166ca&o=&hp=1",
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/326714529.jpg?k=b652add7e62b83cb51ab4849db4b7ef8a26bd9232b86488417e496aab1334479&o=&hp=1",
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/351768928.jpg?k=574991b267087079b1b22cd655938369b1f0c485ed71c773ab182a2528cdd8fd&o=&hp=1",
-    "https://cf2.bstatic.com/xdata/images/hotel/max1024x768/326714728.jpg?k=bbe441f4411b6d2e9d7465281c6da18f9900b39d09b4e4ed9230adced402a336&o=&hp=1",
-  ];
   const [currentImage, setCurrentImage] = useState(0);
   const nextSlide = () => {
     if (accommodation) {
@@ -59,13 +55,6 @@ const AccommodationDetails = () => {
     }
   };
   //   end carousel images
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setBooking({
-      ...booking,
-      [name]: value,
-    });
-  }
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     axios
@@ -79,11 +68,11 @@ const AccommodationDetails = () => {
       .catch((error) => {
         // Handle errors here
         console.error("Error:", error);
-      });      
-    }, [id]);
-    
-    useEffect(()=>{
-      axios
+      });
+  }, [id]);
+
+  useEffect(() => {
+    axios
       .get(`http://localhost:3999/getAccommodations`)
       .then((response) => {
         // setSimilarPlace(response.data[0]);
@@ -101,20 +90,31 @@ const AccommodationDetails = () => {
         // Handle errors here
         console.error("Error:", error);
       });
-    },[accommodation])
+  }, [accommodation]);
 
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setBooking({
+      ...booking,
+      [name]: value,
+    });
+  }
+  
   async function handleSubmit(e) {
+    e.preventDefault();
     let total =
-      booking.adults * booking.cost + (booking.children * booking.cost) / 2;
+    booking.adults * booking.cost + (booking.children * booking.cost) / 2;
     if (booking.room_preference === "Delux") {
-      total += 10;
+      total *= 2;
     } else if (booking.room_preference === "Suite") {
-      total += 20;
+      total *= 3;
     }
     booking.cost = total;
     booking.accommodation_id = id;
-
-    e.preventDefault();
+    booking.date_to=endDate;
+    booking.date_from=startDate;
+    
+    console.log(booking);
     try {
       onBooking(booking);
       history("/payment");
@@ -122,9 +122,10 @@ const AccommodationDetails = () => {
       console.error("Error:", error);
     }
   }
-  // console.log(accommodation);
+
   return (
     <div>
+      {/* images */}
       <div
         id="default-carousel"
         className="relative w-full"
@@ -199,6 +200,7 @@ const AccommodationDetails = () => {
           </span>
         </button>
       </div>
+
       <div className="flex flex-col justify-center items-center my-10">
         <div className="w-2/3">
           {accommodation && (
@@ -251,38 +253,51 @@ const AccommodationDetails = () => {
                       Other Accommodations in {accommodation.country}
                     </h5>
                     <div className="flex flex-col md:flex-row flex-wrap gap-8 justify-start items-center mx-auto">
-                      {similarPlace&&similarPlace.length>0&& similarPlace.map((item, id)=>(
-                        <Link key={id} to={`/accommodation/${item.accommodation_id}`}>
-                        <article className="w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[410px] transform duration-500 hover:-translate-y-2 cursor-pointer group" style={{ backgroundImage: `url(${item.imageurl[0]})`}}>
-                          <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
-                            <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
-                              {item.title}
-                            </h1>
-                            <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                            <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
-                              {item.accommodation_details}
-                            </p>
-                          </div>
-                        </article>
-                      </Link>
-                      ))}
+                      {similarPlace &&
+                        similarPlace.length > 0 &&
+                        similarPlace.map((item, id) => (
+                          <Link
+                            key={id}
+                            to={`/accommodation/${item.accommodation_id}`}
+                          >
+                            <article
+                              className="w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[410px] transform duration-500 hover:-translate-y-2 cursor-pointer group"
+                              style={{
+                                backgroundImage: `url(${item.imageurl[0]})`,
+                              }}
+                            >
+                              <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
+                                <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
+                                  {item.title}
+                                </h1>
+                                <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                                <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
+                                  {item.accommodation_details}
+                                </p>
+                              </div>
+                            </article>
+                          </Link>
+                        ))}
                     </div>
                   </>
                 )}
               </div>
+
+              {/* comments */}
               <div className="py-12">
                 <Comments id={id} type="Accommodations"></Comments>
               </div>
+
+              {/* booking form */}
               <div className="p-3 border border-sky-700 rounded-xl bg-gray-100">
                 <form action="" onSubmit={handleSubmit}>
                   <div className="min-h-screen flex justify-center items-start md:items-center">
                     <div className="py-12 px-12 w-full">
-                      <div className="flex flex-col justify-center">
-                        <h1 className="text-3xl text-sky-900 font-bold text-start mb-4 cursor-pointer">
-                          Hotel booking
-                        </h1>
-                      </div>
+                      <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+                        Book a room
+                      </h1>
                       <div className="space-y-4 flex flex-col justify-center items-center">
+                        {/* name */}
                         <label className="px-3 self-start">Name</label>
                         <div className="flex w-full gap-5">
                           <input
@@ -302,6 +317,8 @@ const AccommodationDetails = () => {
                             className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                           />
                         </div>
+
+                        {/* address */}
                         <label className="px-3 self-start">Address</label>
                         <input
                           type="text"
@@ -311,6 +328,8 @@ const AccommodationDetails = () => {
                           onChange={handleChange}
                           className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                         />
+
+                        {/* phone number */}
                         <label className="px-3 self-start">Phone</label>
                         <input
                           type="number"
@@ -320,6 +339,37 @@ const AccommodationDetails = () => {
                           onChange={handleChange}
                           className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                         />
+
+                        {/* date from-to */}
+                        <label className="px-3 self-start">Date</label>
+                        <div className="flex gap-4 w-full items-center">
+                          <label className="px-3">From:</label>
+                          <DatetimePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                            // dateFormat="yyyy-mm-dd"
+                            placeholderText="Start Date"
+                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                          />
+
+                          <label className="px-3">To:</label>
+                          <DatetimePicker
+                            selected={endDate}
+                            name="date_to"
+                            onChange={(date) => setEndDate(date)}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            placeholderText="End Date"
+                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                          />
+                        </div>
+
+                        {/* room preference */}
                         <label className="px-3 self-start">
                           Room preference
                         </label>
@@ -344,7 +394,7 @@ const AccommodationDetails = () => {
                               for="default-radio-1"
                               class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                             >
-                              Standard
+                              Standard ({accommodation.pricing}JOD)
                             </label>
                           </div>
                           <div class="flex items-center">
@@ -367,7 +417,7 @@ const AccommodationDetails = () => {
                               for="default-radio-2"
                               class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                             >
-                              Delux
+                              Delux ({accommodation.pricing * 2}JOD)
                             </label>
                           </div>
                           <div class="flex items-center">
@@ -390,12 +440,15 @@ const AccommodationDetails = () => {
                               for="default-radio-2"
                               class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                             >
-                              Suite
+                              Suite ({accommodation.pricing * 3}JOD)
                             </label>
                           </div>
                         </div>
+
+                        {/* guests */}
                         <label className="px-3 self-start">Guests</label>
-                        <div className="flex self-start w-1/2 gap-5">
+                        <div className="flex self-start w-1/2 gap-5 items-center">
+                          <label className="px-3">Adults:</label>
                           <input
                             type="number"
                             name="adults"
@@ -405,6 +458,7 @@ const AccommodationDetails = () => {
                             required
                             className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                           />
+                          <label className="px-3">Children:</label>
                           <input
                             type="number"
                             name="children"

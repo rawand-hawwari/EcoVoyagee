@@ -19,13 +19,16 @@ import AdminAccount from "./components/Admin/AdminAccount";
 import Payment from "./components/Website/Payment/Payment";
 import Flights from "./components/Website/Flights";
 import Profile from "./components/Users/Profile";
+import { useState } from "react";
 
 function App() {
+  // const pathname = window.location.pathname;
+  // const [spaces, setSpaces] = useState("pt-28");
   return (
     <div className="App">
       <Router>
         <Header />
-        <div className="h-full" id="root">
+        <div className="h-full md:pt-28 pt-16" id="root">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/destinations" element={<Destinations />} />
@@ -46,7 +49,6 @@ function App() {
             <Route path="/payment" element={<Payment />} />
             <Route path="/flights" element={<Flights />} />
             <Route path="/flights/:id" element={<Flights />} />
-            {/* <Route path="/flight/:id" element={<Flights />} /> */}
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

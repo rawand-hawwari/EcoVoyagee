@@ -118,7 +118,7 @@ const getPackagesWithComments = async (packages_id) => {
     }
 };
 
-const BookPackage = async (packages_id, user_id, address, phone, room_preference, adults, children, date_from, date_to) => {
+const BookPackage = async (packages_id, user_id, address, phone, room_preference, cost, adults, children, date_from, date_to) => {
     try {
         return await db('booking')
             .insert({
@@ -127,6 +127,7 @@ const BookPackage = async (packages_id, user_id, address, phone, room_preference
                 address: address,
                 phone: phone,
                 room_preference: room_preference,
+                cost: cost,
                 adults: adults,
                 children: children,
                 date_from:date_from, 

@@ -5,12 +5,14 @@ const ticketBookingModel = require('../Models/ticketbookingModel');
 const addTicket = async (req, res) => {
     const user_id = req.user.user_id;
     try {
-      
         const ticketData = req.body;
+        // console.log(ticketData.ticket_type);
+        
+
 
         const result = await ticketBookingModel.addTicket(ticketData, user_id);
 
-        res.json({ message: 'Ticket has been added!', data: result[0] });
+        res.json({ message: 'Ticket has been added!', data: result });
 
     } catch (err) {
         console.error(err);

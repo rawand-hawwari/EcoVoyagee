@@ -98,7 +98,7 @@ const markAccommodationAsDeleted = async (req, res) => {
 };
 
 const addCommentAccomm = async (req, res) => {
-    const comment_text = req.body;
+    const comment_text = req.body.comment_text;
     const accommodation_id = req.params.id;
     const user_id = req.user.user_id;
 
@@ -124,11 +124,11 @@ const getAccommodationsWithComments = async (req, res) => {
 
 const bookAccommodation = async (req, res) => {
     const accommodation_id = req.params.id;
-    const { address, phone, room_preference, adults, children, date_from, date_to } = req.body;
+    const { address, phone, room_preference, cost, adults, children, date_from, date_to } = req.body;
     const user_id = req.user.user_id;
 
     try {
-        const result = await AccommodationModel.bookAccommodation(accommodation_id, user_id, address, phone, room_preference, adults, children, date_from, date_to);
+        const result = await AccommodationModel.bookAccommodation(accommodation_id, user_id, address, phone, room_preference, cost, adults, children, date_from, date_to);
         res.json(result);
     } catch (err) {
         console.error(err);
