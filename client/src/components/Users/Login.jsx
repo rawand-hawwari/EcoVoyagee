@@ -62,7 +62,7 @@ const Login = () => {
         onLogin(true);
         history("/dashboard");
       } else {
-
+        onLogin(false);
         history(-1);
       }
       // Handle successful sign-in, e.g., redirect or show a success message

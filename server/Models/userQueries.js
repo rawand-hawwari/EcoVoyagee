@@ -59,11 +59,8 @@ const getFlightsOfUser = async (user_id) => {
             .select(
                 'ticket_id',
                 'ticket_type',
-                'date_from',
-                'date_to',
-                'cost',
+                                'cost',
                 'user_id',
-                'numberofticket',
                 'flights_id'
             );
         return result;

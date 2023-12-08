@@ -93,7 +93,7 @@ const SideBar = () => {
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
-          <aside className="flex flex-col h-screen bg-sky-700 w-64 h-auto px-5 py-8 overflow-y-auto border-r border-b rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+          <aside className="flex flex-col h-screen bg-sky-700 w-64 px-5 py-8 overflow-y-auto border-r border-b rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
             <div className="w-auto flex justify-around items-center mx-6">
               <img
                 className='w-1/4 '

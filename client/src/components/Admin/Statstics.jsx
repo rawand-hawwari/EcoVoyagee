@@ -130,20 +130,7 @@ const Statstics = () => {
       .get(`http://localhost:3999/getCommentCount`)
       .then((response) => {
         // Handle the response data here
-        setReviews(response.data.length);
-        // setTypes(response.data.destinations_type);
-      })
-      .catch((error) => {
-        // Handle errors here
-        console.error("Error:", error);
-      });
-
-    //   fetch Activites
-    axios
-      .get(`http://localhost:3999/getBookingCount`)
-      .then((response) => {
-        // Handle the response data here
-        setActivities(response.data.length);
+        setReviews(response.data[0].count);
         // setTypes(response.data.destinations_type);
       })
       .catch((error) => {
@@ -153,9 +140,9 @@ const Statstics = () => {
 
     //   fetch bookings
     axios
-      .get(`http://localhost:3999/user`)
+      .get(`http://localhost:3999/getBookingCount`)
       .then((response) => {
-        setBookings(response.data.length);
+        setBookings(response.data[0].count);
       })
       .catch((error) => {
         console.error("Error:", error);

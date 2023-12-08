@@ -12,10 +12,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if the token is present in cookies
     const token = cookies["token"];
+    const admin = cookies["isAdmin"];
     if (token) {
       // Token exists, user is logged in
       setIsLoggedIn(true);
       setHeaders({ "authorization": token });
+      setIsAdmin(admin);
     } else {
       // Token does not exist, user is not logged in
       setIsLoggedIn(false);
@@ -33,12 +35,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const onLogin = (role) => {
-    if (role) {
-      setIsAdmin(true);
-      setCookie("isAdmin", true, { path: "/" });
-    } else {
-      setIsAdmin(false);
-    }
+    // if (role) {
+    //   // setCookie("isAdmin", true, { path: "/" });
+    // } else {
+    //   setIsAdmin(false);
+    // }
+    setIsAdmin(role);
+    setCookie("isAdmin", role, { path: "/" });
   };
 
   const authContextValue = {

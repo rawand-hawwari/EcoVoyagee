@@ -20,21 +20,26 @@ import Payment from "./components/Website/Payment/Payment";
 import Flights from "./components/Website/Flights";
 import Profile from "./components/Users/Profile";
 import { useState } from "react";
+import ActivityDetails from "./components/Website/ActivityDetails";
+import { useAuth } from "./components/Context/AuthContext";
 
 function App() {
   // const pathname = window.location.pathname;
   // const [spaces, setSpaces] = useState("pt-28");
+  const {isAdmin} = useAuth();
   return (
     <div className="App">
       <Router>
+
         <Header />
-        <div className="h-full md:pt-28 pt-16" id="root">
+        <div className="h-full" id="root">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/destinations" element={<Destinations />} />
             <Route path="/accommodations" element={<Accommodations />} />
             <Route path="/packages" element={<Packages />} />
             <Route path="/activities" element={<Activites />} />
+            <Route path="/activity/:id" element={<ActivityDetails />} />
             <Route path="/destination/:id" element={<DestinationDetails />} />
             <Route
               path="/accommodation/:id"

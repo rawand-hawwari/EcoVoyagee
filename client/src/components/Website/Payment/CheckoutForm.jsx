@@ -79,7 +79,9 @@ export default function CheckoutForm() {
                 phone_number: bookData.phone_number,
                 dateof_birth: bookData.dateof_birth,
                 bag_details: bookData.bag_details,
+                ticket_type: bookData.ticket_type,
                 cost: bookData.cost,
+                flights_id: bookData.flights_id,
               };
               console.log("hi");
               if (bookData.bag_details === "1 X 25KG") {
@@ -109,7 +111,7 @@ export default function CheckoutForm() {
                   "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
               },
             });
-            onBooking([]);
+            // onBooking([]);
             navigate(-1);
           } catch (error) {
             Swal.fire({

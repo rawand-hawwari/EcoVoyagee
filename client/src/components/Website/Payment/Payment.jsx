@@ -22,12 +22,12 @@ function Payment() {
   const { headers } = useAuth();
   const [luggage, setLuggage] = useState("1 X 20KG");
 
-  useEffect(() => {
-    onBooking({
-      ...bookData,
-      bag_details: luggage,
-    });
-  }, []);
+  // useEffect(() => {
+  //   onBooking({
+  //     ...bookData,
+  //     bag_details: luggage,
+  //   });
+  // }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     onBooking({
@@ -91,7 +91,7 @@ function Payment() {
     return (
       <div className="flex flex-wrap justify-center items-center my-5">
         <div className="rounded-xl w-full md:w-3/5 bg-gray-50">
-          <form>
+          {/* <form onSubmit={(e)=>{e.preventDefault()}}> */}
             <div className="flex justify-center items-start md:items-center">
               <div className="py-8 px-12 w-full">
                 <div className="flex flex-col justify-center">
@@ -280,7 +280,7 @@ function Payment() {
                 )}
               </div>
             </div>
-          </form>
+          {/* </form> */}
         </div>
       </div>
     );

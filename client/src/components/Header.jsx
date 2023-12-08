@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assests/Images/logo.png";
 import { useAuth } from "./Context/AuthContext";
+import useScrollDirection from "./Custom hook/ScrollDirection"
 
 const Header = () => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [selectedLink, setSelectedLink] = useState("Home");
   const { isLoggedIn } = useAuth();
+
+  const scrollDirection = useScrollDirection();
 
   const location = useLocation();
   if (location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/dashboard") {
@@ -52,7 +55,7 @@ const Header = () => {
   // }, []);
 
   return (
-    <div className="absolute w-full z-50">
+    <div className={`sticky ${ scrollDirection === "down" ? "-top-32" : "top-0"} transition-all duration-1000 w-full z-50`}>
       {/* logo need change */}
       <nav className="bg-Base-color border-gray-200 dark:bg-gray-900">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">

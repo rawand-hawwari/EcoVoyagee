@@ -24,24 +24,34 @@ const Profile = () => {
   const [password, setPassword] = useState(true);
   const { headers } = useAuth();
 
-  const [activeTab, setActiveTab] = React.useState("html");
+  const [activeTab, setActiveTab] = React.useState("Bookings");
   const data = [
     {
       label: "Profile",
       value: "profile",
-      element: <ProfileData></ProfileData>,
+      // element: <ProfileData></ProfileData>,
+      element: "hey",
     },
     {
       label: "Flights",
       value: "flights",
-      element: <Profile></Profile>,
+      // element: <Profile></Profile>,
+      element: "whatever",
     },
     {
       label: "Bookings",
       value: "bookings",
-      element: <BookingHistory></BookingHistory>,
+      // element: <BookingHistory></BookingHistory>,
+      element: "hello",
     },
   ];
+
+  // const [activeTab, setActiveTab] = useState('Dashboard');
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    // You can add additional logic here when a tab is clicked
+  };
 
   async function fetchData() {
     await axios
@@ -87,21 +97,6 @@ const Profile = () => {
       });
   }, [headers]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({
-      ...userData,
-      [name]: value,
-    });
-  };
-  const updateData = (e) => {
-    if (userData || userData.length > 0) {
-      axios.put("http://localhost:3999/updateUserData", userData, {
-        headers: headers,
-      });
-      fetchData();
-    }
-  };
   return (
     <div>
       <div className="relative text-gray-900 py-20 px-0 w-full flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] ">
@@ -150,190 +145,54 @@ const Profile = () => {
           </div>
 
           {/* tab bar */}
-          {/* <Tabs value={activeTab}>
-            <TabsHeader
-              // className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
-              // indicatorProps={{
-              //   className:
-              //     "bg-transparent border-b-2 border-sky-700 shadow-none rounded-none",
-              // }}
-            >
-              {data.map(({ label, value }) => (
-                <Tab
-                  key={value}
-                  value={value}
-                  onClick={() => setActiveTab(value)}
-              className = {`${activeTab===value?"bg-transparent border-b-2 text-sky-700 font-bold border-sky-700 shadow-none rounded-none":"rounded-none border-b border-blue-gray-50 bg-transparent font-bold"}`}
-                >
-                  {label}
-                </Tab>
-              ))}
-            </TabsHeader>
-            <TabsBody>
-              {data.map(({ value, element }) => (
-                <TabPanel key={value} value={value}>
-                  {element}
-                </TabPanel>
-              ))}
-            </TabsBody>
-          </Tabs> */}
-          {/* <div className="flex flex-col justify-center items-center w-full md:mt-5">
-            <div className="w-full md:w-2/3 flex flex-col justify-center items-center gap-2">
-              <label className="px-3 self-start">Name</label>
-              <div className="flex w-full gap-5">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    name="first_name"
-                    placeholder="First Name"
-                    value={
-                      userData.length !== 0
-                        ? userData.first_name
-                        : user.first_name
-                    }
-                    onChange={(e) => handleChange(e)}
-                    disabled={firstName}
-                    className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      !firstName && updateData(e);
-                      setFirstName(!firstName);
-                    }}
-                    className="absolute inset-y-0 end-0 flex items-center pe-3"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className={`w-6 h-6 ${!firstName && "text-sky-900"}`}
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    name="last_name"
-                    placeholder="Last Name"
-                    value={
-                      userData.length !== 0
-                        ? userData.last_name
-                        : user.last_name
-                    }
-                    onChange={(e) => handleChange(e)}
-                    disabled={lastName}
-                    className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      !lastName && updateData(e);
-                      setLastName(!lastName);
-                    }}
-                    className="absolute inset-y-0 end-0 flex items-center pe-3"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className={`w-6 h-6 ${!lastName && "text-sky-900"}`}
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <label className="px-3 self-start">Country</label>
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  name="country"
-                  placeholder="Country"
-                  value={
-                    userData.length !== 0 ? userData.country : user.country
-                  }
-                  onChange={(e) => handleChange(e)}
-                  disabled={country}
-                  className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                />
+          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+            <ul className="flex flex-wrap -mb-px">
+              <li className="me-2">
                 <button
-                  type="button"
-                  onClick={(e) => {
-                    !country && updateData(e);
-                    setCountry(!country);
-                  }}
-                  className="absolute inset-y-0 end-0 flex items-center pe-3"
+                  className={`inline-block p-4 border-b-2 rounded-t-lg ${
+                    activeTab === "Profile"
+                      ? "text-blue-600 border-blue-600"
+                      : "hover:text-gray-600 hover:border-gray-300"
+                  }`}
+                  onClick={() => handleTabClick("Profile")}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    className={`w-6 h-6 ${!country && "text-sky-900"}`}
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                    />
-                  </svg>
+                  Profile
                 </button>
-              </div>
-              <label className="px-3 self-start">Email Address</label>
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  name="email"
-                  placeholder="Email Address"
-                  value={userData.length !== 0 ? userData.email : user.email}
-                  onChange={(e) => handleChange(e)}
-                  disabled={email}
-                  className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                />
+              </li>
+              <li className="me-2">
                 <button
-                  type="button"
-                  onClick={(e) => {
-                    !email && updateData(e);
-                    setEmail(!email);
-                  }}
-                  className="absolute inset-y-0 end-0 flex items-center pe-3"
+                  className={`inline-block p-4 border-b-2 rounded-t-lg ${
+                    activeTab === "Bookings"
+                      ? "text-blue-600 border-blue-600"
+                      : "hover:text-gray-600 hover:border-gray-300"
+                  }`}
+                  onClick={() => handleTabClick("Bookings")}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    className={`w-6 h-6 ${!email && "text-sky-900"}`}
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                    />
-                  </svg>
+                  Bookings
                 </button>
-              </div>
-            </div>
-          </div> */}
-          <ProfileData />
+              </li>
+              <li className="me-2">
+                <button
+                  className={`inline-block p-4 border-b-2 rounded-t-lg ${
+                    activeTab === "Flights"
+                      ? "text-blue-600 border-blue-600"
+                      : "hover:text-gray-600 hover:border-gray-300"
+                  }`}
+                  onClick={() => handleTabClick("Flights")}
+                >
+                  Flights
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* content */}
+          <div className={`${activeTab === "Profile" ? "block" : "hidden"}`}>
+            <ProfileData />
+          </div>
+          <div className={`${activeTab === "Bookings" ? "block" : "hidden"}`}>
           <BookingHistory />
+          </div>
         </div>
       </div>
     </div>
