@@ -32,26 +32,40 @@ const Hero = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsSearch(true);
+    if (formData.destination) {
+      setSearchResult(
+        flights.filter((flight) =>
+          flight.destination_name
+            .toLowerCase()
+            .includes(formData.destination.toLowerCase())
+        )
+      );
+    }
     setSearchResult(
       flights.filter(
         (flight) =>
-          flight.destination_name
-            .toLowerCase()
-            .includes(formData.destination.toLowerCase()) ||
-          flight.best <= formData.price ||
-          new Date(flight.departure_date * 1000).toDateString() >=
-            new Date(formData.from).toDateString()
+          (formData.destination &&
+            flight.destination_name
+              .toLowerCase()
+              .includes(formData.destination.toLowerCase())) ||
+          (formData.price && flight.best <= formData.price) ||
+          (formData.from &&
+            new Date(flight.depart_date).toISOString() >=
+              new Date(formData.from).toISOString()) ||
+          (formData.to &&
+            new Date(flight.return_date).toISOString() <=
+              new Date(formData.to).toISOString())
       )
     );
   };
-  
+  // console.log(searchResult);
   return (
     <>
       <section class="mb-16">
-        <div class="relative overflow-hidden bg-cover bg-no-repeat bg-[50%] h-[500px] bg-[url('https://img1.wsimg.com/isteam/ip/044fec34-105c-4e2c-af48-6dfd21091910/man-walking-dog.webp')]">
-          <div class="absolute top-0 right-0 bottom-0 left-0 h-full w-full overflow-hidden bg-fixed bg-[#0c4a6e69]">
+        <div class="relative overflow-hidden bg-cover bg-no-repeat bg-[50%] h-[560px] bg-[url('https://ik.imgkit.net/3vlqs5axxjf/TAW/uploadedImages/Professional_Development/Opinion/VirtuosoSustainability2022_Hero.jpg?tr=w-1200%2Cfo-auto')]">
+          <div class="absolute top-0 right-0 bottom-0 left-0 h-full w-full overflow-hidden bg-fixed bg-transparent-fourth-color">
             <div class="flex flex-col h-full items-center justify-center">
-              <div class="px-6 text-white text-left md:px-12">
+              <div class="px-6 text-second-color text-left md:px-12">
                 <h1 class="mt-6 mb-16 text-3xl font-bold tracking-tight md:text-4xl xl:text-5xl">
                   Plan Your Eco-Friendly Adventure <br />
                   <span className="text-base md:text-2xl xl:text-3xl font-normal">
@@ -59,40 +73,42 @@ const Hero = () => {
                   </span>
                 </h1>
               </div>
-              <form
-                onSubmit={(e) => handleSubmit(e)}
-                className="flex flex-col gap-6 md:flex-row items-center justify-center p-12 container mx-auto rounded-lg md:h-24 bg-[#7dafbfb3]"
-              >
-                <input
-                  class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
-                  type="text"
-                  name="destination"
-                  onChange={(e) => handleChange(e)}
-                  placeholder="Where are you going?"
-                />
-                <input
-                  class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
-                  type="number"
-                  name="price"
-                  onChange={(e) => handleChange(e)}
-                  placeholder="Enter your budget"
-                />
-                <input
-                  class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
-                  name="from"
-                  type="date"
-                  onChange={(e) => handleChange(e)}
-                />
-                <input
-                  class="shadow rounded py-2 px-3 text-gray-700 w-full md:w-1/4"
-                  name="to"
-                  type="date"
-                  onChange={(e) => handleChange(e)}
-                />
-                <button class="border-sky-900 border-2 hover:bg-white bg-sky-900 hover:text-sky-900 text-white font-bold py-2 px-4 rounded w-full md:w-1/4">
-                  Search
-                </button>
-              </form>
+              <div className="w-full px-10">
+                <form
+                  onSubmit={(e) => handleSubmit(e)}
+                  className="flex flex-col gap-6 md:flex-row items-center justify-center p-6 w-full container rounded-lg md:h-24 bg-transparent-third-color"
+                >
+                  <input
+                    class="shadow rounded py-2 px-3 bg-second-color text-third-color w-full md:w-1/4"
+                    type="text"
+                    name="destination"
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Where are you going?"
+                  />
+                  <input
+                    class="shadow rounded py-2 px-3 bg-second-color text-third-color w-full md:w-1/4"
+                    type="number"
+                    name="price"
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Enter your budget"
+                  />
+                  <input
+                    class="shadow rounded py-2 px-3 bg-second-color text-third-color w-full md:w-1/4"
+                    name="from"
+                    type="date"
+                    onChange={(e) => handleChange(e)}
+                  />
+                  <input
+                    class="shadow rounded py-2 px-3 bg-second-color text-third-color w-full md:w-1/4"
+                    name="to"
+                    type="date"
+                    onChange={(e) => handleChange(e)}
+                  />
+                  <button class="border-fourth-color border-2 hover:bg-second-color bg-fourth-color hover:text-fourth-color text-second-color font-bold py-2 px-4 rounded w-full md:w-1/4">
+                    Search
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>

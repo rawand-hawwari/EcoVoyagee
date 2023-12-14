@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const ProfileData = () => {
   const [user, setUser] = useState([]);
@@ -22,7 +23,9 @@ const ProfileData = () => {
   }
 
   useEffect(() => {
-    fetchData();
+    if (headers) {
+      fetchData();
+    }
   }, [headers]);
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,10 +36,23 @@ const ProfileData = () => {
   };
   const updateData = (e) => {
     if (userData || userData.length > 0) {
-      axios.put("http://localhost:3999/updateUserData", userData, {
-        headers: headers,
-      });
-      fetchData();
+      axios
+        .put("http://localhost:3999/updateUserData", userData, {
+          headers: headers,
+        })
+        .then((response) => {
+          setUser(response.data.updatedUser);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Data uploaded successfully.",
+            confirmButtonText: "OK",
+            customClass: {
+              confirmButton:
+                "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+            },
+          });
+        });
     }
   };
   return (
@@ -69,7 +85,7 @@ const ProfileData = () => {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  className={`w-6 h-6 ${!firstName && "text-sky-900"}`}
+                  className={`w-6 h-6 ${!firstName && "text-third-color"}`}
                 >
                   <path
                     stroke-linecap="round"
@@ -89,7 +105,7 @@ const ProfileData = () => {
                 }
                 onChange={(e) => handleChange(e)}
                 disabled={lastName}
-                className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
               />
               <button
                 type="button"
@@ -102,7 +118,7 @@ const ProfileData = () => {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  className={`w-6 h-6 ${!lastName && "text-sky-900"}`}
+                  className={`w-6 h-6 ${!lastName && "text-third-color"}`}
                 >
                   <path
                     stroke-linecap="round"
@@ -124,7 +140,7 @@ const ProfileData = () => {
               value={userData.length !== 0 ? userData.country : user.country}
               onChange={(e) => handleChange(e)}
               disabled={country}
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+              className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
             />
             <button
               type="button"
@@ -137,7 +153,7 @@ const ProfileData = () => {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                className={`w-6 h-6 ${!country && "text-sky-900"}`}
+                className={`w-6 h-6 ${!country && "text-third-color"}`}
               >
                 <path
                   stroke-linecap="round"
@@ -158,7 +174,7 @@ const ProfileData = () => {
               value={userData.length !== 0 ? userData.email : user.email}
               onChange={(e) => handleChange(e)}
               disabled={email}
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+              className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
             />
             <button
               type="button"
@@ -171,7 +187,7 @@ const ProfileData = () => {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                className={`w-6 h-6 ${!email && "text-sky-900"}`}
+                className={`w-6 h-6 ${!email && "text-third-color"}`}
               >
                 <path
                   stroke-linecap="round"
@@ -187,7 +203,7 @@ const ProfileData = () => {
 
           <button
             onClick={(e) => updateData(e)}
-            className="py-3 w-64 text-xl text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+            className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
           >
             Save Changes
           </button>

@@ -51,18 +51,18 @@ const DestinationDetails = () => {
           {destination && (
             <div className="flex flex-col gap-10">
               <div className="flex flex-wrap justify-between items-center">
-                <h1 className="text-sky-700 text-start text-3xl font-bold">
+                <h1 className="text-third-color text-start text-3xl font-bold">
                   {destination.title}
                 </h1>
                 <Link
                   to={`/flights?destination=${destination.destinations_id}`}
-                  className="border-sky-900 border-2 hover:bg-white bg-sky-900 hover:text-sky-900 text-white font-bold py-2 px-6 rounded"
+                  className="border-fourth-color border-2 hover:bg-second-color bg-fourth-color hover:text-fourth-color text-second-color font-bold py-2 px-6 rounded"
                 >
                   Book your flight
                 </Link>
               </div>
-              <h5 className="text-start text-xl">{destination.details}</h5>
-              <h5 className="text-start text-sky-700 text-2xl font-bold">
+              <h5 className="text-start text-xl text-Base-color">{destination.details}</h5>
+              <h5 className="text-start text-third-color text-2xl font-bold">
                 Location
               </h5>
               <iframe
@@ -76,7 +76,7 @@ const DestinationDetails = () => {
               />
               {filteredDestination && filteredDestination.length !== 0 ? (
                 <>
-                  <h5 className="text-start text-sky-700 text-2xl font-bold">
+                  <h5 className="text-start text-thord-color text-2xl font-bold text-third-color">
                     Other destinations in {destination.country}
                   </h5>
                   <div className="flex flex-col md:flex-row flex-wrap gap-3 justify-start items-center">
@@ -87,12 +87,12 @@ const DestinationDetails = () => {
                           to={`/destination/${item.destinations_id}`}
                         >
                           <article className="max-w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[410px] transform duration-500 hover:-translate-y-2 cursor-pointer group" style={{backgroundImage:`url(${item.destinationimage})`,backgroundSize: "cover",}}>
-                            <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
-                              <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
+                            <div className="text-start hover:bg-transparent-second-color bg-transparent-fourth-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
+                              <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
                                 {item.title}
                               </h1>
-                              <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                              <p className="my-3 py-3 opacity-0 max-h-[95px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
+                              <div className="w-16 h-2 bg-fourth-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                              <p className="my-3 py-3 opacity-0 max-h-[95px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
                                 {item.details}
                               </p>
                             </div>

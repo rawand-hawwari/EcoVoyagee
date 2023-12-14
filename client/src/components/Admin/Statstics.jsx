@@ -18,8 +18,8 @@ function CounterCard({ finalCount, title, icon }) {
   }, [finalCount]);
 
   return (
-    <div class="p-4 flex justify-between border border-sky-700 w-full rounded-xl md:w-1/4">
-      <div class="bg-clip-border rounded-xl bg-gradient-to-tr from-sky-700 to-sky-900 text-white shadow-sky-900/20 h-12 w-12 grid place-items-center">
+    <div class="p-4 flex justify-between border border-fourth-color w-full rounded-xl md:w-1/4">
+      <div class="bg-clip-border rounded-xl bg-gradient-to-tr from-fourth-color to-light-pink text-white shadow-sky-900/20 h-12 w-12 grid place-items-center">
         {icon}
       </div>
       <div className="text-right">

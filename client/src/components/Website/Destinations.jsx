@@ -8,6 +8,7 @@ const Destinations = () => {
   const [selectedType, setSelectedType] = useState("Select type");
   const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   // dropdown for destination type
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,6 +52,66 @@ const Destinations = () => {
     }
   }, [destinations]);
 
+  const destinationPerPage = 3;
+  const indexOfLastDestinations = currentPage * destinationPerPage;
+  const indexOfFirstDestinations = indexOfLastDestinations - destinationPerPage;
+  const currentDestinations = filteredPlaces.slice(
+    indexOfFirstDestinations,
+    indexOfLastDestinations
+  );
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 3;
+    const totalPages = Math.ceil(filteredPlaces.length / destinationPerPage);
+
+    if (totalPages > 2) {
+      let start = Math.max(
+        1,
+        Math.min(currentPage - 1, totalPages - maxPagesToShow + 1)
+      );
+      const end = Math.min(start + maxPagesToShow - 1, totalPages);
+      if (end === totalPages) {
+        start = totalPages - 2;
+      }
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    }
+    return pageNumbers;
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const handleSearch = (e) => {
     const searchQuery = e.target.value;
     if (searchQuery === "") {
@@ -82,16 +143,17 @@ const Destinations = () => {
       setFilteredPlaces(destinations);
     }
   }, [selectedType, searchQuery]);
+
   return (
     <div className="flex flex-col md:flex-row justify-center">
       <div className="">
         <div
           className={`${
             filterOpen ? "h-auto" : "h-16 overflow-hidden"
-          } md:overflow-visible md:h-auto my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
+          } md:overflow-visible md:h-auto my-16 mx-3 border border-transparent-third-color gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
         >
           <div className="w-full flex justify-between">
-            <h2 className="mb-3 text-start text-sky-700 text-xl font-bold">
+            <h2 className="mb-3 text-start text-Base-color text-xl font-bold">
               Filter
             </h2>
             <svg
@@ -143,7 +205,10 @@ const Destinations = () => {
               <line x1="15" y1="15" x2="21" y2="21" />
             </svg>
           </div>
-          <form class="flex items-center" onSubmit={(e)=>(e.preventDefault())}>
+          <form
+            class="flex items-center w-full md:w-auto"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <label for="simple-search" class="sr-only">
               Search
             </label>
@@ -152,13 +217,13 @@ const Destinations = () => {
                 type="text"
                 id="simple-search"
                 onChange={(e) => handleSearch(e)}
-                class="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
                 placeholder="Search branch name..."
               />
             </div>
             <button
               type="submit"
-              className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
             >
               <svg
                 class="w-4 h-4"
@@ -178,14 +243,15 @@ const Destinations = () => {
               <span class="sr-only">Search</span>
             </button>
           </form>
-          <hr className="my-6 hidden md:block" />
-          <div className="w-full">
-            <p className="mb-3 text-lg text-start">Destination type</p>
+          <div className="w-full mt-4">
+            <p className="mb-3 text-lg text-start text-Base-color">
+              Destination type
+            </p>
             <div className="relative inline-block text-left w-full">
               <div>
                 <button
                   type="button"
-                  className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                  className="inline-flex w-full justify-center gap-x-1.5 border border-transparent-third-color rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-Base-color shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-transparent-first-color"
                   id="menu-button"
                   aria-expanded={menuOpen}
                   aria-haspopup="true"
@@ -257,10 +323,10 @@ const Destinations = () => {
         </div>
       </div>
       <div className="my-16 mx-8">
-        <div className="flex flex-col gap-8">
-          {filteredPlaces.map((destination, id) => (
+        <div className="flex flex-col gap-8 h-[901.6px]">
+          {currentDestinations.map((destination, id) => (
             <div key={id}>
-              <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-sky-200 mx-auto max-w-3xl group transform duration-500 hover:-translate-y-1 mb-2">
+              <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl group transform duration-500 hover:-translate-y-1 mb-2">
                 <img
                   className="w-full sm:w-52 h-auto object-cover"
                   src={destination.destinationimage}
@@ -268,17 +334,17 @@ const Destinations = () => {
                 />
                 <div className="h-auto w-full">
                   <div className="p-5 text-start">
-                    <h1 className="text-xl font-semibold text-gray-800 mt-4">
+                    <h1 className="text-xl font-semibold text-Base-color mt-4">
                       {destination.title}
                     </h1>
-                    <p className="text-md overflow-hidden h-28 text-gray-400 mt-2 leading-relaxed">
+                    <p className="text-md overflow-hidden h-28 text-third-color mt-2 leading-relaxed">
                       {destination.details}
                     </p>
                   </div>
                   <div className="px-2">
                     <div className="sm:flex sm:justify-end">
                       <Link to={`/destination/${destination.destinations_id}`}>
-                        <button className="sm:mt-3 my-2 py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md">
+                        <button className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md">
                           Read more
                         </button>
                       </Link>
@@ -289,10 +355,39 @@ const Destinations = () => {
             </div>
           ))}
         </div>
+        <div className="m-5">
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="text-third-color"
+              variant="outlined"
+              size="sm"
+            >
+              Previous
+            </button>
+            <div>{renderPageNumbers()}</div>
+            <button
+              onClick={() =>
+                currentPage !== filteredPlaces.totalPages &&
+                paginate(currentPage + 1)
+              }
+              disabled={
+                currentPage ===
+                Math.ceil(filteredPlaces.length / destinationPerPage)
+              }
+              className="text-third-color"
+              variant="outlined"
+              size="sm"
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Destinations;
-// needs pagination and get all the data not just 3
+// needs pagination

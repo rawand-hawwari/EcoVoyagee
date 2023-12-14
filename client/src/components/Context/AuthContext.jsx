@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [headers, setHeaders] = useState(false);
+  const [headers, setHeaders] = useState(null);
 
   useEffect(() => {
     // Check if the token is present in cookies
@@ -34,14 +34,10 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
   };
 
-  const onLogin = (role) => {
-    // if (role) {
-    //   // setCookie("isAdmin", true, { path: "/" });
-    // } else {
-    //   setIsAdmin(false);
-    // }
+  const onLogin = (role, token) => {
+    setCookie("token", token, { path: "/" });
     setIsAdmin(role);
-    setCookie("isAdmin", role, { path: "/" });
+    setCookie("isAdmin", role);
   };
 
   const authContextValue = {

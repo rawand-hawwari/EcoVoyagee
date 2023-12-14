@@ -4,6 +4,8 @@ import axios from "axios";
 import logo from "../../assests/Images/logo.png";
 import Swal from "sweetalert2";
 import { useCookies } from "react-cookie";
+import { GoogleLogin } from "@react-oauth/google";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../Context/AuthContext";
 
 const Login = () => {
@@ -12,8 +14,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const { isAdmin, onLogin } = useAuth();
 
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const history = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -45,8 +45,14 @@ const Login = () => {
       // Assuming the API returns a token
       const token = response.data.token;
 
-      // Set the token in a cookie
-      setCookie("token", token, { path: "/" });
+      // set cookies
+      if (response.data.role_id === 2) {
+        onLogin(true, token);
+        history("/dashboard");
+      } else {
+        onLogin(false, token);
+        history(-1);
+      }
       setError("Sign-in successful");
       Swal.fire({
         icon: "success",
@@ -55,16 +61,10 @@ const Login = () => {
         confirmButtonText: "OK",
         customClass: {
           confirmButton:
-            "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
+            "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
         },
       });
-      if (response.data.role_id === 2) {
-        onLogin(true);
-        history("/dashboard");
-      } else {
-        onLogin(false);
-        history(-1);
-      }
+
       // Handle successful sign-in, e.g., redirect or show a success message
       // alert("Sign-in successful:", response.data);
       console.log("Sign-in successful:", response.data);
@@ -79,80 +79,96 @@ const Login = () => {
           confirmButtonText: "OK",
           customClass: {
             confirmButton:
-              "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
           },
         });
         setError("Sign-in failed. Email or password is invalid");
       }, 100);
     }
   };
-  const handleGoogle = () => {
-    // history('/');
-    window.location.href = "http://localhost:3999/auth/google";
-    axios
-      .get("http://localhost:3999/auth/google")
-      .then((response) => {
-        console.log(response.data);
-        const token = response.data.token;
-        console.log("token:" + token);
-        // Set the token in a cookie
-        setCookie("token", token, { path: "/" });
-        setError("Sign-in successful");
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "You have Signed in successfully.",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton:
-              "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-          },
-        });
-        // history("/");
-      })
-      .catch((error) => {
-        setTimeout(() => {
-          console.error("Sign-in error:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Sign-in failed. Something went wrong.",
-            confirmButtonText: "OK",
-            customClass: {
-              confirmButton:
-                "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-            },
-          });
-          setError("Sign-in failed. Email or password is invalid");
-        }, 100);
-        // Handle errors here
-        console.error("Error:", error);
-      });
-  };
-  // async function handleSubmit(e) {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:5000/Login",
-  //       formData
-  //     );
-  //     history("/");
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // }
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => console.log(codeResponse),
+    onError: (error) => errorMessage(error),
+  });
+
+  const handleGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => console.log(codeResponse),
+    onError: (error) => errorMessage(error),
+  });
+  // () => {
+  //   googleLogin;
+  //   // history('/');
+  //   // window.location.href = "http://localhost:3999/auth/google";
+  //   // axios
+  //   //   .get("http://localhost:3999/auth/google")
+  //   //   .then((response) => {
+  //   //     console.log(response.data);
+  //   //     const token = response.data.token;
+  //   //     console.log("token:" + token);
+  //   //     // Set the token in a cookie
+  //   //     setCookie("token", token, { path: "/" });
+  //   //     setError("Sign-in successful");
+  //   //     Swal.fire({
+  //   //       icon: "success",
+  //   //       title: "Success!",
+  //   //       text: "You have Signed in successfully.",
+  //   //       confirmButtonText: "OK",
+  //   //       customClass: {
+  //   //         confirmButton:
+  //   //           "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+  //   //       },
+  //   //     });
+  //   //     // history("/");
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     setTimeout(() => {
+  //   //       console.error("Sign-in error:", error);
+  //   //       Swal.fire({
+  //   //         icon: "error",
+  //   //         title: "Oops...",
+  //   //         text: "Sign-in failed. Something went wrong.",
+  //   //         confirmButtonText: "OK",
+  //   //         customClass: {
+  //   //           confirmButton:
+  //   //             "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+  //   //         },
+  //   //       });
+  //   //       setError("Sign-in failed. Email or password is invalid");
+  //   //     }, 100);
+  //   //     // Handle errors here
+  //   //     console.error("Error:", error);
+  //   //   });
+  // };
+
+  const errorMessage = (error) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Sign-in failed. Something went wrong.",
+      confirmButtonText: "OK",
+      customClass: {
+        confirmButton:
+          "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+      },
+    });
+  };
   return (
     <div className="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
       <form action="" onSubmit={(e) => handleSubmit(e)}>
         <div className="min-h-screen flex justify-center items-center">
-          <div className="py-8 px-12 bg-white rounded-2xl shadow-xl z-20">
+          <div className="py-8 px-12 bg-second-color rounded-2xl shadow-xl z-20">
             <div className="flex flex-col justify-center items-center">
-              <img className=" w-16" src={logo} alt="EcoVoyage logo" />
-              <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+            <div className="flex items-center gap-5 mb-5">
+                <img className=" w-16" src={logo} alt="EcoVoyage logo" />
+                <h1 className="text-5xl font-bold text-fourth-color font-grape-nuts">
+                EcoVoyage
+              </h1>
+              </div>
+              <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                 Log In
               </h1>
-              <p className="w-80 text-center text-sm mb-8 font-semibold text-sky-700 tracking-wide cursor-pointer">
+              <p className="w-80 text-center text-sm mb-8 font-semibold text-third-color tracking-wide cursor-pointer">
                 Unlock New Adventures with Your Travel Account
               </p>
             </div>
@@ -162,17 +178,17 @@ const Login = () => {
                 name="email"
                 placeholder="Email Addres"
                 onChange={handleChange}
-                className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
               />
               <input
                 type="password"
                 name="password"
                 placeholder="Password"
                 onChange={handleChange}
-                className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
               />
               <Link to={"/"}>
-                <p className="mt-4 text-sm text-sky-900 cursor-pointer text-start">
+                <p className="mt-4 text-sm text-third-color cursor-pointer text-start">
                   {" "}
                   Forgot yo password?
                 </p>
@@ -182,41 +198,49 @@ const Login = () => {
             <div className="text-center mt-6">
               <button
                 type="submit"
-                className="py-3 w-64 text-xl text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+                className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
               >
                 Log In
               </button>
-              <p className="mt-4 text-sm text-sky-900">
+              <p className="mt-4 text-sm text-Base-color">
                 Or login with: <br />
-                <button
-                  onClick={() => handleGoogle()}
-                  className="p-3 mt-2 text-xl text-white hover:text-sky-900 border-2 hover:bg-white bg-gray-200 rounded-2xl"
-                >
-                  <svg
-                    className="text-sky-700 w-4 h-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                <br />
+                <div class="mx-10 px-6 sm:px-0 max-w-sm">
+                  <button
+                    type="button"
+                    onClick={() => handleGoogle()}
+                    class="text-third-color w-full border border-third-color/20 bg-third-color/20 hover:bg-second-color font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-around mr-2 mb-2"
                   >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M17.788 5.108A9 9 0 1021 12h-8" />
-                  </svg>
-                </button>
+                    <svg
+                      class="mr-2 -ml-1 w-4 h-4"
+                      aria-hidden="true"
+                      focusable="false"
+                      data-prefix="fab"
+                      data-icon="google"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 488 512"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                      ></path>
+                    </svg>
+                    Sign up with Google<div></div>
+                  </button>
+                </div>
+                {/* <GoogleLogin onSuccess={handleGoogle} onError={errorMessage} /> */}
               </p>
-              <p className="mt-4 text-sm text-sky-900">
+              <p className="mt-4 text-sm text-Base-color">
                 Don't Have An Account?{" "}
                 <Link to={"/signup"}>
-                  <span className="underline cursor-pointer"> Sign Up</span>
+                  <span className="underline cursor-pointer text-fourth-color">
+                    {" "}
+                    Sign Up
+                  </span>
                 </Link>
               </p>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+              <p className="text-sm font-light text-gray-500">
                 <Link
                   to="/"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"

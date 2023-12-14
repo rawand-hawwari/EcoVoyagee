@@ -23,6 +23,8 @@ import AddDestination from "./Forms/AddDestination";
 import UpdateDestination from "./Forms/UpdateDestination";
 import { useCookies } from "react-cookie";
 import AddActivity from "./Forms/AddActivity";
+import Contact from "./Tables/Contact";
+import Profile from "../Users/Profile";
 
 const AdminAccount = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -54,6 +56,9 @@ const AdminAccount = () => {
         <div className={`${page === "dashboard" ? "block" : "hidden"}`}>
           <Dashboard />
         </div>
+        <div className={`${page === "profile" ? "block" : "hidden"}`}>
+          <Profile />
+        </div>
         <div className={`${page === "users" ? "block" : "hidden"} w-3/4 py-5`}>
           <AllUsers />
         </div>
@@ -79,6 +84,9 @@ const AdminAccount = () => {
         </div>
         <div className={`${page === "flights" ? "block" : "hidden"} w-3/4 py-5`}>
           <AllFlights />
+        </div>
+        <div className={`${page === "messages" ? "block" : "hidden"} w-3/4 py-5`}>
+          <Contact />
         </div>
 
         {/* crud */}

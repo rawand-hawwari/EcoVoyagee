@@ -18,123 +18,104 @@ import { useAuth } from "../../Context/AuthContext";
 import { usePage } from "../../Context/SelectedPageContext";
 
 const Contact = () => {
-  const [flights, setFlights] = useState([]);
-  const [filteredFlights, setFilteredFlights] = useState(flights);
+  const [messages, setMessages] = useState([]);
+  const [filteredMsgs, setFilteredMsgs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [destination, setDestination] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const { headers } = useAuth();
-  const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
-  const flightsPerPage = 3;
+  //   const [destination, setDestination] = useState("");
+  //   const [currentPage, setCurrentPage] = useState(1);
+  //   const { headers } = useAuth();
+    const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
+  //   const flightsPerPage = 3;
 
-  const TABLE_HEAD = [
-    "Number",
-    "Destination",
-    "Depart",
-    "Return",
-    "Airport",
-    "Cost",
-    "",
-  ];
+  const TABLE_HEAD = ["Number", "From", "Subject", ""];
   useEffect(() => {
     axios
-      .get(`http://localhost:3999/getFlights`)
+      .get(`http://localhost:3999/getAllContact`)
       .then((response) => {
-        // Handle the response data here
-        let newData = response.data.map((data) => ({
-          ...data,
-          depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
-          return: new Date(data.return_date).toLocaleDateString("en-GB"),
-        }));
-        axios.get(`http://localhost:3999/getDestinations`).then((response) => {
-          setDestination(response.data);
-        });
-        setFlights(newData);
-        setFilteredFlights(newData);
-        // setTypes(response.data.destinations_type);
+        setMessages(response.data);
+        setFilteredMsgs(response.data);
       })
       .catch((error) => {
-        // Handle errors here
         console.error("Error:", error);
       });
   }, []);
 
-  const indexOfLastUser = currentPage * flightsPerPage;
-  const indexOfFirstUser = indexOfLastUser - flightsPerPage;
-  const currentFlights = filteredFlights.slice(
-    indexOfFirstUser,
-    indexOfLastUser
-  );
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  //   const indexOfLastUser = currentPage * flightsPerPage;
+  //   const indexOfFirstUser = indexOfLastUser - flightsPerPage;
+  //   const currentFlights = filteredFlights.slice(
+  //     indexOfFirstUser,
+  //     indexOfLastUser
+  //   );
+  //   const paginate = (pageNumber) => {
+  //     setCurrentPage(pageNumber);
+  //   };
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery === "") {
-      setFilteredFlights(flights);
+      setFilteredMsgs(messages);
     } else {
-      setFilteredFlights(
-        flights.filter(
-          (flight) =>
-            flight.destination
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            flight.operatedby.toLowerCase().includes(searchQuery.toLowerCase())
+      setFilteredMsgs(
+        messages.filter(
+          (msg) =>
+            msg.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            msg.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            msg.email.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
   };
-  const handleEdit = (id) => {
-    console.log(id);
-    onSelectedId(id);
-    onSelectedPage("updateFlight");
-  };
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .put(`http://localhost:3999/softDeleteFlight/${id}`, null, {
-            headers: headers,
-          })
-          .then((response) => {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your file has been deleted.",
-              icon: "success",
-            });
-          })
-          .catch((error) => {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong with deleting the user.",
-              confirmButtonText: "OK",
-              customClass: {
-                confirmButton:
-                  "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-              },
-            });
-          });
-      }
-    });
-  };
+  //   const handleEdit = (id) => {
+  //     console.log(id);
+  //     onSelectedId(id);
+  //     onSelectedPage("updateFlight");
+  //   };
+  //   const handleDelete = (id) => {
+  //     Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "You won't be able to revert this!",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         axios
+  //           .put(`http://localhost:3999/softDeleteFlight/${id}`, null, {
+  //             headers: headers,
+  //           })
+  //           .then((response) => {
+  //             Swal.fire({
+  //               title: "Deleted!",
+  //               text: "Your file has been deleted.",
+  //               icon: "success",
+  //             });
+  //           })
+  //           .catch((error) => {
+  //             Swal.fire({
+  //               icon: "error",
+  //               title: "Oops...",
+  //               text: "Something went wrong with deleting the user.",
+  //               confirmButtonText: "OK",
+  //               customClass: {
+  //                 confirmButton:
+  //                   "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
+  //               },
+  //             });
+  //           });
+  //       }
+  //     });
+  //   };
   return (
     <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-sky-700">
       <h1 className="text-sky-900 text-start mt-5 mx-5 text-lg font-bold">
-        Flights
+        Messages
       </h1>
       <hr className="text-sky-700" />
       <CardHeader floated={false} shadow={false} className="rounded-none mt-0">
         <div className="flex items-center justify-between gap-8 m-4">
-          <form className="w-full lg:w-1/3" onSubmit={() => handleSearch()}>
+          {/* search */}
+          <form className="w-full lg:w-1/3" onSubmit={(e) => handleSearch(e)}>
             <label
               for="default-search"
               class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -178,32 +159,9 @@ const Contact = () => {
             <Button
               variant="outlined"
               size="sm"
-              onClick={() => onSelectedPage("flights")}
+              onClick={() => onSelectedPage("messages")}
             >
               view all
-            </Button>
-            <Button
-              className="flex items-center gap-3 border border-sky-900 bg-sky-900 hover:bg-white hover:text-sky-900"
-              size="sm"
-              onClick={() => {
-                onSelectedPage("addFlight");
-              }}
-            >
-              <svg
-                class="w-4 h-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>{" "}
-              Add new
             </Button>
           </div>
         </div>
@@ -229,18 +187,18 @@ const Contact = () => {
             </tr>
           </thead>
           <tbody>
-            {currentFlights.map((flight, index) => {
+            {filteredMsgs.map((message, index) => {
               const isLast =
-                (index === filteredFlights.length) === 0
-                  ? flights.length - 1
-                  : filteredFlights.length - 1;
+                (index === filteredMsgs.length) === 0
+                  ? messages.length - 1
+                  : filteredMsgs.length - 1;
               const classes = isLast
                 ? "p-4"
                 : "p-4 border-b border-blue-gray-50";
 
               return (
                 <tr
-                  key={flight.flights_id}
+                  key={index}
                   className={index % 2 !== 0 ? "bg-white" : "bg-gray-200"}
                 >
                   <td className={classes}>
@@ -251,7 +209,7 @@ const Contact = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {flight.flights_id}
+                          {index}
                         </Typography>
                       </div>
                     </div>
@@ -264,12 +222,7 @@ const Contact = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {destination &&
-                            destination.map(
-                              (item) =>
-                                item.destinations_id ===
-                                  flight.destinations_id && `${item.title}`
-                            )}
+                          {message.fullname}
                         </Typography>
                       </div>
                     </div>
@@ -281,114 +234,14 @@ const Contact = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        Date: {flight.depart}
-                      </Typography>
-                      <div className="flex gap-2">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          Time:{" "}
-                          {flight.depart_time && flight.return_time.boarding}
-                        </Typography>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                          />
-                        </svg>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {flight.depart_time && flight.return_time.arrival}
-                        </Typography>
-                      </div>
-                    </div>
-                  </td>
-                  <td className={classes}>
-                    <div>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        Date: {flight.return}
-                      </Typography>
-                      <div className="flex gap-2">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          Time:{" "}
-                          {flight.return_time && flight.return_time.boarding}
-                        </Typography>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                          />
-                        </svg>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {flight.return_time && flight.return_time.arrival}
-                        </Typography>
-                      </div>
-                    </div>
-                  </td>
-                  <td className={classes}>
-                    <div className="w-max">
-                      <img
-                        src={flight.imagecomp}
-                        alt="Airline"
-                        className="h-10 w-auto"
-                      />
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {flight.operatedby}
-                      </Typography>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="w-max">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {flight.best} JOD
+                        {message.subject}
                       </Typography>
                     </div>
                   </td>
                   <td className={`${classes} text-end`}>
                     <Tooltip content="Edit flight">
                       <IconButton
-                        onClick={() => handleEdit(flight.flights_id)}
+                        // onClick={() => handleEdit(flight.flights_id)}
                         variant="text"
                       >
                         <PencilIcon className="h-4 w-4 text-sky-900" />
@@ -396,7 +249,7 @@ const Contact = () => {
                     </Tooltip>
                     <Tooltip content="Delete flight">
                       <IconButton
-                        onClick={() => handleDelete(flight.flights_id)}
+                        // onClick={() => handleDelete(flight.flights_id)}
                         variant="text"
                       >
                         <svg
@@ -423,14 +276,14 @@ const Contact = () => {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <Typography variant="small" color="blue-gray" className="font-normal">
+        {/* <Typography variant="small" color="blue-gray" className="font-normal">
           Page {currentPage} of{" "}
           {Math.ceil(
-            filteredFlights.length === 0
-              ? flights.length === 0
+            filteredMsgs.length === 0
+              ? messages.length === 0
                 ? 1
-                : flights.length / flightsPerPage
-              : filteredFlights.length / flightsPerPage
+                : messages.length / flightsPerPage
+              : filteredMsgs.length / flightsPerPage
           )}
         </Typography>
         <div className="flex gap-2">
@@ -466,7 +319,7 @@ const Contact = () => {
           >
             Next
           </Button>
-        </div>
+        </div> */}
       </CardFooter>
     </Card>
   );

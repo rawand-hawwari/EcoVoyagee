@@ -36,10 +36,10 @@ const Testimonials = () => {
 
   return (
     <div>
-      <div className="container my-24 mx-auto md:px-6">
+      <div className="container mt-24 mx-auto md:px-6">
         {/* <!-- Section: Design Block --> */}
         <section className="mb-32 text-center">
-          <h1 className="text-sky-700 text-4xl md:text-start md:mx-32 font-bold py-10">
+          <h1 className="text-third-color text-4xl md:text-start md:mx-32 font-bold py-10">
             Testimonials
           </h1>
           <div
@@ -58,17 +58,17 @@ const Testimonials = () => {
                   data-te-carousel-item
                 >
                   <div className="flex flex-wrap justify-center">
-                    <div className="w-full text-start shrink-0 grow-0 basis-auto px-10 lg:w-8/12 py-4 rounded-xl bg-[#0c4a6e69]">
-                      <h5 className=" text-lg text-sky-900 font-bold">
+                    <div className="w-full text-start shrink-0 grow-0 basis-auto px-10 lg:w-8/12 py-4 rounded-xl bg-transparent-first-color">
+                      <h5 className=" text-lg text-Base-color font-bold">
                         {testimonial.fullname}
                       </h5>
 
                       <div className="flex items-center">
-                        <p className="=text-sm mb-3 text-sky-900 dark:text-white">
+                        <p className="=text-sm mb-3 text-third-color">
                           {testimonial.email}
                         </p>
                       </div>
-                      <p className="mb-6 text-gray-700 dark:text-neutral-300">
+                      <p className="mb-6 text-third-color">
                         {testimonial.message}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@ const Testimonials = () => {
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
-                  className="text-neutral-600 dark:text-neutral-300"
+                  className="text-neutral-600"
                 >
                   <path
                     fill="currentColor"
@@ -122,7 +122,7 @@ const Testimonials = () => {
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
-                  className="text-neutral-600 dark:text-neutral-300"
+                  className="text-neutral-600"
                 >
                   <path
                     fill="currentColor"
@@ -136,77 +136,9 @@ const Testimonials = () => {
             </button>
           </div>
         </section>
-        {/* <!-- Section: Design Block --> */}
       </div>
     </div>
   );
 };
 
 export default Testimonials;
-
-// function Testimonials() {
-//   const [activeItem, setActiveItem] = useState(0);
-//   const [testimonials, setTestimonials] = useState([]);
-//   const destinations = [
-//     /* your destination data */
-//   ];
-
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:5000/destinations?_limit=3")
-//       .then((response) => {
-//         // Handle the response data here
-//         setTestimonials(response.data);
-//       })
-//       .catch((error) => {
-//         // Handle errors here
-//         console.error("Error:", error);
-//       });
-//   }, []);
-
-//   const handleNext = () => {
-//     if (activeItem < destinations.length - 1) {
-//       setActiveItem(activeItem + 1);
-//     }
-//   };
-
-//   const handlePrevious = () => {
-//     if (activeItem > 0) {
-//       setActiveItem(activeItem - 1);
-//     }
-//   };
-
-//   return (
-//     <div className="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
-//       {testimonials.map((destination, id) => (
-//         <div
-//           key={id}
-//           className={`relative float-left -mr-[100%] hidden w-full transition-transform duration-[600ms] ease-in-out motion-reduce:transition-none ${
-//             activeItem === id ? "block" : "hidden"
-//           }`}
-//           data-te-carousel-item
-//           style={{ backfaceVisibility: "hidden" }}
-//         >
-//           {/* Your destination content here */}
-//         </div>
-//       ))}
-
-//       <button
-//         onClick={handlePrevious}
-//         className="absolute top-0 bottom-0 left-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
-//         type="button"
-//       >
-//         {/* Previous button content */}
-//       </button>
-
-//       <button
-//         onClick={handleNext}
-//         className="absolute top-0 bottom-0 right-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-white opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-white hover:no-underline hover:opacity-90 hover:outline-none focus:text-white focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
-//         type="button"
-//       >
-//         {/* Next button content */}
-//       </button>
-//     </div>
-//   );
-// }
-// // export default Testimonials;

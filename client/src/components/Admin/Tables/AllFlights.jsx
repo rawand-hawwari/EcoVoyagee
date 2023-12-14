@@ -166,13 +166,6 @@ const AllFlights = () => {
           </form>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
             <Button
-              variant="outlined"
-              size="sm"
-              onClick={() => onSelectedPage("flights")}
-            >
-              view all
-            </Button>
-            <Button
               className="flex items-center gap-3 border border-sky-900 bg-sky-900 hover:bg-white hover:text-sky-900"
               size="sm"
               onClick={() => {

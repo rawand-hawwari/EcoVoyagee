@@ -22,36 +22,58 @@ const UpdateFlight = ({ id }) => {
     textAlign: "start",
   };
   useEffect(() => {
+    // fetch flight data
+    let newData = [];
     axios.get(`http://localhost:3999/getFlightsByID/${id}`).then((response) => {
-      let newData = response.data.map((data) => ({
-        ...data,
-        depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
-        return: new Date(data.return_date).toLocaleDateString("en-GB"),
-      }));
-      setFiltered(newData);
-      setDepartTime(
-        newData.depart_time && {
+      newData = response.data[0];
+      // newData = {
+      //   ...newData,
+      //   depart: new Date(newData.depart_date).toLocaleDateString(
+      //     "en-GB"
+      //   ),
+      //   return: new Date(newData.return_date).toLocaleDateString(
+      //     "en-GB"
+      //   ),
+      // };
+      if (newData) {
+        newData.depart = new Date(newData.depart_date)
+          .toISOString()
+          .split("T")[0];
+        newData.return = new Date(newData.return_date)
+          .toISOString()
+          .split("T")[0];
+        const [hoursStr, minutesStr] = newData.average.split(" ");
+        setTime({
+          hours: parseInt(hoursStr),
+          minutes: parseInt(minutesStr),
+        });
+        setDepartTime({
           boarding: newData.depart_time.boarding,
           arrival: newData.depart_time.arrival,
-        }
-      );
-      setReturnTime(
-        newData.rturn_time && {
+        });
+        setReturnTime({
           boarding: newData.return_time.boarding,
           arrival: newData.return_time.arrival,
-        }
-      );
+        });
+      }
+      // setFiltered(newData);
+      setFormData(newData);
     });
+
+    // fetch destinations
     axios.get("http://localhost:3999/getDestinations").then((response) => {
       setDestinations(response.data);
       response.data.map((place) => {
-        if (place.destinations_id == filtered.destinations_id) {
-          setTitle(place.title);
+        if (newData) {
+          if (place.destinations_id == newData.destinations_id) {
+            setTitle(place.title);
+          }
         }
       });
     });
-    setFormData(filtered[0]);
   }, [id]);
+
+  // handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "image") {
@@ -96,6 +118,8 @@ const UpdateFlight = ({ id }) => {
       });
     }
   };
+
+  // handle destination choose
   const handleDestination = (id, title) => {
     setFormData({
       ...formData,
@@ -103,9 +127,16 @@ const UpdateFlight = ({ id }) => {
     });
     setTitle(title);
   };
+
+  // handle form submit
   const handleSubmit = (e) => {
-    console.log(formData);
     e.preventDefault();
+    let dataToSend = {
+      ...formData,
+      average: `${time.hours}h ${time.minutes}m`,
+      depart_time: departTime,
+      return_time: returnTime,
+    };
     axios
       .post(`http://localhost:3999/updateFlight/${id}`, formData, {
         headers: headers,
@@ -138,7 +169,6 @@ const UpdateFlight = ({ id }) => {
     setFormData([]);
     onSelectedPage("dashboard");
   };
-  console.log(formData);
 
   return (
     <div>
@@ -178,11 +208,7 @@ const UpdateFlight = ({ id }) => {
                   </div>
                   <div>
                     <Dropdown
-                      label={
-                        formData && formData.destinations_id
-                          ? title
-                          : "Select Destination"
-                      }
+                      label={title ? title : "Select Destination"}
                       placement="bottom"
                       style={dropdownStyles}
                     >
@@ -276,6 +302,57 @@ const UpdateFlight = ({ id }) => {
                   </div>
                 </div>
 
+                {/* seats */}
+                <div className="text-start">
+                  <h1 className="text-sm font-medium pb-3 text-sky-900">
+                    Flight Seats
+                  </h1>
+                  <div className="flex flex-wrap gap-5 w-full">
+                    <div>
+                      <label className="text-sm font-medium text-start text-sky-900">
+                        Economy Class
+                      </label>
+                      <input
+                        type="number"
+                        name="economy"
+                        value={formData&&formData.economy}
+                        placeholder="Enter Airline"
+                        onChange={(e) => handleChange(e)}
+                        required
+                        className="block text-sm py-3 px-4 my-2 rounded-lg border border-[#0c4a6e69] outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-start text-sky-900">
+                        Business Class
+                      </label>
+                      <input
+                        type="number"
+                        name="business"
+                        value={formData&&formData.business}
+                        placeholder="Enter Airline"
+                        onChange={(e) => handleChange(e)}
+                        required
+                        className="block text-sm py-3 px-4 my-2 rounded-lg border border-[#0c4a6e69] outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-start text-sky-900">
+                        First Class
+                      </label>
+                      <input
+                        type="number"
+                        name="first"
+                        value={formData&&formData.first}
+                        placeholder="Enter Airline"
+                        onChange={(e) => handleChange(e)}
+                        required
+                        className="block text-sm py-3 px-4 my-2 rounded-lg border border-[#0c4a6e69] outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 {/* depart */}
                 <div className="text-start">
                   <label className="block text-sm font-medium text-gray-700">
@@ -286,7 +363,10 @@ const UpdateFlight = ({ id }) => {
                       <input
                         name="depart_date"
                         value={formData && formData.depart}
-                        onChange={(e) => handleChange(e)}
+                        onChange={(e) => {
+                          formData.depart = e.target.value;
+                          handleChange(e);
+                        }}
                         class="shadow rounded my-2 h-auto py-2 px-3 text-gray-700 w-full"
                         type="date"
                       />
@@ -323,8 +403,11 @@ const UpdateFlight = ({ id }) => {
                     <div>
                       <input
                         name="return_date"
-                        value={formData && formData.depart}
-                        onChange={(e) => handleChange(e)}
+                        value={formData && formData.return}
+                        onChange={(e) => {
+                          formData.return = e.target.value;
+                          handleChange(e);
+                        }}
                         class="shadow rounded py-2 my-2 px-3 text-gray-700 w-full"
                         type="date"
                       />

@@ -22,17 +22,18 @@ import Profile from "./components/Users/Profile";
 import { useState } from "react";
 import ActivityDetails from "./components/Website/ActivityDetails";
 import { useAuth } from "./components/Context/AuthContext";
+import Rooms from "./components/Website/Rooms";
 
 function App() {
   // const pathname = window.location.pathname;
   // const [spaces, setSpaces] = useState("pt-28");
   const {isAdmin} = useAuth();
   return (
-    <div className="App">
+    <div className="App bg-second-color">
       <Router>
 
         <Header />
-        <div className="h-full" id="root">
+        <div className="min-h-screen" id="root">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/destinations" element={<Destinations />} />
@@ -46,6 +47,7 @@ function App() {
               element={<AccommodationDetails />}
             />
             <Route path="/package/:id" element={<PackageDetails />} />
+            <Route path="/rooms/:id" element={<Rooms />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/about" element={<AboutUs />} />

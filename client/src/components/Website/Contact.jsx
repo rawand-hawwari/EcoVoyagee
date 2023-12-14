@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const Contact = () => {
   const [firstName, setFirstName] = useState("");
@@ -11,6 +11,11 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  // handle form change
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "first_name" || name === "last_name") {
@@ -26,15 +31,16 @@ const Contact = () => {
       });
     }
   };
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  async function handleSubmit(e){
+
+  // handle form submit
+  async function handleSubmit(e) {
     e.preventDefault();
-    let contactData= {
+    let contactData = {
       fullname: `${firstName} ${lastName}`,
       email: formData.email,
-      subject:formData.subject,
+      subject: formData.subject,
       message: formData.message,
-    }
+    };
     try {
       const response = await axios.post(
         `http://localhost:3999/sendEmailContact`,
@@ -45,23 +51,35 @@ const Contact = () => {
         subject: "",
         message: "",
       });
-      setFirstName('');
-      setlastName('');
+      setFirstName("");
+      setlastName("");
       Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Your message has been successfully sent.',
-        confirmButtonText: 'OK',
+        icon: "success",
+        title: "Success!",
+        text: "Your message has been successfully sent.",
+        confirmButtonText: "OK",
         customClass: {
-          confirmButton: 'bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded',
-        }
+          confirmButton:
+            "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+        },
       });
     } catch (error) {
-      console.error("Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+        confirmButtonText: "OK",
+        customClass: {
+          confirmButton:
+            "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+        },
+      });
     }
-  };
+  }
+
   return (
     <div className="grid md:grid-cols-2">
+      {/* side image */}
       <div className="mb-4 md:mb-0">
         <img
           className="brightness-150 w-full object-cover md:object-contain h-96 md:h-screen"
@@ -69,19 +87,25 @@ const Contact = () => {
           alt="background"
         />
       </div>
+
+      {/* contact form */}
       <div className="container md:flex md:flex-col md:justify-center">
         <form action="" onSubmit={handleSubmit}>
           <div className="min-h-screen flex justify-center items-start md:items-center">
             <div className="py-12 px-12 w-full">
+              {/* header */}
               <div className="flex flex-col justify-center">
-                <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+                <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                   Contact Us
                 </h1>
-                <p className="w-80 self-center text-center text-sm mb-8 font-semibold text-sky-700 tracking-wide cursor-pointer">
+                <p className="w-80 self-center text-center text-sm mb-8 font-semibold text-third-color tracking-wide cursor-pointer">
                   We'd love to hear from you!
                 </p>
               </div>
+
+              {/* form inputs */}
               <div className="space-y-4">
+                {/* name */}
                 <div className="flex space-x-2">
                   <input
                     type="text"
@@ -102,6 +126,7 @@ const Contact = () => {
                     className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                   />
                 </div>
+                {/* email */}
                 <input
                   type="email"
                   name="email"
@@ -111,6 +136,7 @@ const Contact = () => {
                   onChange={handleChange}
                   className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                 />
+                {/* subject */}
                 <input
                   type="text"
                   name="subject"
@@ -120,6 +146,7 @@ const Contact = () => {
                   onChange={handleChange}
                   className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                 />
+                {/* message */}
                 <textarea
                   id="message"
                   name="message"
@@ -131,10 +158,12 @@ const Contact = () => {
                   onChange={handleChange}
                 ></textarea>
               </div>
+
+              {/* submit button */}
               <div className="text-center mt-6">
                 <button
                   type="submit"
-                  className="py-3 w-64 text-xl text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+                  className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
                 >
                   Send Message
                 </button>

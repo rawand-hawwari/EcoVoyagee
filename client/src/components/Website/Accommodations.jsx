@@ -4,9 +4,12 @@ import axios from "axios";
 
 const Accommodations = () => {
   const [accommodations, setAccommodations] = useState([]);
+  const [filteredAccommodations, setFilteredAccommodations] = useState([]);
   const [types, setTypes] = useState(null);
   const [selectedType, setSelectedType] = useState("Select type");
   const [selected, setSelected] = useState("Select");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchPrice, setSearchPrice] = useState("");
 
   // dropdown for accommodations type
   const [typeMenuOpen, setTypeMenuOpen] = useState(false);
@@ -34,6 +37,7 @@ const Accommodations = () => {
       .then((response) => {
         // Handle the response data here
         setAccommodations(response.data);
+        setFilteredAccommodations(response.data);
         // setTypes(response.data.destinations_type);
       })
       .catch((error) => {
@@ -56,17 +60,129 @@ const Accommodations = () => {
     }
   }, [accommodations]);
 
+  const accommodationPerPage = 3;
+  const indexOfLastAccommodation = currentPage * accommodationPerPage;
+  const indexOfFirstAccommodation =
+    indexOfLastAccommodation - accommodationPerPage;
+  const currentAccommodations = filteredAccommodations.slice(
+    indexOfFirstAccommodation,
+    indexOfLastAccommodation
+  );
+  const totalPages = Math.ceil(
+    filteredAccommodations.length / accommodationPerPage
+  );
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 3;
+    if (totalPages > 2) {
+      let start = Math.max(
+        1,
+        Math.min(currentPage - 1, totalPages - maxPagesToShow + 1)
+      );
+      const end = Math.min(start + maxPagesToShow - 1, totalPages);
+      if (end === totalPages) {
+        start = totalPages - 2;
+      }
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    }
+    return pageNumbers;
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // filters
+  const handleSearch = (e) => {
+    const searchQuery = e.target.value;
+    if (searchQuery === "") {
+      setFilteredAccommodations(accommodations);
+    } else {
+      setFilteredAccommodations(
+        accommodations.filter(
+          (accommodation) =>
+            accommodation.title
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            accommodation.location
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+  };
+  const handlePriceSearch = (e) => {
+    e.preventDefault();
+    if (searchPrice != "") {
+      setFilteredAccommodations(
+        accommodations.filter((accommodation) => accommodation.pricing <= searchPrice)
+      );
+    } else {
+      setFilteredAccommodations(accommodations);
+    }
+  };
+  const handleSelectRating = (rating) => {
+    if (rating == 0) {
+      setFilteredAccommodations(accommodations);
+    } else {
+      setFilteredAccommodations(
+        accommodations.filter(
+          (accommodation) => Math.floor(accommodation.rating) === rating
+        )
+      );
+    }
+  };
+  const handleSelectType = (type) => {
+    if (type === "select") {
+      setFilteredAccommodations(accommodations);
+    } else {
+      setFilteredAccommodations(
+        accommodations.filter((accommodation) => accommodation.type === type)
+      );
+    }
+  };
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center">
+        {/* filtration */}
         <div className="">
           <div
             className={`${
               filterOpen ? "h-auto" : "h-16 overflow-hidden"
-            } md:overflow-visible md:h-auto my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
+            } md:overflow-visible md:h-auto border-transparent-third-color my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
           >
             <div className="w-full flex justify-between">
-              <h2 className="mb-3 text-start text-sky-700 text-xl font-bold">
+              <h2 className="mb-3 text-start text-Base-color text-xl font-bold">
                 Filter
               </h2>
               <svg
@@ -122,21 +238,67 @@ const Accommodations = () => {
                 <line x1="15" y1="15" x2="21" y2="21" />
               </svg>
             </div>
-            <form class="flex items-center">
+            {/* search */}
+            <form
+              class="flex items-center w-full md:w-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <label for="simple-search" class="sr-only">
+                Search
+              </label>
+              <div class="relative w-full">
+                <input
+                  type="text"
+                  id="simple-search"
+                  onChange={(e) => handleSearch(e)}
+                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
+                  placeholder="Search branch name..."
+                />
+              </div>
+              <button
+                type="submit"
+                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+              >
+                <svg
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+                <span class="sr-only">Search</span>
+              </button>
+            </form>
+            {/* price filteration */}
+            <div className="w-full">
+              <p className="mb-3 text-lg text-start">Price</p>
+              <form
+                class="flex items-center"
+                onSubmit={(e) => handlePriceSearch(e)}
+              >
                 <label for="simple-search" class="sr-only">
                   Search
                 </label>
                 <div class="relative w-full">
                   <input
-                    type="text"
-                    id="simple-search"
-                    class="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    type="number"
+                    step="0.01"
+                    onChange={(e) => setSearchPrice(e.target.value)}
+                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
                     placeholder="Search branch name..."
                   />
                 </div>
                 <button
                   type="submit"
-                  class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
                 >
                   <svg
                     class="w-4 h-4"
@@ -156,24 +318,15 @@ const Accommodations = () => {
                   <span class="sr-only">Search</span>
                 </button>
               </form>
-          <hr className="my-6 hidden md:block" />
-            <div className="w-full">
-              <p className="mb-3 text-lg text-start">Price</p>
-              <input
-                type="number"
-                step="0.01"
-                id="first_name"
-                placeholder="0.00"
-                className="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              ></input>
             </div>
+            {/* rating type */}
             <div className="w-full">
               <p className="mb-3 text-lg text-start">Rating</p>
               <div className="relative inline-block text-left w-full">
                 <div>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
                     id="menu-button"
                     aria-expanded={menuOpen}
                     aria-haspopup="true"
@@ -209,6 +362,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelected("Select");
+                          handleSelectRating(0);
                           toggleMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -221,6 +375,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelected("5 Stars");
+                          handleSelectRating(5);
                           toggleMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -233,6 +388,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelected("4 Stars");
+                          handleSelectRating(4);
                           toggleMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -245,6 +401,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelected("3 Stars");
+                          handleSelectRating(3);
                           toggleMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -257,6 +414,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelected("2 Stars");
+                          handleSelectRating(2);
                           toggleMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -269,6 +427,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelected("1 Star");
+                          handleSelectRating(1);
                           toggleMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -283,60 +442,14 @@ const Accommodations = () => {
                 )}
               </div>
             </div>
-            <div className="w-full">
-              <p className="mb-3 text-lg text-start">Amenities</p>
-              <div className="container max-w-full ml-8 mt-6 text-base font-sans">
-                <div class="flex items-center mb-4">
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    for="default-checkbox"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Free Wi-Fi
-                  </label>
-                </div>
-                <div class="flex items-center mb-4">
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    for="default-checkbox"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Free parking
-                  </label>
-                </div>
-                <div class="flex items-center mb-4">
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    for="default-checkbox"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Pool
-                  </label>
-                </div>
-              </div>
-            </div>
+            {/* select type */}
             <div className="w-full">
               <p className="mb-3 text-lg text-start">Type</p>
               <div className="relative inline-block text-left w-full">
                 <div>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
                     id="menu-button"
                     aria-expanded={typeMenuOpen}
                     aria-haspopup="true"
@@ -372,6 +485,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelectedType("Select type");
+                          handleSelectType("select");
                           toggleTypeMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -384,6 +498,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelectedType("Indoors");
+                          handleSelectType("Inside");
                           toggleTypeMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -396,6 +511,7 @@ const Accommodations = () => {
                       <button
                         onClick={() => {
                           setSelectedType("Outdoors");
+                          handleSelectType("Outside");
                           toggleTypeMenu();
                         }}
                         className="text-gray-700 block px-4 py-2 text-sm"
@@ -412,11 +528,12 @@ const Accommodations = () => {
             </div>
           </div>
         </div>
+        {/* content list */}
         <div className="my-16 mx-8">
-          <div className="flex flex-col gap-8">
-            {accommodations.map((accommodation, id) => (
+          <div className="flex flex-col gap-5 mb-5 min-h-[1146px]">
+            {currentAccommodations.map((accommodation, id) => (
               <div key={id}>
-                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-sky-200 mx-auto max-w-3xl md:w-[650px] group transform duration-500 mb-2">
+                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl md:w-[768px] group transform duration-500 mb-2">
                   <img
                     className="w-full sm:w-60 h-auto object-cover"
                     src={accommodation.imageurl[0]}
@@ -424,13 +541,13 @@ const Accommodations = () => {
                   />
                   <div className="h-auto w-full flex flex-col justify-between">
                     <div className="p-5 text-start">
-                      <h1 className="text-xl font-semibold text-gray-800">
+                      <h1 className="text-xl font-semibold text-Base-color">
                         {accommodation.title}
                       </h1>
-                      <p className="text-md overflow-hidden text-gray-900 mt-2 leading-relaxed">
+                      <p className="text-md overflow-hidden text-Base-color mt-2 leading-relaxed">
                         {accommodation.location}
                       </p>
-                      <p className="text-lg overflow-hidden flex gap-1 text-gray-900 mt-2 leading-relaxed">
+                      <p className="text-lg overflow-hidden flex gap-1 text-Base-color mt-2 leading-relaxed">
                         {accommodation.rating}{" "}
                         <svg
                           class="h-6 w-6 shrink-0 fill-amber-400"
@@ -439,10 +556,10 @@ const Accommodations = () => {
                           <path d="M239.2 97.4A16.4 16.4.0 00224.6 86l-59.4-4.1-22-55.5A16.4 16.4.0 00128 16h0a16.4 16.4.0 00-15.2 10.4L90.4 82.2 31.4 86A16.5 16.5.0 0016.8 97.4 16.8 16.8.0 0022 115.5l45.4 38.4L53.9 207a18.5 18.5.0 007 19.6 18 18 0 0020.1.6l46.9-29.7h.2l50.5 31.9a16.1 16.1.0 008.7 2.6 16.5 16.5.0 0015.8-20.8l-14.3-58.1L234 115.5A16.8 16.8.0 00239.2 97.4z"></path>
                         </svg>
                       </p>
-                      <p className="text-md overflow-hidden max-h-20 text-gray-400 mt-2 leading-relaxed">
+                      <p className="text-md overflow-hidden max-h-20 text-third-color mt-2 leading-relaxed">
                         {accommodation.accommodation_details}
                       </p>
-                      <p className="text-md overflow-hidden text-gray-900 mt-2 leading-relaxed">
+                      <p className="text-md overflow-hidden text-Base-color mt-2 leading-relaxed">
                         {accommodation.pricing} JOD
                       </p>
                     </div>
@@ -451,7 +568,7 @@ const Accommodations = () => {
                         <Link
                           to={`/accommodation/${accommodation.accommodation_id}`}
                         >
-                          <button className="sm:mt-3 my-2 py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md">
+                          <button className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md">
                             Read more
                           </button>
                         </Link>
@@ -461,6 +578,31 @@ const Accommodations = () => {
                 </article>
               </div>
             ))}
+          </div>
+          <div>
+            <div className="flex justify-center gap-2">
+              <button
+                onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="text-third-color"
+                variant="outlined"
+                size="sm"
+              >
+                Previous
+              </button>
+              <div>{renderPageNumbers()}</div>
+              <button
+                onClick={() =>
+                  currentPage !== totalPages && paginate(currentPage + 1)
+                }
+                disabled={currentPage === totalPages}
+                className="text-third-color"
+                variant="outlined"
+                size="sm"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>

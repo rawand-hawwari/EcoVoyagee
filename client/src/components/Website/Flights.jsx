@@ -10,7 +10,6 @@ const Flights = () => {
   const location = useLocation();
   const [destinations, setDestinations] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pagination, setPagination] = useState([]);
   const queryParams = new URLSearchParams(location.search);
   const destination = queryParams.get("destination");
   const [bookFilght, setBookFilght] = useState(false);
@@ -24,12 +23,13 @@ const Flights = () => {
   const openFilter = () => {
     setFilterOpen(!filterOpen);
   };
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchPrice, setSearchPrice] = useState(0);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     axios
       .get(`http://localhost:3999/getFlights`)
       .then((response) => {
-        setPagination(response.data);
         let newData = response.data.map((data) => ({
           ...data,
           depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
@@ -54,51 +54,14 @@ const Flights = () => {
         console.error("Error:", error);
       });
   }, []);
-  // useEffect(() => {
-  //   const queryParams = new URLSearchParams(location.search);
-  //   const destination = queryParams.get("destination");
-  //   axios
-  //     .get("http://localhost:3999/getFlightsPaginated", { page: currentPage })
-  //     .then((response) => {
-  //       setPagination(response.data);
-  //       let newData = response.data.data.map((data) => ({
-  //         ...data,
-  //         depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
-  //         return: new Date(data.return_date).toLocaleDateString("en-GB"),
-  //       }));
-  //       // Handle the response data here
-  //       if (destination) {
-  //         const filtered = newData.filter(
-  //           (data) => data.destinations_id === destination
-  //         );
-  //         setFlights(filtered);
-  //       } else {
-  //         setFlights(newData);
-  //       }
-  //       axios.get(`http://localhost:3999/getDestinations`).then((response) => {
-  //         setDestinations(response.data);
-  //       });
-  //       setFilteredFlights(newData);
-  //     })
-  //     .catch((error) => {
-  //       // Handle errors here
-  //       console.error("Error:", error);
-  //     });
-  // }, [currentPage]);
-  // for destination title
-  // {destinations &&
-  //   destinations.map(
-  //     (item) =>
-  //       item.destinations_id ===
-  //         flight.destinations_id && `${item.title}`
-  //   )}
 
-  const openModal = (id, type) => {
+  const openModal = (id) => {
+    const flightToBook = flights.filter((flight) => flight.flights_id === id);
     setBookFilght(true);
-    setPrice(flights[id].best);
-    setEconomy(flights[id].economy);
-    setBusiness(flights[id].business);
-    setFirst(flights[id].first);
+    setPrice(flightToBook[0].best);
+    setEconomy(flightToBook[0].economy);
+    setBusiness(flightToBook[0].business);
+    setFirst(flightToBook[0].first);
   };
   const closeModal = () => {
     setBookFilght(false);
@@ -116,66 +79,89 @@ const Flights = () => {
       ...bookData,
       cost: cost,
       flights_id: id,
-      ticket_type: seat
+      ticket_type: seat,
     });
     navigate("/payment");
   };
+
+  const flightsPerPage = 3;
+  const indexOfLastFlights = currentPage * flightsPerPage;
+  const indexOfFirstFlights = indexOfLastFlights - flightsPerPage;
+  const currentFlights = filteredFlights.slice(
+    indexOfFirstFlights,
+    indexOfLastFlights
+  );
+  const totalPages = Math.ceil(filteredFlights.length / flightsPerPage);
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPagesToShow = 3;
-    // console.log(flights);
-    // Calculate the range of page numbers to display
-    let start = Math.max(1, currentPage - 1);
-    const end = Math.min(pagination.totalPages, start + maxPagesToShow - 1);
-    if (end === pagination.totalPages) {
-      start = pagination.totalPages - 2;
-    }
-    for (let i = start; i <= end; i++) {
-      pageNumbers.push(
-        <button
-          key={i}
-          onClick={() => paginate(i)}
-          className={`mx-1 px-3 py-1 rounded ${
-            i === currentPage ? "bg-sky-700 text-white" : "text-sky-900"
-          }`}
-        >
-          {i}
-        </button>
+    if (totalPages > 2) {
+      let start = Math.max(
+        1,
+        Math.min(currentPage - 1, totalPages - maxPagesToShow + 1)
       );
+      const end = Math.min(start + maxPagesToShow - 1, totalPages);
+      if (end === totalPages) {
+        start = totalPages - 2;
+      }
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
     }
-
     return pageNumbers;
   };
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    axios
-      .get(`http://localhost:3999/getFlightsPaginated/${pageNumber}`)
-      .then((response) => {
-        setPagination(response.data);
-        let newData = response.data.data.map((data) => ({
-          ...data,
-          depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
-          return: new Date(data.return_date).toLocaleDateString("en-GB"),
-        }));
-        // Handle the response data here
-        if (destination) {
-          const filtered = newData.filter(
-            (data) => data.destinations_id === destination
-          );
-          setFlights(filtered);
-        } else {
-          setFlights(newData);
-        }
-        axios.get(`http://localhost:3999/getDestinations`).then((response) => {
-          setDestinations(response.data);
-        });
-        setFilteredFlights(newData);
-      })
-      .catch((error) => {
-        // Handle errors here
-        console.error("Error:", error);
-      });
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    setFilteredFlights(
+      flights.filter((flight) =>
+        flight.destination_name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      )
+    );
+  };
+  const handlePriceSearch = (e) => {
+    e.preventDefault();
+    if (searchPrice != "") {
+      setFilteredFlights(
+        flights.filter((flight) => flight.best <= searchPrice)
+      );
+    } else {
+      setFilteredFlights(flights);
+    }
   };
   return (
     <div className="flex flex-col md:flex-row justify-center">
@@ -184,10 +170,10 @@ const Flights = () => {
         <div
           className={`${
             filterOpen ? "h-auto" : "h-16 overflow-hidden"
-          } md:overflow-visible md:h-auto my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
+          } md:overflow-visible md:h-auto border-transparent-third-color my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
         >
           <div className="w-full flex justify-between">
-            <h2 className="mb-3 text-start text-sky-700 text-xl font-bold">
+            <h2 className="mb-3 text-start text-Base-color text-xl font-bold">
               Filter
             </h2>
             <svg
@@ -240,7 +226,7 @@ const Flights = () => {
             </svg>
           </div>
           <div className="w-full">
-            <form class="flex items-center">
+            <form class="flex items-center" onSubmit={(e) => handleChange(e)}>
               <label for="simple-search" class="sr-only">
                 Search
               </label>
@@ -248,13 +234,14 @@ const Flights = () => {
                 <input
                   type="text"
                   id="simple-search"
-                  class="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
                   placeholder="Search branch name..."
                 />
               </div>
               <button
                 type="submit"
-                class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
               >
                 <svg
                   class="w-4 h-4"
@@ -277,71 +264,55 @@ const Flights = () => {
           </div>
           <div className="w-full">
             <p className="mb-3 text-lg text-start">Price</p>
-            <input
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              id="first_name"
-              className="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            ></input>
-          </div>
-          <div className="w-full">
-            <p className="mb-3 text-lg text-start">Amenities</p>
-            <div className="container max-w-full ml-8 mt-6 text-base font-sans">
-              <div class="flex items-center mb-4">
+            <form
+              class="flex items-center"
+              onSubmit={(e) => handlePriceSearch(e)}
+            >
+              <label for="simple-search" class="sr-only">
+                Search
+              </label>
+              <div class="relative w-full">
                 <input
-                  id="default-checkbox"
-                  type="checkbox"
-                  value=""
-                  class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  type="number"
+                  step="0.01"
+                  onChange={(e) => setSearchPrice(e.target.value)}
+                  class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
+                  placeholder="Search branch name..."
                 />
-                <label
-                  for="default-checkbox"
-                  class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Free Wi-Fi
-                </label>
               </div>
-              <div class="flex items-center mb-4">
-                <input
-                  id="default-checkbox"
-                  type="checkbox"
-                  value=""
-                  class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  for="default-checkbox"
-                  class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              <button
+                type="submit"
+                class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
+              >
+                <svg
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
                 >
-                  Free parking
-                </label>
-              </div>
-              <div class="flex items-center mb-4">
-                <input
-                  id="default-checkbox"
-                  type="checkbox"
-                  value=""
-                  class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  for="default-checkbox"
-                  class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Pool
-                </label>
-              </div>
-            </div>
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+                <span class="sr-only">Search</span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
 
       {/* flights list */}
       <div className="md:w-2/3 w-full">
-        <div className="flex flex-col my-3 md:my-16 w-full justify-center items-center md:justify-start md:items-start gap-5 min-h-[844px]">
-          {flights &&
-            flights.map((flight, id) => (
+        <div className="flex flex-col my-3 md:my-16 w-full justify-center items-center md:justify-start md:items-start gap-5 min-h-[964px]">
+          {currentFlights &&
+            currentFlights.map((flight, id) => (
               <div key={id} className=" w-11/12 mx-5">
-                <div className="flex flex-col py-3 px-5 md:mx-10 md:py-5 md:px-7 bg-gray-200 rounded-md w-full">
+                <div className="flex flex-col py-3 px-5 md:mx-10 md:py-5 md:px-7 text-Base-color bg-transparent-first-color rounded-md w-full">
                   <h1 className="text-start text-3xl flex items-center gap-3 pb-4">
                     Jordan
                     <svg
@@ -421,10 +392,10 @@ const Flights = () => {
                       </div>
                     </div>
                     <div className="w-full text-2xl md:w-1/3 md:text-3xl p-5">
-                      <h1>{flight.best} JOD</h1>
+                      <h1 className="font-bold">{flight.best} JOD</h1>
                       <button
-                        onClick={(e) => openModal(id)}
-                        className="sm:mt-3 my-2 py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md"
+                        onClick={(e) => openModal(flight.flights_id)}
+                        className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md"
                       >
                         Book Now
                       </button>
@@ -433,112 +404,125 @@ const Flights = () => {
                 </div>
                 {bookFilght && (
                   <BookFlightModal onClose={closeModal}>
-                    <h1 className="text-3xl text-center text-sky-900">
+                    <h1 className="text-3xl text-center text-third-color">
                       Book Your Flight
                     </h1>
                     <div className="flex flex-wrap justify-center my-5 items-center gap-5">
-                      <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-                        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded-lg shadow sm:p-8">
+                        <h5 class="mb-4 text-xl font-medium text-third-color">
                           Economy class
                         </h5>
                         {economy === 0 ? (
                           <>
-                            <div class="flex items-baseline text-gray-900 dark:text-white w-60 h-28">
-                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                            <div class="flex items-baseline text-Base-color dark:text-second-color w-60 h-28">
+                              <span class="ms-1 text-xl font-normal text-third-color dark:text-gray-400">
                                 Not Available
                               </span>
                             </div>
                           </>
                         ) : (
-                          <div className="w-60 h-28">
-                            <div class="flex items-baseline text-gray-900 dark:text-white">
-                              <span class="text-5xl font-extrabold tracking-tight">
+                          <div className="w-60 h-36 flex flex-col justify-between">
+                            {economy < 10 && (
+                              <h1 className="text-red-700">
+                                Only {economy} tickets left
+                              </h1>
+                            )}
+                            <div class="flex items-baseline text-Base-color mb-5">
+                              <span class="text-4xl font-extrabold tracking-tight">
                                 {price}
                               </span>
                               <span class="text-3xl font-semibold">JOD</span>
-                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                              <span class="ms-1 text-xl font-normal text-third-color dark:text-gray-400">
                                 Per Person
                               </span>
                             </div>
-                            <div class="space-y-5 my-7"></div>
+                            {/* <div class="space-y-5 my-7"></div> */}
                             <button
                               onClick={(e) =>
                                 bookingFlight(flight.flights_id, "economy")
                               }
                               type="button"
-                              class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
                             >
                               Book Now
                             </button>
                           </div>
                         )}
                       </div>
-                      <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-                        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded-lg shadow sm:p-8">
+                        <h5 class="mb-4 text-xl font-medium text-third-color">
                           Business class
                         </h5>
                         {business === 0 ? (
                           <>
-                            <div class="flex items-baseline text-gray-900 dark:text-white w-60 h-28">
-                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                            <div class="flex items-baseline text-Base-color dark:text-second-color w-60 h-28">
+                              <span class="ms-1 text-xl font-normal text-third-color dark:text-gray-400">
                                 Not Available
                               </span>
                             </div>
                           </>
                         ) : (
-                          <div className="w-60 h-28">
-                            <div class="flex items-baseline text-gray-900 dark:text-white">
-                              <span class="text-5xl font-extrabold tracking-tight">
+                          <div className="w-60 h-36 flex flex-col justify-between">
+                            {business < 10 && (
+                              <h1 className="text-red-700">
+                                Only {business} tickets left
+                              </h1>
+                            )}
+                            <div class="flex items-baseline text-Base-color mb-5">
+                              <span class="text-4xl font-extrabold tracking-tight">
                                 {price * 3}
                               </span>
                               <span class="text-3xl font-semibold">JOD</span>
-                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                              <span class="ms-1 text-xl font-normal text-third-color dark:text-gray-400">
                                 Per Person
                               </span>
                             </div>
-                            <div class="space-y-5 my-7"></div>
                             <button
                               onClick={(e) =>
-                                bookingFlight(flight.flights_id, "business")
+                                bookingFlight(flight.flights_id, "economy")
                               }
                               type="button"
-                              class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
                             >
                               Book Now
                             </button>
                           </div>
                         )}
                       </div>
-                      <div class="w-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-                        <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded-lg shadow sm:p-8">
+                        <h5 class="mb-4 text-xl font-medium text-third-color">
                           First class
                         </h5>
                         {first === 0 ? (
                           <>
-                            <div class="flex items-baseline text-gray-900 dark:text-white w-60 h-28">
-                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                            <div class="flex items-baseline text-Base-color dark:text-second-color w-60 h-28">
+                              <span class="ms-1 text-xl font-normal text-third-color dark:text-gray-400">
                                 Not Available
                               </span>
                             </div>
                           </>
                         ) : (
-                          <div className="w-60 h-28">
-                            <div class="flex items-baseline text-gray-900 dark:text-white">
-                              <span class="text-5xl font-extrabold tracking-tight">
-                                {price * 3}
+                          <div className="w-60 h-36 flex flex-col justify-between">
+                            {first < 10 && (
+                              <h1 className="text-red-700">
+                                Only {first} tickets left
+                              </h1>
+                            )}
+                            <div class="flex items-baseline text-Base-color mb-5">
+                              <span class="text-4xl font-extrabold tracking-tight">
+                                {price * 5}
                               </span>
                               <span class="text-3xl font-semibold">JOD</span>
-                              <span class="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                              <span class="ms-1 text-xl font-normal text-third-color dark:text-gray-400">
                                 Per Person
                               </span>
                             </div>
-                            <div class="space-y-5 my-7"></div>
                             <button
                               onClick={(e) =>
-                                bookingFlight(flight.flights_id, "first")
+                                bookingFlight(flight.flights_id, "economy")
                               }
                               type="button"
-                              class="text-white bg-sky-900 hover:bg-white hover:text-sky-900 border-2 border-sky-900 font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
                             >
                               Book Now
                             </button>
@@ -552,13 +536,12 @@ const Flights = () => {
               </div>
             ))}
         </div>
-        {/* min-h-[636px] */}
         <div>
           <div className="flex justify-center gap-2">
             <button
               onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="text-sky-900"
+              className="text-third-color"
               variant="outlined"
               size="sm"
             >
@@ -567,11 +550,10 @@ const Flights = () => {
             <div>{renderPageNumbers()}</div>
             <button
               onClick={() =>
-                currentPage !== pagination.totalPages &&
-                paginate(currentPage + 1)
+                currentPage !== totalPages && paginate(currentPage + 1)
               }
-              disabled={currentPage === pagination.totalPages}
-              className="text-sky-900"
+              disabled={currentPage === totalPages}
+              className="text-third-color"
               variant="outlined"
               size="sm"
             >

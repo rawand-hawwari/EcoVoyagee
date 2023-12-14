@@ -6,9 +6,9 @@ import Swal from "sweetalert2";
 const Comments = (id) => {
   // console.log(id)
   const [comments, setComments] = useState([]);
-  const [endpoint, setEndpoint] = useState(``);
+  // const [endpoint, setEndpoint] = useState(``);
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-  const [addEndpoint, setAddEndpoint] = useState(``);
+  // const [addEndpoint, setAddEndpoint] = useState(``);
   const [formattedComments, setFormattedComments] = useState({
     formattedDate: "",
     formattedTime: "",
@@ -58,7 +58,7 @@ const Comments = (id) => {
               confirmButtonText: "OK",
               customClass: {
                 confirmButton:
-                  "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
+                  "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
               },
             });
           });
@@ -70,7 +70,7 @@ const Comments = (id) => {
           confirmButtonText: "OK",
           customClass: {
             confirmButton:
-              "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
           },
         });
       }
@@ -97,7 +97,7 @@ const Comments = (id) => {
             confirmButtonText: "OK",
             customClass: {
               confirmButton:
-                "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
+                "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
             },
           });
         });
@@ -144,10 +144,10 @@ const Comments = (id) => {
   return (
     <div>
       <div>
-        <h1 className="text-sky-700 text-start text-3xl font-bold">Reviews</h1>
+        <h1 className="text-third-color text-start text-3xl font-bold">Reviews</h1>
         <div className="p-5">
           {comments.map((comment, index) => (
-            <div className="p-5 border border-sky-700 rounded-xl my-3 w-3xl">
+            <div className="p-5 border border-third-color rounded-xl my-3 w-3xl">
               <div className="flex gap-2 flex-wrap">
                 <h5 className="text-start text-xl font-bold">
                   {comment.first_name}
@@ -174,11 +174,11 @@ const Comments = (id) => {
               id="comment"
               value={formData.comment_text}
               onChange={(e) => setFormData({ comment_text: e.target.value })}
-              className="w-full mb-3 p-2 border border-sky-700 rounded-md"
+              className="w-full mb-3 p-2 border border-third-color rounded-md"
             />
             <button
               type="submit"
-              className="py-3 w-64 text-xl text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+              className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
             >
               Comment
             </button>

@@ -6,15 +6,22 @@ module.exports = {
       colors: {
         // "Base-color": "#0369a1",
         // "second-color": "#FFFFFF",
-        "Base-color": "#395144",
-        "second-color": "#F0EBCE",
-        "third-color": "#815B5B",
-        "fourth-color": "#9E7676",
+        "Base-color": "#115e59",//green
+        "second-color": "#F2F2F2",//offwhite
+        "third-color": "#0f766e",//lighter green
+        "fourth-color": "#be123c",//orange
+        "transparent-first-color": "#0F766E1A",//transparent light green
+        "transparent-second-color": "#00000099",//transparent black
+        "transparent-third-color": "#0F766E99",//transparent green
+        "transparent-fourth-color": "#0000004D",//transparent lighter black
+        "light-pink": "#fb7185",
       },
       fontFamily: {
         "grape-nuts": ["Grape Nuts", "sans-serif"],
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };

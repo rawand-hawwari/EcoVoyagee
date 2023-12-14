@@ -100,9 +100,9 @@ const ActivityDetails = () => {
             className="absolute top-0 left-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             data-carousel-prev
           >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/40 group-focus:ring-4">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
               <svg
-                className="w-4 h-4 text-white rtl:rotate-180"
+                className="w-4 h-4 text-second-color rtl:rotate-180"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -125,9 +125,9 @@ const ActivityDetails = () => {
             className="absolute top-0 right-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             data-carousel-next
           >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/40 group-focus:ring-4">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
               <svg
-                className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                className="w-4 h-4 text-second-color dark:text-gray-800 rtl:rotate-180"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -147,12 +147,12 @@ const ActivityDetails = () => {
         </div>
 
         {/* details */}
-        <div className="flex flex-col justify-center items-center my-10">
+        <div className="flex flex-col justify-center items-center my-10 text-Base-color">
           <div className="w-2/3">
             {activity && (
               <div className="flex flex-col gap-10">
                 {/* title */}
-                <h1 className="text-sky-700 text-start text-3xl font-bold">
+                <h1 className="text-third-color text-start text-3xl font-bold">
                   {activity.title}
                 </h1>
                 <h5 className="text-start text-xl">
@@ -161,7 +161,7 @@ const ActivityDetails = () => {
                 <div className="flex justify-between">
                   {/* price */}
                   <div className="flex flex-col gap-6">
-                    <h1 className="text-sky-700 text-start text-3xl font-bold">
+                    <h1 className="text-third-color text-start text-3xl font-bold">
                       Price
                     </h1>
                     <h5 className="text-start text-xl">
@@ -170,7 +170,7 @@ const ActivityDetails = () => {
                   </div>
                   {/* location */}
                   <div className="w-1/2">
-                    <h5 className="text-start text-sky-700 text-2xl font-bold">
+                    <h5 className="text-start text-third-color text-2xl font-bold">
                       Location
                     </h5>
                     <iframe
@@ -187,7 +187,7 @@ const ActivityDetails = () => {
                 <div className="py-12">
                   {related && related.length > 0 && (
                     <>
-                      <h5 className="text-start text-sky-700 text-2xl font-bold pb-10">
+                      <h5 className="text-start text-third-color text-2xl font-bold pb-10">
                         Related Activities
                       </h5>
                       <div className="flex flex-col md:flex-row flex-wrap gap-8 justify-start items-center mx-auto">
@@ -204,12 +204,12 @@ const ActivityDetails = () => {
                                   backgroundImage: `url(${item.imageactivity[0]})`,
                                 }}
                               >
-                                <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
-                                  <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
+                                <div className="text-start hover:bg-transparent-second-color bg-transparent-fourth-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
+                                  <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
                                     {item.title}
                                   </h1>
-                                  <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                                  <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
+                                  <div className="w-16 h-2 bg-fourth-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                                  <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
                                     {item.activity_details}
                                   </p>
                                 </div>
@@ -227,7 +227,7 @@ const ActivityDetails = () => {
                 </div>
 
                 {/* booking form */}
-                {/* <div className="p-3 border border-sky-700 rounded-xl bg-gray-100">
+                {/* <div className="p-3 border border-third-color rounded-xl bg-gray-100">
                   <form>
                     <div className="min-h-screen flex justify-center items-start md:items-center">
                       <div className="py-12 px-12 w-full">
@@ -290,7 +290,7 @@ const ActivityDetails = () => {
                               endDate={endDate}
                               // dateFormat="yyyy-mm-dd"
                               placeholderText="Start Date"
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                             />
 
                             <label className="px-3">To:</label>
@@ -303,7 +303,7 @@ const ActivityDetails = () => {
                               endDate={endDate}
                               minDate={startDate}
                               placeholderText="End Date"
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                             />
                           </div> */}
 
@@ -410,7 +410,7 @@ const ActivityDetails = () => {
                         <div className="text-center mt-6"> */}
                 {/* <button
                             type="submit"
-                            className="py-3 w-64 text-xl text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+                            className="py-3 w-64 text-xl text-second-color hover:text-sky-900 bg-sky-900 border-2 hover:bg-second-color border-sky-900 rounded-2xl"
                           >
                             Book
                           </button> */}

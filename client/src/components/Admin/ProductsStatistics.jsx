@@ -60,7 +60,7 @@ const ProductsStatistics = () => {
     <div>
       <div className="lg:ml-80 m-5">
         <div className="flex flex-col md:flex-row gap-4 flex-wrap py-12 justify-between items-center">
-          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-sky-700 to-sky-900 text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
+          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-light-pink to-fourth-color text-second-color shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
             <div class="bg-clip-border rounded-xl h-16 w-16 grid place-items-center">
               <svg
                 class="text-white w-10 h-10"
@@ -90,7 +90,7 @@ const ProductsStatistics = () => {
               </p>
             </div>
           </div>
-          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-sky-700 to-sky-900 text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
+          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-light-pink to-fourth-color text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
             <div class="bg-clip-border rounded-xl h-16 w-16 grid place-items-center">
               <svg
                 class="w-10 h-10"
@@ -118,7 +118,7 @@ const ProductsStatistics = () => {
               </p>
             </div>
           </div>
-          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-sky-700 to-sky-900 text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
+          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-light-pink to-fourth-color text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
             <div class="bg-clip-border rounded-xl h-16 w-16 grid place-items-center">
               <svg
                 class="text-white w-10 h-10"
@@ -146,7 +146,7 @@ const ProductsStatistics = () => {
               </p>
             </div>
           </div>
-          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-sky-700 to-sky-900 text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
+          <div class="p-4 flex justify-around items-center h-28 bg-gradient-to-tr from-light-pink to-fourth-color text-white shadow-sky-900/20 w-full rounded-xl md:w-[225px]">
             <div class="bg-clip-border rounded-xl h-16 w-16 grid place-items-center">
               <svg
                 class="w-10 h-10"

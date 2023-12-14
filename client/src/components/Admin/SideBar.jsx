@@ -41,7 +41,7 @@ const SideBar = () => {
             id="openSideBar"
             className={`${
               isSideOpen ? "hidden" : "flex"
-            } lg:hidden h-10 w-10 bg-sky-700 absolute right-0 mt-16 -mr-10 items-center shadow rounded-tr rounded-br justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 rounded focus:ring-gray-800`}
+            } lg:hidden h-10 w-10 bg-third-color absolute right-0 mt-16 -mr-10 items-center shadow rounded-tr rounded-br justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 rounded focus:ring-gray-800`}
             onClick={openSideBar}
           >
             <svg
@@ -73,7 +73,7 @@ const SideBar = () => {
             id="closeSideBar"
             className={`${
               isSideOpen ? "block" : "hidden"
-            } lg:hidden h-10 w-10 bg-sky-700 absolute right-0 mt-16 -mr-10 flex items-center shadow rounded-tr rounded-br justify-center cursor-pointer text-white`}
+            } lg:hidden h-10 w-10 bg-third-color absolute right-0 mt-16 -mr-10 flex items-center shadow rounded-tr rounded-br justify-center cursor-pointer text-second-color`}
             onClick={openSideBar}
           >
             <svg
@@ -93,14 +93,14 @@ const SideBar = () => {
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
-          <aside className="flex flex-col h-screen bg-sky-700 w-64 px-5 py-8 overflow-y-auto border-r border-b rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+          <aside className="flex flex-col h-screen bg-third-color w-64 px-5 py-8 overflow-y-auto border-r border-b rtl:border-r-0 rtl:border-l">
             <div className="w-auto flex justify-around items-center mx-6">
               <img
                 className='w-1/4 '
                 src={logo}
                 alt="EcoVoyage Logo"
               />
-              <h1 className="text-xl font-bold text-white font-grape-nuts">
+              <h1 className="text-2xl font-bold text-second-color font-grape-nuts">
                 EcoVoyage
               </h1>
             </div>
@@ -108,16 +108,16 @@ const SideBar = () => {
               <nav className="-mx-3 space-y-6 ">
                 <div className="space-y-3 ">
                   <button
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-gray-200 hover:text-gray-700 ${
-                      page === "dashboard" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-second-color hover:text-third-color ${
+                      page === "dashboard" ? "bg-second-color text-third-color" : ""
                     }`}
                     onClick={() => onSelectedPage("dashboard")}
                   >
                     <span className="mx-2 text-sm font-medium">Dashboard</span>
                   </button>
                   <button
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-gray-200 hover:text-gray-700 ${
-                      page === "profile" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-second-color hover:text-third-color ${
+                      page === "profile" ? "bg-second-color text-third-color" : ""
                     }`}
                     onClick={() => onSelectedPage("profile")}
                   >
@@ -127,34 +127,34 @@ const SideBar = () => {
                 <div className="space-y-3 border-t-[1px]">
                    <button
                     onClick={() => onSelectedPage("users")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "users" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-second-color hover:text-third-color ${
+                      page === "users" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
                     <span className="mx-2 text-sm font-medium">Users</span>
                   </button>
                   <button
-                    onClick={() => onSelectedPage("bookings")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "bookings" ? "bg-gray-200 text-gray-700" : ""
+                    onClick={() => onSelectedPage("messages")}
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-second-color hover:text-third-color ${
+                      page === "messages" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
-                    <span className="mx-2 text-sm font-medium">Bookings</span>
+                    <span className="mx-2 text-sm font-medium">Messages</span>
                   </button>
                 </div>
                 <div className="space-y-3 border-t-[1px]">
                   <button
                     onClick={() => onSelectedPage("flights")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "flights" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-second-color hover:text-third-color ${
+                      page === "flights" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
                     <span className="mx-2 text-sm font-medium">Flights</span>
                   </button>
                   <button
                     onClick={() => onSelectedPage("destinations")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "destinations" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg hover:bg-second-color hover:text-third-color ${
+                      page === "destinations" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
                     <span className="mx-2 text-sm font-medium">
@@ -163,8 +163,8 @@ const SideBar = () => {
                   </button>
                   <button
                     onClick={() => onSelectedPage("packages")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "packages" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-second-color hover:bg-second-color dark:hover:bg-gray-800 dark:hover:text-second-color hover:text-third-color ${
+                      page === "packages" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
                     <span className="mx-2 text-sm font-medium">Packages</span>
@@ -173,8 +173,8 @@ const SideBar = () => {
                 <div className="space-y-3 border-t-[1px]">
                   <button
                     onClick={() => onSelectedPage("accommodations")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "accommodations" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-second-color hover:bg-second-color dark:hover:bg-gray-800 dark:hover:text-second-color hover:text-third-color ${
+                      page === "accommodations" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
                     <span className="mx-2 text-sm font-medium">
@@ -183,8 +183,8 @@ const SideBar = () => {
                   </button>
                   <button
                     onClick={() => onSelectedPage("activities")}
-                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700 ${
-                      page === "activities" ? "bg-gray-200 text-gray-700" : ""
+                    className={`w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-second-color hover:bg-second-color dark:hover:bg-gray-800 dark:hover:text-second-color hover:text-third-color ${
+                      page === "activities" ? "bg-second-color text-third-color" : ""
                     }`}
                   >
                     <span className="mx-2 text-sm font-medium">Activities</span>
@@ -192,7 +192,7 @@ const SideBar = () => {
                 </div>
                 <div className="space-y-3 border-t-[1px]">
                   <button
-                    className="w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+                    className="w-full flex items-center px-3 py-2 text-gray-100 transition-colors duration-300 transform rounded-lg dark:text-second-color hover:bg-second-color dark:hover:bg-gray-800 dark:hover:text-second-color hover:text-third-color"
                     onClick={logout}
                   >
                     <svg

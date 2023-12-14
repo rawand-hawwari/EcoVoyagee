@@ -4,9 +4,10 @@ const router = Router();
 
 const verifyJWT = require('../Middleware/VerifyJWT');
 
-router.post("/sendEmailContact",verifyJWT.authorize([1 , 2]), contactUsController.sendEmailContact);
+router.post("/sendEmailContact", contactUsController.sendEmailContact);
 
 router.get("/getContact", contactUsController.getContact);
+router.get("/getAllContact", contactUsController.getAllContact);
 
 router.get("/getContactById/:id", contactUsController.getContactById);
 

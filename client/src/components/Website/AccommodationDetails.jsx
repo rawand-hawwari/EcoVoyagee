@@ -11,7 +11,7 @@ import { format, parse } from 'date-fns';
 
 const AccommodationDetails = () => {
   const { id } = useParams();
-  const [room, setRoom] = useState("Standard");
+  // const [room, setRoom] = useState("Standard");
   const { bookData, onBooking } = useBooking();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -104,11 +104,6 @@ const AccommodationDetails = () => {
     e.preventDefault();
     let total =
     booking.adults * booking.cost + (booking.children * booking.cost) / 2;
-    if (booking.room_preference === "Delux") {
-      total *= 2;
-    } else if (booking.room_preference === "Suite") {
-      total *= 3;
-    }
     booking.cost = total;
     booking.accommodation_id = id;
     booking.date_to=endDate;
@@ -117,14 +112,14 @@ const AccommodationDetails = () => {
     console.log(booking);
     try {
       onBooking(booking);
-      history("/payment");
+      history(`/rooms/${id}`);
     } catch (error) {
       console.error("Error:", error);
     }
   }
 
   return (
-    <div>
+    <div className="text-Base-color">
       {/* images */}
       <div
         id="default-carousel"
@@ -155,9 +150,9 @@ const AccommodationDetails = () => {
           className="absolute top-0 left-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-prev
         >
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/40 group-focus:ring-4">
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
             <svg
-              className="w-4 h-4 text-white rtl:rotate-180"
+              className="w-4 h-4 text-second-color rtl:rotate-180"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -180,9 +175,9 @@ const AccommodationDetails = () => {
           className="absolute top-0 right-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-next
         >
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/40 group-focus:ring-4">
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
             <svg
-              className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+              className="w-4 h-4 text-second-color dark:text-gray-800 rtl:rotate-180"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -206,7 +201,7 @@ const AccommodationDetails = () => {
           {accommodation && (
             <div className="flex flex-col gap-10">
               {/* title */}
-              <h1 className="text-sky-700 text-start text-3xl font-bold">
+              <h1 className="text-third-color text-start text-3xl font-bold">
                 {accommodation.title}
               </h1>
               <h5 className="text-start text-xl">
@@ -215,7 +210,7 @@ const AccommodationDetails = () => {
               <div className="flex justify-between">
                 {/* amenities */}
                 <div className="flex flex-col gap-6">
-                  <h1 className="text-sky-700 text-start text-3xl font-bold">
+                  <h1 className="text-third-color text-start text-3xl font-bold">
                     Amenities
                   </h1>
                   <ol className="text-start text-xl list-disc list-inside">
@@ -223,7 +218,7 @@ const AccommodationDetails = () => {
                       <li key={id}>{data}</li>
                     ))}
                   </ol>
-                  <h1 className="text-sky-700 text-start text-3xl font-bold">
+                  <h1 className="text-third-color text-start text-3xl font-bold">
                     Price
                   </h1>
                   <h5 className="text-start text-xl">
@@ -232,7 +227,7 @@ const AccommodationDetails = () => {
                 </div>
                 {/* location */}
                 <div className="w-1/2">
-                  <h5 className="text-start text-sky-700 text-2xl font-bold">
+                  <h5 className="text-start text-third-color text-2xl font-bold">
                     Location
                   </h5>
                   <iframe
@@ -249,7 +244,7 @@ const AccommodationDetails = () => {
               <div className="py-12">
                 {similarPlace && similarPlace.length > 0 && (
                   <>
-                    <h5 className="text-start text-sky-700 text-2xl font-bold pb-10">
+                    <h5 className="text-start text-third-color text-2xl font-bold pb-10">
                       Other Accommodations in {accommodation.country}
                     </h5>
                     <div className="flex flex-col md:flex-row flex-wrap gap-8 justify-start items-center mx-auto">
@@ -266,12 +261,12 @@ const AccommodationDetails = () => {
                                 backgroundImage: `url(${item.imageurl[0]})`,
                               }}
                             >
-                              <div className="text-start hover:bg-[#12243a8f] bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
-                                <h1 className="text-white text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
+                              <div className="text-start bg-transparent-fourth-color hover:bg-transparent-second-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
+                                <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
                                   {item.title}
                                 </h1>
-                                <div className="w-16 h-2 bg-sky-700 rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                                <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-white text-xl group-hover:opacity-80 transform duration-500">
+                                <div className="w-16 h-2 bg-third-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                                <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
                                   {item.accommodation_details}
                                 </p>
                               </div>
@@ -289,11 +284,11 @@ const AccommodationDetails = () => {
               </div>
 
               {/* booking form */}
-              <div className="p-3 border border-sky-700 rounded-xl bg-gray-100">
+              <div className="p-3 border border-third-color rounded-xl bg-transparent-first-color">
                 <form action="" onSubmit={handleSubmit}>
                   <div className="min-h-screen flex justify-center items-start md:items-center">
                     <div className="py-12 px-12 w-full">
-                      <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+                      <h1 className="text-3xl text-third-color font-bold text-center mb-4 cursor-pointer">
                         Book a room
                       </h1>
                       <div className="space-y-4 flex flex-col justify-center items-center">
@@ -352,7 +347,7 @@ const AccommodationDetails = () => {
                             endDate={endDate}
                             // dateFormat="yyyy-mm-dd"
                             placeholderText="Start Date"
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                           />
 
                           <label className="px-3">To:</label>
@@ -365,84 +360,8 @@ const AccommodationDetails = () => {
                             endDate={endDate}
                             minDate={startDate}
                             placeholderText="End Date"
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-sky-700"
+                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                           />
-                        </div>
-
-                        {/* room preference */}
-                        <label className="px-3 self-start">
-                          Room preference
-                        </label>
-                        <div className="flex flex-wrap gap-6 self-start px-3">
-                          <div class="flex items-center">
-                            <input
-                              checked={room === "Standard"}
-                              id="default-radio-1"
-                              type="radio"
-                              value=""
-                              name="default-radio"
-                              class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300"
-                              onChange={() => {
-                                setBooking({
-                                  ...booking,
-                                  room_preference: "Standard",
-                                });
-                                setRoom("Standard");
-                              }}
-                            />
-                            <label
-                              for="default-radio-1"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                            >
-                              Standard ({accommodation.pricing}JOD)
-                            </label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked={room === "Delux"}
-                              id="default-radio-2"
-                              type="radio"
-                              value=""
-                              name="default-radio"
-                              class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300"
-                              onChange={() => {
-                                setBooking({
-                                  ...booking,
-                                  room_preference: "Delux",
-                                });
-                                setRoom("Delux");
-                              }}
-                            />
-                            <label
-                              for="default-radio-2"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                            >
-                              Delux ({accommodation.pricing * 2}JOD)
-                            </label>
-                          </div>
-                          <div class="flex items-center">
-                            <input
-                              checked={room === "Suite"}
-                              id="default-radio-2"
-                              type="radio"
-                              value=""
-                              name="default-radio"
-                              class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300"
-                              onChange={() => {
-                                setBooking({
-                                  ...booking,
-                                  room_preference: "Suite",
-                                });
-                                setRoom("Suite");
-                              }}
-                            />
-                            <label
-                              for="default-radio-2"
-                              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                            >
-                              Suite ({accommodation.pricing * 3}JOD)
-                            </label>
-                          </div>
                         </div>
 
                         {/* guests */}
@@ -472,9 +391,9 @@ const AccommodationDetails = () => {
                       <div className="text-center mt-6">
                         <button
                           type="submit"
-                          className="py-3 w-64 text-xl text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+                          className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
                         >
-                          Book
+                          Select Room
                         </button>
                       </div>
                     </div>

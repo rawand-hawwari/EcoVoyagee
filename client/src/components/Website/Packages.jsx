@@ -4,21 +4,17 @@ import axios from "axios";
 
 const Packages = () => {
   const [packages, setPackages] = useState([]);
+  const [filteredPackages, setFilteredPackages] = useState([]);
   const [types, setTypes] = useState(null);
   const [selectedType, setSelectedType] = useState("Select type");
   const [selected, setSelected] = useState("Select");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchPrice, setSearchPrice] = useState("");
 
   // dropdown for accommodations type
   const [typeMenuOpen, setTypeMenuOpen] = useState(false);
   const toggleTypeMenu = () => {
     setTypeMenuOpen(!typeMenuOpen);
-  };
-  // end of dropdown
-
-  // dropdown for rating
-  const [menuOpen, setMenuOpen] = useState(false);
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
   };
   // end of dropdown
 
@@ -34,6 +30,7 @@ const Packages = () => {
       .then((response) => {
         // Handle the response data here
         setPackages(response.data);
+        setFilteredPackages(response.data);
         // setTypes(response.data.destinations_type);
       })
       .catch((error) => {
@@ -42,19 +39,88 @@ const Packages = () => {
       });
   }, []);
 
-  useEffect(() => {
-    // if (packages.length !== 0) {
-    //   const newTypes = packages.map(
-    //     (package) => package.destinations_type
-    //   );
-    //   setTypes(newTypes);
-    // }
-    // if (types !== null) {
-    //   const uniqueArray = [...new Set(types)];
-    //   setTypes(uniqueArray);
-    // }
-  }, [packages]);
+  const packagePerPage = 3;
+  const indexOfLastPackage = currentPage * packagePerPage;
+  const indexOfFirstPackage = indexOfLastPackage - packagePerPage;
+  const currentPackages = filteredPackages.slice(
+    indexOfFirstPackage,
+    indexOfLastPackage
+  );
+  const totalPages = Math.ceil(filteredPackages.length / packagePerPage);
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 3;
+    if (totalPages > 2) {
+      let start = Math.max(
+        1,
+        Math.min(currentPage - 1, totalPages - maxPagesToShow + 1)
+      );
+      const end = Math.min(start + maxPagesToShow - 1, totalPages);
+      if (end === totalPages) {
+        start = totalPages - 2;
+      }
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    }
+    return pageNumbers;
+  };
 
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // filters
+  const handleSearch = (e) => {
+    const searchQuery = e.target.value;
+    if (searchQuery === "") {
+      setFilteredPackages(packages);
+    } else {
+      setFilteredPackages(
+        packages.filter(
+          (pack) =>
+            pack.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            pack.country.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+  };
+  const handlePriceSearch = (e) => {
+    e.preventDefault();
+    if (searchPrice != "") {
+      setFilteredPackages(packages.filter((pack) => pack.cost <= searchPrice));
+    } else {
+      setFilteredPackages(packages);
+    }
+  };
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center">
@@ -63,10 +129,10 @@ const Packages = () => {
           <div
             className={`${
               filterOpen ? "h-auto" : "h-16 overflow-hidden"
-            } md:overflow-visible md:h-auto my-16 mx-3 border gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
+            } md:overflow-visible md:h-auto my-16 mx-3 border border-transparent-third-color gap-4 flex-wrap p-3 flex justify-center md:flex-col`}
           >
             <div className="w-full flex justify-between">
-              <h2 className="mb-3 text-start text-sky-700 text-xl font-bold">
+              <h2 className="mb-3 text-start text-Base-color text-xl font-bold">
                 Filter
               </h2>
               <svg
@@ -122,22 +188,67 @@ const Packages = () => {
                 <line x1="15" y1="15" x2="21" y2="21" />
               </svg>
             </div>
+            {/* search */}
+            <form
+              class="flex items-center w-full md:w-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <label for="simple-search" class="sr-only">
+                Search
+              </label>
+              <div class="relative w-full">
+                <input
+                  type="text"
+                  id="simple-search"
+                  onChange={(e) => handleSearch(e)}
+                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
+                  placeholder="Search branch name..."
+                />
+              </div>
+              <button
+                type="submit"
+                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+              >
+                <svg
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+                <span class="sr-only">Search</span>
+              </button>
+            </form>
+            {/* price filteration */}
             <div className="w-full">
-              <form class="flex items-center">
+              <p className="mb-3 text-lg text-start">Price</p>
+              <form
+                class="flex items-center"
+                onSubmit={(e) => handlePriceSearch(e)}
+              >
                 <label for="simple-search" class="sr-only">
                   Search
                 </label>
                 <div class="relative w-full">
                   <input
-                    type="text"
-                    id="simple-search"
-                    class="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    type="number"
+                    step="0.01"
+                    onChange={(e) => setSearchPrice(e.target.value)}
+                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
                     placeholder="Search branch name..."
                   />
                 </div>
                 <button
                   type="submit"
-                  class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
                 >
                   <svg
                     class="w-4 h-4"
@@ -158,291 +269,39 @@ const Packages = () => {
                 </button>
               </form>
             </div>
-            <div className="w-full">
-              <p className="mb-3 text-lg text-start">Price</p>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                id="first_name"
-                className="bg-white border border-gray-300 text-sky-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              ></input>
-            </div>
-            <div className="w-full">
-              <p className="mb-3 text-lg text-start">Rating</p>
-              <div className="relative inline-block text-left w-full">
-                <div>
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    id="menu-button"
-                    aria-expanded={menuOpen}
-                    aria-haspopup="true"
-                    onClick={toggleMenu}
-                  >
-                    {selected}
-                    <svg
-                      className={`-mr-1 h-5 w-5 text-gray-400 transform ${
-                        menuOpen ? "rotate-180" : ""
-                      }`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                {menuOpen && (
-                  <div
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="menu-button"
-                    tabIndex="-1"
-                  >
-                    <div className="py-1" role="none">
-                      <button
-                        onClick={() => {
-                          setSelected("Select");
-                          toggleMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        Select
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelected("5 Stars");
-                          toggleMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        5 Stars
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelected("4 Stars");
-                          toggleMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        4 Stars
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelected("3 Stars");
-                          toggleMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        3 Stars
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelected("2 Stars");
-                          toggleMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        2 Stars
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelected("1 Star");
-                          toggleMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        1 Star
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="w-full">
-              <p className="mb-3 text-lg text-start">Amenities</p>
-              <div className="container max-w-full ml-8 mt-6 text-base font-sans">
-                <div class="flex items-center mb-4">
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    for="default-checkbox"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Free Wi-Fi
-                  </label>
-                </div>
-                <div class="flex items-center mb-4">
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    for="default-checkbox"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Free parking
-                  </label>
-                </div>
-                <div class="flex items-center mb-4">
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    for="default-checkbox"
-                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Pool
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="w-full">
-              <p className="mb-3 text-lg text-start">Type</p>
-              <div className="relative inline-block text-left w-full">
-                <div>
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    id="menu-button"
-                    aria-expanded={typeMenuOpen}
-                    aria-haspopup="true"
-                    onClick={toggleTypeMenu}
-                  >
-                    {selectedType}
-                    <svg
-                      className={`-mr-1 h-5 w-5 text-gray-400 transform ${
-                        typeMenuOpen ? "rotate-180" : ""
-                      }`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                {typeMenuOpen && (
-                  <div
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="menu-button"
-                    tabIndex="-1"
-                  >
-                    <div className="py-1" role="none">
-                      <button
-                        onClick={() => {
-                          setSelectedType("Select type");
-                          toggleTypeMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        Select type
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedType("Indoors");
-                          toggleTypeMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        Indoors
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedType("Outdoors");
-                          toggleTypeMenu();
-                        }}
-                        className="text-gray-700 block px-4 py-2 text-sm"
-                        role="menuitem"
-                        tabIndex="-1"
-                        id="menu-item-0"
-                      >
-                        Outdoors
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
+        {/* packages list */}
         <div className="my-16 mx-8">
-          <div className="flex flex-col gap-8">
-            {packages.map((data, id) => (
+          <div className="flex flex-col gap-5 min-h-[901px] mb-5">
+            {currentPackages.map((data, id) => (
               <div key={id}>
-                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-sky-200 mx-auto max-w-3xl md:w-[600px] group transform duration-500 hover:-translate-y-1 mb-2">
+                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl md:w-[768px] group transform duration-500 hover:-translate-y-1 mb-2">
                   <img
-                    className="w-full sm:w-52 h-auto"
-                    src="https://i.ibb.co/Kr4b0zJ/152013403-10158311889099633-8423107287930246533-o.jpg"
-                    alt=""
+                    className="w-full sm:w-52 h-auto object-fill"
+                    src={data.imagePAC[0]}
+                    alt={data.title}
                   />
                   <div className="h-auto w-full flex flex-col justify-between">
                     <div className="p-5 text-start">
-                      <h1 className="text-2xl font-semibold text-sky-900">
+                      <h1 className="text-2xl font-semibold text-Base-color">
                         {data.title}
                       </h1>
-                      <p className="text-md overflow-hidden max-h-28 text-gray-400 mt-2 leading-relaxed">
+                      <p className="text-md overflow-hidden max-h-28 text-third-color mt-2 leading-relaxed">
                         {data.overview}
                       </p>
-                      <p className="text-md overflow-hidden max-h-28 text-gray-400 mt-2 leading-relaxed">
+                      <p className="text-md overflow-hidden max-h-28 text-third-color mt-2 leading-relaxed">
                         Destination: {data.destination}
                       </p>
                     </div>
-                    <div className="flex justify-between items-center p-5 bg-gray-100">
+                    <div className="flex justify-between items-center p-5 bg-second-color">
                       <div>
-                        <p className="text-lg text-gray-700 font-bold">
+                        <p className="text-lg text-Base-color font-bold">
                           {data.cost} JOD
                         </p>
                       </div>
                       <Link to={`/package/${data.packages_id}`}>
-                        <button className="py-2 px-5 bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 md:text-lg rounded-lg shadow-md">
+                        <button className="py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md">
                           Read more
                         </button>
                       </Link>
@@ -451,6 +310,32 @@ const Packages = () => {
                 </article>
               </div>
             ))}
+          </div>
+          {/* pagination */}
+          <div>
+            <div className="flex justify-center gap-2">
+              <button
+                onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="text-third-color"
+                variant="outlined"
+                size="sm"
+              >
+                Previous
+              </button>
+              <div>{renderPageNumbers()}</div>
+              <button
+                onClick={() =>
+                  currentPage !== totalPages && paginate(currentPage + 1)
+                }
+                disabled={currentPage === totalPages}
+                className="text-third-color"
+                variant="outlined"
+                size="sm"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>

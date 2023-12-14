@@ -3,13 +3,13 @@ import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 import { Typography } from "@material-tailwind/react";
 
-const BookingHistory = () => {
+const FlightsHistory = () => {
   const [bookings, setBookings] = useState([]);
   const { headers } = useAuth();
   useEffect(() => {
     if (headers) {
       axios
-        .get("http://localhost:3999/getBookingOfUser", { headers: headers })
+        .get("http://localhost:3999/getFlightsOfUser", { headers: headers })
         .then((response) => {
           setBookings(response.data);
         });
@@ -156,4 +156,4 @@ const BookingHistory = () => {
   );
 };
 
-export default BookingHistory;
+export default FlightsHistory;
