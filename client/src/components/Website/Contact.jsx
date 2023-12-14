@@ -96,7 +96,7 @@ const Contact = () => {
               {/* header */}
               <div className="flex flex-col justify-center">
                 <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
-                  Contact Us
+                  Reach Us
                 </h1>
                 <p className="w-80 self-center text-center text-sm mb-8 font-semibold text-third-color tracking-wide cursor-pointer">
                   We'd love to hear from you!

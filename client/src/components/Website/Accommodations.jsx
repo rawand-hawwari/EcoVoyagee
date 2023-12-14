@@ -326,7 +326,7 @@ const Accommodations = () => {
                 <div>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
                     id="menu-button"
                     aria-expanded={menuOpen}
                     aria-haspopup="true"

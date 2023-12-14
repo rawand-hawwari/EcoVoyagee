@@ -37,8 +37,8 @@ const Packages = () => {
               <article className=" flex flex-col flex-nowrap shadow-lg max-w-3xl md:w-[600px] group transform duration-500 hover:-translate-y-1 bg-second-color border-transparent-first-color border-2">
                 <img
                   className="w-full h-72 object-cover"
-                  src="https://i.ibb.co/Kr4b0zJ/152013403-10158311889099633-8423107287930246533-o.jpg"
-                  alt=""
+                  src={packages[0].imagePAC[0]}
+                  alt={packages[0].title}
                 />
                 <div className="h-auto w-full flex flex-col justify-between">
                   <div className="p-5 text-start">
@@ -78,8 +78,8 @@ const Packages = () => {
                       <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border-2 bg-second-color border-transparent-first-color mx-auto max-w-3xl md:w-[500px] group transform duration-500 hover:-translate-y-1">
                         <img
                           className="w-full md:w-52 h-auto md:h-[245px]"
-                          src="https://i.ibb.co/Kr4b0zJ/152013403-10158311889099633-8423107287930246533-o.jpg"
-                          alt=""
+                          src={data.imagePAC[0]}
+                          alt={data.title}
                         />
                         <div className="h-[245px] w-full flex flex-col justify-between">
                           <div className="p-5 text-start">
