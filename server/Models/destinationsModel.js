@@ -55,29 +55,62 @@ const updateDestinations = async (destinations_id, destinationData) => {
 };
 
 const markDestinationsAsDeleted = async (destinations_id) => {
+    const trx = await db.transaction();
+
     try {
-        return await db('destinations')
+        await trx('destinations')
             .where({ destinations_id: destinations_id })
             .update({ is_deleted: true });
+
+        await trx('flights')
+            .where({ destinations_id: destinations_id })
+            .update({ is_deleted: true });
+
+        await trx.commit();
     } catch (err) {
+        await trx.rollback();
         console.error(err);
         throw new Error('Error marking destinations as deleted');
     }
 };
 
-const getDestinationsPaginated = async (page, pageSize) => {
+
+const getDestinationsPaginated = async (page, pageSize, search) => {
     try {
+        if (page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or pageSize");
+        }
+
         const offset = (page - 1) * pageSize;
-        return await db('destinations')
+
+        let query = db('destinations')
             .orderBy('title', 'asc')
             .where('is_deleted', false)
             .limit(pageSize)
             .offset(offset);
+
+        if (search) {
+            query = query.whereRaw('LOWER(title) LIKE ?', `%${search.toLowerCase()}%`);
+        }
+
+        // Subquery to get total count
+        const totalCountQuery = db('destinations')
+            .count('* as count')
+            .where('is_deleted', false);
+
+        if (search) {
+            totalCountQuery.whereRaw('LOWER(title) LIKE ?', `%${search.toLowerCase()}%`);
+        }
+
+        const totalCountResult = await totalCountQuery.first();
+
+        return { data: await query, totalCount: totalCountResult.count };
     } catch (err) {
         console.error(err);
-        throw new Error('Error fetching paginated accommodations');
+        throw new Error('Error fetching paginated activities');
     }
 };
+
 
 
 

@@ -82,13 +82,13 @@ const markDestinationsAsDeleted = async (req, res) => {
     try {
         const result = await destinationsModel.markDestinationsAsDeleted(destinations_id);
 
-        if (!result) {
-            return res.status(404).json({ error: "The destination not found" });
-        } else {
+        // if (!result) {
+        //     return res.status(404).json({ error: "The destination not found" });
+        // } else {
             res.status(200).json({
                 message: 'The destination Is Marked as Deleted!',
             });
-        }
+        // }
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
@@ -98,25 +98,19 @@ const markDestinationsAsDeleted = async (req, res) => {
 const getDestinationsPaginated = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 4;
+        const pageSize = parseInt(req.query.pageSize) || 3;
+        const search = req.query.search;
 
-        const result = await destinationsModel.getDestinationsPaginated(page, pageSize);
-
-        if (!result) {
-            return res.status(404).json({ error: "No Data !" });
-        } else {
-            res.json({
-                data: result,
-                currentPage: page,
-                pageSize: pageSize,
-            });
+        if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or limit parameter")
         }
+        const result = await destinationsModel.getDestinationsPaginated(page, pageSize, search);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
 };
-
 module.exports = {
 
     getDestinations,

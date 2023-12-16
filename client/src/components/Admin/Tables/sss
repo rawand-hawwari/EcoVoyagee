@@ -1,0 +1,215 @@
+
+import React, { useState, useEffect, useLayoutEffect } from "react";
+import Axios from "axios";
+import {
+  Card,
+  CardBody,
+  Typography,
+  Avatar,
+  IconButton,
+  Tooltip,
+  Input,
+} from "@material-tailwind/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
+
+// Define the table head
+const TABLE_HEAD = ["Users", 'Email', "Admin", ""];
+export const UsersTable = () => {
+  // State to store table rows, search term, and pagination
+  const [tableRows, setTableRows] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState("");
+  const [itemsPerPage, setItemsPerPage] = useState(4);
+
+  useEffect(() => {
+    // Make an Axios request to your API endpoint with pagination parameters
+    Axios.get(
+      `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchTerm}`
+    )
+      // {search:searchTerm} 
+      .then((response) => {
+        // Assuming the API response has a data property that contains the rows
+        setTableRows(response.data.data);
+        // console.log('asdkjasdnkj',response.data.data.data.data);
+        setTotalItems(response.data.totalCount);
+
+        console.log('ttttt', response.data.totalCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching data.data:", error);
+      });
+  }, [currentPage, itemsPerPage]); // The effect runs when currentPage or itemsPerPage changes
+
+  // Handle delete button click
+  const handleDelete = (user_id) => {
+    // Add your delete logic here
+    Axios.put(`http://localhost:3999/deleteUser/${user_id}`)
+      .then((response) => {
+        console.log(`Deleting user with id ${user_id}`);
+      })
+      .catch((error) => { });
+  };
+
+  const handleSearchOnEnter = (e) => {
+    if (e.key === "Enter") {
+      Axios.get(
+        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchTerm}`
+      )
+        // {search:searchTerm}
+        .then((response) => {
+          // Assuming the API response has a data.data property that contains the rows
+          setTableRows(response.data.data);
+          setTotalItems(response.data.totalCount);
+          console.log('search', response.data.totalCount);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+      // Trigger the search when Enter key is pressed
+      setCurrentPage(1); // Reset the page to 1 when a new search is performed
+      // You can perform additional logic here if needed before triggering the search
+      setSearchTerm(e.target.value);
+    }
+  };
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  return (
+    <div>
+      {/* Add the search input field */}
+      <div className="w-1/4 flex ml-[20%]">
+        <Input
+          type="text"
+          placeholder="Search..."
+          name="search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => handleSearchOnEnter(e)}
+          className="bg-white w-[300px] border border-blue "
+        />
+      </div>
+
+      <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 ">
+        <CardBody className="px-0">
+          <table className="mt-4 w-full min-w-max table-auto text-left ">
+            <thead className="bg-white">
+              <tr>
+                {TABLE_HEAD.map((head) => (
+                  <th key={head} className=" bg-blue-gray p-4">
+                    <Typography className="text-md leading-none font-semibold text-blue">
+                      {head}
+                    </Typography>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map(
+                (
+                  {
+                    first_name,
+                    email,
+                    role_id,
+                    user_id,
+                    // profileimage
+                  },
+                  index
+                ) => {
+                  const roleLabel =
+                    role_id === 1
+                      ? "user"
+                      : role_id === 2
+                        ? "Admin"
+                        : "";
+                  const isEvenRow = index % 2 === 0;
+                  const classes = isEvenRow
+                    ? "p-4 bg-blue-gray-50"
+                    : "p-4 bg-white border-b border-blue-gray-50";
+
+                  return (
+                    <tr key={email} className={classes}>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          {/* <Avatar src={profileimage} alt={first_name} size="sm" /> */}
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {first_name}
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex flex-col">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal opacity-70"
+                          >
+                            {email}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex flex-col">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal "
+                          >
+                            {roleLabel}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <Tooltip content="Delete User">
+                          <IconButton
+                            variant="text"
+                            onClick={() => handleDelete(user_id)}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+            </tbody>
+          </table>
+        </CardBody>
+      </Card>
+
+      {/* Pagination controls */}
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() =>
+            setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+          }
+          disabled={currentPage === 1}
+          className="bg-blue hover:bg-blue-600 text-white mr-4 cursor-pointer px-4 py-2 rounded focus:outline-none"
+        >
+          Previous
+        </button>
+        <span className="mr-4 font-semibold">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() =>
+            setCurrentPage(currentPage + 1)
+          }
+          disabled={currentPage === totalPages}
+          className="ml-4 bg-blue hover:bg-blue-600 text-white cursor-pointer px-4 py-2 rounded focus:outline-none"
+        >
+          Next
+        </button>
+      </div>
+    </div >
+  );
+};
+
+// export default UsersTable;

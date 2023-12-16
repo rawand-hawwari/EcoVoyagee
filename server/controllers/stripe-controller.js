@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const db = require('../Models/config/knexConfig');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const payment = async (req, res) => {
@@ -13,7 +13,7 @@ const payment = async (req, res) => {
       confirm: true,
       return_url: "http://localhost:3000/",
     });
-    console.log("Payment", payment);
+    // console.log("Payment", payment);
     res.json({
       message: "Payment successful",
       success: true,
@@ -27,6 +27,6 @@ const payment = async (req, res) => {
   }
 };
 
-module.exports=  {
-    payment
+module.exports = {
+  payment
 }

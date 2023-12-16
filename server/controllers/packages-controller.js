@@ -6,15 +6,14 @@ const addPackages = async (req, res) => {
     try {
         const packagesData = req.body;
 
-        const file = req.file;
-
-        if (file) {
-            const fileName = `${Date.now()}_${file.originalname}`;
-            const fileUrl = await Firebase.uploadFileToFirebase(file, fileName);
-
-            req.body.imagePAC = fileUrl;
+        const files = req.files;
+        if (files && files.length > 0) {
+            const fileUrls = await Promise.all(files.map(async (file) => {
+                const fileName = `${Date.now()}_${file.originalname}`;
+                return await Firebase.uploadFileToFirebase(file, fileName);
+            }));
+            req.body.imagePAC = fileUrls;
         }
-
         const result = await packagesModel.addPackages(packagesData);
 
         res.json({ message: 'packages has been added!', data: result[0] });
@@ -29,7 +28,6 @@ const getPackages = async (req, res) => {
     try {
         const result = await packagesModel.getPackages();
         res.json(result);
-
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
@@ -42,7 +40,6 @@ const getPackagesById = async (req, res) => {
     try {
         const result = await packagesModel.getPackagesById(packages_id);
         res.json(result);
-
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
@@ -54,14 +51,15 @@ const updatePackages = async (req, res) => {
     try {
         const packagesData = req.body;
 
-        const file = req.file;
-
-        if (file) {
-            const fileName = `${Date.now()}_${file.originalname}`;
-            const fileUrl = await Firebase.uploadFileToFirebase(file, fileName);
-
-            req.body.imagePAC = fileUrl;
+        const files = req.files;
+        if (files && files.length > 0) {
+            const fileUrls = await Promise.all(files.map(async (file) => {
+                const fileName = `${Date.now()}_${file.originalname}`;
+                return await Firebase.uploadFileToFirebase(file, fileName);
+            }));
+            req.body.imagePAC = fileUrls;
         }
+
         const result = await packagesModel.updatePackages(packages_id, packagesData);
 
         if (!result.length) {
@@ -123,11 +121,11 @@ const getPackagesWithComments = async (req, res) => {
 
 const BookPackage = async (req, res) => {
     const packages_id = req.params.id;
-    const { address, phone, room_preference, cost, adults, children, date_from, date_to } = req.body;
+    const { cost, address, phone, room_preference, adults, children, date_from, date_to } = req.body;
     const user_id = req.user.user_id;
 
     try {
-        const result = await packagesModel.BookPackage(packages_id, user_id, address, phone, room_preference, cost, adults, children, date_from, date_to);
+        const result = await packagesModel.BookPackage(cost, packages_id, user_id, address, phone, room_preference, adults, children, date_from, date_to);
         res.json(result);
     } catch (err) {
         console.error(err);
@@ -155,22 +153,18 @@ const getPackagesPaginated = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 4;
+        const search = req.query.search;
 
-        const result = await packagesModel.getPackagesPaginated(page, pageSize);
-
-        if (!result) {
-            return res.status(404).json({ error: "No Data !" });
-        } else {
-            res.json({
-                data: result,
-                currentPage: page,
-                pageSize: pageSize,
-            });
+        if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or limit parameter")
         }
+        const result = await packagesModel.getPackagesPaginated(page, pageSize, search);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
+
 };
 
 module.exports = {

@@ -27,10 +27,12 @@ router.post('/sendEmail', userController.sendEmail);
 
 router.post('/verificationCode', userController.verificationCode);
 
-router.get('/getUserId', verifyJWT.authorize([1,2]), userController.getUserId);
+router.get('/getUserId', verifyJWT.authorize([1, 2]),userController.getUserId );
 
 router.put('/updateUserData', upload.single('image'), verifyJWT.authorize([1, 2]), userController.updateUserData);
 
 router.put('/MakeAdmin/:id', verifyJWT.authorize([2]), userController.MakeAdmin);
+
+router.get('/getUsersPaginated', userController.getUsersPaginated); //
 
 module.exports = router;

@@ -14,9 +14,9 @@ router.get("/getDestinationsByID/:id", destinationController.getDestinationsByID
 
 router.get("/getDestinationsPaginated", destinationController.getDestinationsPaginated);
 
-router.post("/addDestinations", upload.array('image', 4), verifyJWT.authorize([2]), destinationController.addDestinations);
+router.post("/addDestinations",  upload.array('files[]'), verifyJWT.authorize([2]), destinationController.addDestinations);
 
-router.put("/updateDestinations/:id", upload.array('image', 4),  destinationController.updateDestinations);
+router.put("/updateDestinations/:id", upload.array('files[]'), verifyJWT.authorize([1, 2]), destinationController.updateDestinations);
 
 router.put("/markDestinationsAsDeleted/:id", verifyJWT.authorize([2]), destinationController.markDestinationsAsDeleted);
 

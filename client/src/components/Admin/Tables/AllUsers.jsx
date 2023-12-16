@@ -9,75 +9,87 @@ import {
   Chip,
   IconButton,
   Tooltip,
+  CardFooter,
 } from "@material-tailwind/react";
 import axios from "axios";
 import { useAuth } from "../../Context/AuthContext";
+import { usePage } from "../../Context/SelectedPageContext";
 
 const AllUsers = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  const TABLE_HEAD = ["Users", "Country", "Admin", ""];
+  // window.scrollTo({ top: 0, behavior: "smooth" });
   const [users, setUsers] = useState([]);
-  const [currentUsers, setCurrentUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const {headers} = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const itemsPerPage = 10;
+  // const { headers } = useAuth();
+  const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
+
+  const TABLE_HEAD = ["Users", "Country", "Admin", ""];
   useEffect(() => {
     axios
-      .get(`http://localhost:3999/getUserData`)
+      .get(
+        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
+      )
+      // {search:searchTerm}
       .then((response) => {
-        setUsers(response.data);
+        // Assuming the API response has a data property that contains the rows
+        setUsers(response.data.data);
+        setFilteredUsers(response.data.data);
+        setTotalCount(response.data.totalCount);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Error fetching data.data:", error);
       });
-  }, []);
+  }, [currentPage]);
 
-  const indexOfLastUser =
-    filteredUsers.length === 0 ? users.length : filteredUsers.length - 1;
-  const indexOfFirstUser = 0;
-  useEffect(() => {
-    if (filteredUsers.length === 0) {
-      setCurrentUsers(users.slice(indexOfFirstUser, indexOfLastUser));
-    } else {
-      setCurrentUsers(filteredUsers.slice(indexOfFirstUser, indexOfLastUser));
-    }
-  }, [filteredUsers, users]);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery === "") {
-      setFilteredUsers(users);
-    } else {
-      setFilteredUsers(
-        users.filter(
-          (user) =>
-            user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.last_name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    }
+    axios
+      .get(
+        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
+      )
+      // {search:searchTerm}
+      .then((response) => {
+        // Assuming the API response has a data property that contains the rows
+        setUsers(response.data.data);
+        setFilteredUsers(response.data.data);
+        setTotalCount(response.data.totalCount);
+
+      })
+      .catch((error) => {
+        console.error("Error fetching data.data:", error);
+      });
+    setCurrentPage(1);
   };
 
   const handleEdit = (id) => {};
   return (
-    <Card className="lg:ml-80 p-2 w-screen lg:w-full h-full border border-sky-700">
-        <h1 className="text-sky-900 text-start mt-5 mx-5 text-lg font-bold">
-          Users
-        </h1>
-        <hr className="text-sky-700 mb-5"/>
-      <CardHeader floated={false} shadow={false} className="rounded-none">
+    <Card className="lg:ml-80 p-2 w-full lg:w-full h-full border border-Base-color bg-second-color">
+      <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
+        Users
+      </h1>
+      <hr className="text-third-color mb-5" />
+      <CardHeader
+        floated={false}
+        shadow={false}
+        className="rounded-none bg-second-color"
+      >
         <div className="flex items-center justify-between gap-8 m-4">
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  class="w-4 h-4 text-second-color0"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -95,33 +107,56 @@ const AllUsers = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
                 placeholder="Search user"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-white hover:text-sky-900 absolute end-2.5 bottom-1 bg-sky-900 hover:bg-white border border-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Search
               </button>
             </div>
           </form>
+          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+            <Button
+              className="flex items-center gap-3 border border-fourth-color bg-fourth-color hover:bg-second-color hover:text-fourth-color"
+              size="sm"
+              onClick={() => {
+                onSelectedPage("addActivity");
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-4 h-4 mx-1"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Add new User
+            </Button>
+          </div>
         </div>
       </CardHeader>
-      <CardBody className="px-0 overflow-auto">
+      <CardBody className="px-0 overflow-auto min-h-[768px] mb-auto">
         <table className="w-full min-w-max table-auto text-left">
-          <thead>
+          <thead className="bg-third-color text-second-color">
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
                   key={head}
-                  className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                  className="border-y border-blue-gray-100 bg-blue-second-color/50 p-4"
                 >
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal leading-none opacity-70"
+                    className="font-normal leading-none"
                   >
                     {head}
                   </Typography>
@@ -130,17 +165,24 @@ const AllUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((user, index) => {
+            {filteredUsers.map((user, index) => {
               const isLast =
                 (index === filteredUsers.length) === 0
-                  ? users.length-1
+                  ? users.length - 1
                   : filteredUsers.length - 1;
               const classes = isLast
                 ? "p-4"
                 : "p-4 border-b border-blue-gray-50";
 
               return (
-                <tr key={user.email} className={index%2 !== 0? "bg-white":"bg-gray-200"}>
+                <tr
+                  key={index}
+                  className={
+                    index % 2 !== 0
+                      ? "bg-second-color"
+                      : "bg-transparent-first-color"
+                  }
+                >
                   <td className={classes}>
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col">
@@ -198,7 +240,7 @@ const AllUsers = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="w-6 h-6 text-sky-900"
+                          class="w-6 h-6 text-Base-color"
                         >
                           <path
                             stroke-linecap="round"
@@ -215,6 +257,33 @@ const AllUsers = () => {
           </tbody>
         </table>
       </CardBody>
+      <CardFooter className="flex items-center justify-between border-t border-blue-second-color p-4">
+        <Typography variant="small" color="blue-gray" className="font-normal">
+          Page {currentPage} of {totalPages}
+        </Typography>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => currentPage !== 1 && setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="text-Base-color hover:bg-transparent-first-color"
+            variant="outlined"
+            size="sm"
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={() =>
+              currentPage != totalPages && setCurrentPage(currentPage + 1)
+            }
+            disabled={currentPage == totalPages}
+            className="text-Base-color hover:bg-transparent-first-color"
+            variant="outlined"
+            size="sm"
+          >
+            Next
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 };

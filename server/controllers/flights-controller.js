@@ -97,22 +97,15 @@ const updateFlight = async (req, res) => {
 
 const getFlightsPaginated = async (req, res) => {
     try {
-        const page = parseInt(req.params.page) || 1;
-        const pageSize = 4;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 4;
+        const search = req.query.search;
 
-        const result = await flightsModel.getFlightsPaginated(page, pageSize);
-        const totalCount = (await flightsModel.getFlights()).length;
-        const totalPages = Math.ceil(totalCount / pageSize);
-        if (!result) {
-            return res.status(404).json({ error: "No Data !" });
-        } else {
-            res.json({
-                data: result,
-                currentPage: page,
-                pageSize: pageSize,
-                totalPages: totalPages,
-            });
+        if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or limit parameter")
         }
+        const result = await flightsModel.getFlightsPaginated(page, pageSize, search);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');

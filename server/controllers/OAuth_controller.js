@@ -17,11 +17,15 @@ const authentication = passport.authenticate("google", {
     scope: ["email", "profile"],
 });
 
-const authenticationCallback = passport.authenticate("google", {
-    successRedirect: "/protected",
-    failureRedirect: "/auth/google/failure",
-});
+// const authenticationCallback = passport.authenticate("google", {
+//     successRedirect: "/protected",
+//     failureRedirect: "/auth/google/failure",
+// });
+const authenticationCallback = passport.authenticate('google', { failureRedirect: '/' });
 
+const handleSuccessfulAuthentication = (req, res) => {
+    res.redirect('http://localhost:3000/');
+};
 const protected = (isLoggedIn, async (req, res) => {
     try {
         const userEmail = req.user && req.user.emails && req.user.emails[0] && req.user.emails[0].value;
@@ -102,5 +106,6 @@ module.exports = {
     authenticationCallback,
     protected,
     logout,
-    authenticationFailure
+    authenticationFailure,
+    handleSuccessfulAuthentication
 };

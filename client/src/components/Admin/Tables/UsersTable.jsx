@@ -1,4 +1,3 @@
-// import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import Swal from "sweetalert2";
 import {
@@ -19,75 +18,85 @@ import { useAuth } from "../../Context/AuthContext";
 
 export const UsersTable = () => {
   const [users, setUsers] = useState([]);
-  //   const [currentUsers, setCurrentUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const {headers} =useAuth();
-  const usersPerPage = 5;
+  const [totalCount, setTotalCount] = useState(1);
+  const itemsPerPage = 5;
+  const { headers } = useAuth();
   const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
 
   const TABLE_HEAD = ["Users", "Country", "Admin", ""];
   useEffect(() => {
     axios
-      .get(`http://localhost:3999/getUserData`)
+      .get(
+        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}`
+      )
+      // {search:searchTerm}
       .then((response) => {
-        // Handle the response data here
-        setUsers(response.data);
-        setFilteredUsers(response.data);
-        // setTypes(response.data.destinations_type);
+        // Assuming the API response has a data property that contains the rows
+        setUsers(response.data.data);
+        setFilteredUsers(response.data.data);
+        // console.log('asdkjasdnkj',response.data.data.data.data);
+        setTotalCount(response.data.totalCount);
       })
       .catch((error) => {
-        // Handle errors here
-        console.error("Error:", error);
+        console.error("Error fetching data.data:", error);
       });
-  }, []);
+  }, [currentPage]);
 
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  let currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+const totalPages = Math.ceil(totalCount/ itemsPerPage);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery === "") {
-      setFilteredUsers(users);
-    } else {
-      setFilteredUsers(
-        users.filter(
-          (user) =>
-            user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.last_name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    }
+    axios
+      .get(
+        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}`
+      )
+      // {search:searchTerm}
+      .then((response) => {
+        // Assuming the API response has a data property that contains the rows
+        setUsers(response.data.data);
+        setFilteredUsers(response.data.data);
+        // console.log('asdkjasdnkj',response.data.data.data.data);
+        setTotalCount(response.data.totalCount);
+
+        console.log("ttttt", response.data.totalCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching data.data:", error);
+      });
     setCurrentPage(1);
   };
+
   const handleEdit = (id) => {
-    axios.put(`http://localhost:3999/MakeAdmin/${id}`, null, {headers:headers});
+    axios.put(`http://localhost:3999/MakeAdmin/${id}`, null, {
+      headers: headers,
+    });
   };
   return (
-    <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-sky-700">
-      <h1 className="text-sky-900 text-start mt-5 mx-5 text-lg font-bold">
+    <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-third-color bg-second-color">
+      <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Users
       </h1>
-      <hr className="text-sky-700" />
-      <CardHeader floated={false} shadow={false} className="rounded-none">
+      <hr className="text-third-color" />
+      <CardHeader
+        floated={false}
+        shadow={false}
+        className="rounded-none bg-second-color"
+      >
         <div className="flex items-center justify-between gap-8 m-4">
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  class="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -105,13 +114,13 @@ export const UsersTable = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-gray-50"
                 placeholder="Search user"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-white hover:text-sky-900 absolute end-2.5 bottom-1 bg-sky-900 hover:bg-white border border-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Search
               </button>
@@ -121,7 +130,7 @@ export const UsersTable = () => {
             <Button
               variant="outlined"
               size="sm"
-              className="border border-sky-900 bg-sky-900 text-white hover:bg-white hover:text-sky-900"
+              className="border border-fourth-color bg-fourth-color text-second-color hover:bg-second-color hover:text-fourth-color"
               onClick={() => onSelectedPage("users")}
             >
               view all
@@ -131,7 +140,7 @@ export const UsersTable = () => {
       </CardHeader>
       <CardBody className="px-0 h-[466px] mb-auto overflow-auto">
         <table className="w-full min-w-max table-auto text-left">
-          <thead>
+          <thead className="bg-third-color text-second-color">
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
@@ -141,7 +150,7 @@ export const UsersTable = () => {
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal leading-none opacity-70"
+                    className="font-normal leading-none"
                   >
                     {head}
                   </Typography>
@@ -150,7 +159,7 @@ export const UsersTable = () => {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((user, index) => {
+            {filteredUsers.map((user, index) => {
               const isLast =
                 (index === filteredUsers.length) === 0
                   ? users.length - 1
@@ -162,7 +171,11 @@ export const UsersTable = () => {
               return (
                 <tr
                   key={index}
-                  className={index % 2 !== 0 ? "bg-white" : "bg-gray-200"}
+                  className={
+                    index % 2 !== 0
+                      ? "bg-second-color"
+                      : "bg-transparent-first-color"
+                  }
                 >
                   <td className={classes}>
                     <div className="flex items-center gap-3">
@@ -221,7 +234,7 @@ export const UsersTable = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="w-6 h-6 text-sky-900"
+                          class="w-6 h-6 text-Base-color"
                         >
                           <path
                             stroke-linecap="round"
@@ -240,18 +253,13 @@ export const UsersTable = () => {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Page {currentPage} of{" "}
-          {Math.ceil(
-            filteredUsers.length === 0
-              ? users.length / usersPerPage
-              : filteredUsers.length / usersPerPage
-          )}
+          Page {currentPage} of {totalPages}
         </Typography>
         <div className="flex gap-2">
           <Button
-            onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
+            onClick={() => currentPage !== 1 && setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="text-sky-900"
+            className="text-third-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"
           >
@@ -259,22 +267,10 @@ export const UsersTable = () => {
           </Button>
           <Button
             onClick={() =>
-              currentPage !==
-                Math.ceil(
-                  filteredUsers.length === 0
-                    ? users.length / usersPerPage
-                    : filteredUsers.length / usersPerPage
-                ) && paginate(currentPage + 1)
+              currentPage != totalPages && setCurrentPage(currentPage + 1)
             }
-            disabled={
-              currentPage ===
-              Math.ceil(
-                filteredUsers.length === 0
-                  ? users.length / usersPerPage
-                  : filteredUsers.length / usersPerPage
-              )
-            }
-            className="text-sky-900"
+            disabled={currentPage == totalPages}
+            className="text-third-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"
           >

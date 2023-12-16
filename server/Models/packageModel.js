@@ -96,6 +96,7 @@ const addCommentPac = async (packages_id, user_id, comment_text) => {
         throw new Error('Error adding comment');
     }
 };
+
 const getPackagesWithComments = async (packages_id) => {
     try {
         return await db('packages')
@@ -118,16 +119,16 @@ const getPackagesWithComments = async (packages_id) => {
     }
 };
 
-const BookPackage = async (packages_id, user_id, address, phone, room_preference, cost, adults, children, date_from, date_to) => {
+const BookPackage = async (packages_id, cost,user_id, address, phone, room_preference, adults, children, date_from, date_to) => {
     try {
         return await db('booking')
             .insert({
+                cost,
                 packages_id: packages_id,
                 user_id: user_id,
                 address: address,
                 phone: phone,
                 room_preference: room_preference,
-                cost: cost,
                 adults: adults,
                 children: children,
                 date_from:date_from, 
@@ -167,14 +168,36 @@ const getBookPackages = async (packages_id) => {
 };
 
 
-const getPackagesPaginated = async (page, pageSize) => {
+const getPackagesPaginated = async (page, pageSize, search) => {
     try {
+        if (page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or pageSize");
+        }
+
         const offset = (page - 1) * pageSize;
-        return await db('packages')
+
+        let query = db('packages')
             .orderBy('title', 'asc')
             .where('is_deleted', false)
             .limit(pageSize)
             .offset(offset);
+
+        if (search) {
+            query = query.whereRaw('LOWER(title) LIKE ?', `%${search.toLowerCase()}%`);
+        }
+
+        // Subquery to get total count
+        const totalCountQuery = db('packages')
+            .count('* as count')
+            .where('is_deleted', false);
+
+        if (search) {
+            totalCountQuery.whereRaw('LOWER(title) LIKE ?', `%${search.toLowerCase()}%`);
+        }
+
+        const totalCountResult = await totalCountQuery.first();
+
+        return { data: await query, totalCount: totalCountResult.count };
     } catch (err) {
         console.error(err);
         throw new Error('Error fetching paginated packages');

@@ -22,48 +22,51 @@ export const ActivitiesTable = () => {
   const [filteredActivities, setFilteredActivities] = useState(activities);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const activityPerPage = 3;
+  const [totalCount, setTotalCount] = useState(1);
+  const itemsPerPage = 3;
   const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
 
   const TABLE_HEAD = ["Activities", "Type", "Availability", "Action"];
   useEffect(() => {
     axios
-      .get(`http://localhost:3999/getActivities`)
+      .get(
+        `http://localhost:3999/getActivitiesPaginated?page=${currentPage}&search=${searchQuery}`
+      )
+      // {search:searchTerm}
       .then((response) => {
-        // Handle the response data here
-        setActivities(response.data);
-        setFilteredActivities(response.data);
-        // setTypes(response.data.destinations_type);
+        // Assuming the API response has a data property that contains the rows
+        setActivities(response.data.data);
+        setFilteredActivities(response.data.data);
+        setTotalCount(response.data.totalCount);
       })
       .catch((error) => {
-        // Handle errors here
-        console.error("Error:", error);
+        console.error("Error fetching data.data:", error);
       });
-  }, []);
+  }, [currentPage]);
   const { headers } = useAuth();
-  const indexOfLastActivity = currentPage * activityPerPage;
-  const indexOfFirstActivity = indexOfLastActivity - activityPerPage;
-  const currentActivities = filteredActivities.slice(
-    indexOfFirstActivity,
-    indexOfLastActivity
-  );
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery === "") {
-      setFilteredActivities(activities);
-    } else {
-      setFilteredActivities(
-        activities.filter(
-          (activitie) =>
-            activitie.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            activitie.type.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    }
+    axios
+      .get(
+        `http://localhost:3999/getDestinationsPaginated?page=${currentPage}&search=${searchQuery}`
+      )
+      // {search:searchTerm}
+      .then((response) => {
+        // Assuming the API response has a data property that contains the rows
+        setActivities(response.data.data);
+        setFilteredActivities(response.data.data);
+        // console.log('asdkjasdnkj',response.data.data.data.data);
+        setTotalCount(response.data.totalCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching data.data:", error);
+      });
     setCurrentPage(1);
   };
   const handleEdit = (id) => {
@@ -108,24 +111,24 @@ export const ActivitiesTable = () => {
     });
   };
   return (
-    <Card className="p-2 w-full md:w-1/2 h-full border border-sky-700">
-      <h1 className="text-sky-900 text-start mt-5 mx-5 text-lg font-bold">
+    <Card className="p-2 w-full md:w-1/2 h-full border border-Base-color bg-second-color">
+      <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Activities
       </h1>
-      <hr className="text-sky-700 mb-5" />
-      <CardHeader floated={false} shadow={false} className="rounded-none">
+      <hr className="text-third-color mb-5" />
+      <CardHeader floated={false} shadow={false} className="rounded-none bg-second-color">
         <div className="flex flex-col-reverse items-center justify-center gap-8 m-4">
           <form className="w-full" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  class="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -143,13 +146,13 @@ export const ActivitiesTable = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="block w-full p-2 ps-10 text-sm text-Base-color border border-Base-color rounded-lg bg-second-color"
                 placeholder="Search Activity"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-white hover:text-sky-900 absolute end-2.5 bottom-1 bg-sky-900 hover:bg-white border border-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-1"
               >
                 Search
               </button>
@@ -160,11 +163,12 @@ export const ActivitiesTable = () => {
               variant="outlined"
               size="sm"
               onClick={() => onSelectedPage("activities")}
+              className="hover:bg-transparent-first-color border-third-color bg-second-color text-third-color"
             >
               view all
             </Button>
             <Button
-              className="flex items-center gap-3 border border-sky-900 bg-sky-900 hover:bg-white hover:text-sky-900"
+              className="flex items-center gap-3 border border-fourth-color bg-fourth-color hover:bg-second-color hover:text-fourth-color"
               size="sm"
               onClick={() => {
                 onSelectedPage("addActivity");
@@ -189,9 +193,9 @@ export const ActivitiesTable = () => {
           </div>
         </div>
       </CardHeader>
-      <CardBody className="px-0 overflow-auto h-[312px] mb-auto">
+      <CardBody className="px-0 overflow-auto h-[320px] mb-auto">
         <table className="w-full min-w-max table-auto text-left">
-          <thead>
+          <thead className="bg-third-color text-second-color">
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
@@ -201,7 +205,7 @@ export const ActivitiesTable = () => {
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal leading-none opacity-70"
+                    className="font-normal leading-none"
                   >
                     {head}
                   </Typography>
@@ -210,7 +214,7 @@ export const ActivitiesTable = () => {
             </tr>
           </thead>
           <tbody>
-            {currentActivities.map((activity, index) => {
+            {filteredActivities.map((activity, index) => {
               const isLast =
                 (index === filteredActivities.length) === 0
                   ? activities.length - 1
@@ -222,7 +226,7 @@ export const ActivitiesTable = () => {
               return (
                 <tr
                   key={index}
-                  className={index % 2 !== 0 ? "bg-white" : "bg-gray-200"}
+                  className={index % 2 !== 0 ? "bg-second-color" : "bg-transparent-first-color"}
                 >
                   <td className={classes}>
                     <div className="flex items-center gap-3">
@@ -267,7 +271,7 @@ export const ActivitiesTable = () => {
                         }}
                         variant="text"
                       >
-                        <PencilIcon className="h-4 w-4 text-sky-900" />
+                        <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete Activity">
@@ -283,7 +287,7 @@ export const ActivitiesTable = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          className="text-sky-900 w-4 h-4 font-bold"
+                          className="text-Base-color w-4 h-4 font-bold"
                         >
                           <path
                             stroke-linecap="round"
@@ -303,17 +307,13 @@ export const ActivitiesTable = () => {
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
           Page {currentPage} of{" "}
-          {Math.ceil(
-            filteredActivities.length === 0
-              ? activities.length / activityPerPage
-              : filteredActivities.length / activityPerPage
-          )}
+          {totalPages}
         </Typography>
         <div className="flex gap-2">
           <Button
-            onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
+            onClick={() => currentPage !== 1 && setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="text-sky-900"
+            className="text-Base-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"
           >
@@ -321,22 +321,14 @@ export const ActivitiesTable = () => {
           </Button>
           <Button
             onClick={() =>
-              currentPage !==
-                Math.ceil(
-                  filteredActivities.length === 0
-                    ? activities.length / activityPerPage
-                    : filteredActivities.length / activityPerPage
-                ) && paginate(currentPage + 1)
+              currentPage !=
+                totalPages && setCurrentPage(currentPage + 1)
             }
             disabled={
-              currentPage ===
-              Math.ceil(
-                filteredActivities.length === 0
-                  ? activities.length / activityPerPage
-                  : filteredActivities.length / activityPerPage
-              )
+              currentPage ==
+              totalPages
             }
-            className="text-sky-900"
+            className="text-Base-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"
           >

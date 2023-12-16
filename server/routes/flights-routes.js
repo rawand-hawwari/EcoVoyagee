@@ -15,7 +15,7 @@ router.put("/softDeleteFlight/:id", verifyJWT.authorize([2]), flightController.s
 
 router.put("/updateFlight/:id", upload.single('image'), verifyJWT.authorize([2]), flightController.updateFlight);
 
-router.get('/getFlightsPaginated/:page', flightController.getFlightsPaginated);
+router.get('/getFlightsPaginated', flightController.getFlightsPaginated);
 
 router.get('/getFlightsByID/:id', flightController.getFlightsByID);
 

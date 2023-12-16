@@ -8,7 +8,7 @@ import ProductsStatistics from "./ProductsStatistics";
 import { PackagesTable } from "./Tables/PackagesTable";
 import FlightsTable from "./Tables/FlightsTable";
 import HousingTable from "./Tables/HousingTable";
-
+import ContactTable from "./Tables/ContactTable";
 
 const Dashboard = () => {
   const { page, onSelectedPage } = usePage();
@@ -37,7 +37,7 @@ const Dashboard = () => {
       </div>
       <div className="flex justify-center items-center m-5 lg:ml-80 gap-5 flex-col lg:flex-row">
         <div className="md:w-1/3">
-          <h1>hi</h1>
+          <ContactTable />
         </div>
         <div className="w-full md:w-2/3">
           <HousingTable />

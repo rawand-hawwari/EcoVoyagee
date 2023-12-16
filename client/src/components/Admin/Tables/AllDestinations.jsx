@@ -21,43 +21,58 @@ export const AllDestinations = () => {
   const [destinations, setDestinations] = useState([]);
   const [filteredPlaces, setFilteredPlaces] = useState(destinations);
   const [searchQuery, setSearchQuery] = useState("");
-  const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const itemsPerPage = 10;
+  const { page, onSelectedPage, onSelectedId } = usePage();
   const { headers } = useAuth();
+
   const TABLE_HEAD = ["Destinations", "Type", "Country", "Action"];
-  useEffect(() => {
+  function fetchData() {
     axios
-      .get(`http://localhost:3999/getDestinations`)
+      .get(
+        `http://localhost:3999/getDestinationsPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
+      )
+      // {search:searchTerm}
       .then((response) => {
-        // Handle the response data here
-        setDestinations(response.data);
-        setFilteredPlaces(response.data);
-        // setTypes(response.data.destinations_type);
+        // Assuming the API response has a data property that contains the rows
+        setDestinations(response.data.data);
+        setFilteredPlaces(response.data.data);
+        setTotalCount(response.data.totalCount);
       })
       .catch((error) => {
-        // Handle errors here
-        console.error("Error:", error);
+        console.error("Error fetching data.data:", error);
       });
-  }, []);
+  }
+  useEffect(() => {
+    fetchData();
+  }, [currentPage]);
 
-  const currentPlaces = filteredPlaces;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery === "") {
-      setFilteredPlaces(destinations);
-    } else {
-      setFilteredPlaces(
-        destinations.filter(
-          (destination) =>
-            destination.title
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            destination.location
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())
-        )
-      );
-    }
+    axios
+      .get(
+        `http://localhost:3999/getDestinationsPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
+      )
+      // {search:searchTerm}
+      .then((response) => {
+        // Assuming the API response has a data property that contains the rows
+        setDestinations(response.data.data);
+        setFilteredPlaces(response.data.data);
+        setTotalCount(response.data.totalCount);
+
+        console.log("ttttt", response.data.totalCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching data.data:", error);
+      });
+    setCurrentPage(1);
   };
   const handleEdit = (id) => {
     console.log(id);
@@ -102,24 +117,28 @@ export const AllDestinations = () => {
     });
   };
   return (
-    <Card className="lg:ml-80 p-2 lg:w-full h-full border border-sky-700">
-      <h1 className="text-sky-900 text-start mt-5 text-lg font-bold">
+    <Card className="lg:ml-80 p-2 lg:w-full h-full border border-Base-color bg-second-color">
+      <h1 className="text-Base-color text-start mt-5 text-lg font-bold">
         Destinations
       </h1>
-      <hr className="text-sky-700 mb-5" />
-      <CardHeader floated={false} shadow={false} className="rounded-none">
+      <hr className="text-third-color mb-5" />
+      <CardHeader
+        floated={false}
+        shadow={false}
+        className="rounded-none bg-second-color"
+      >
         <div className="flex items-center justify-between gap-8 m-4">
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  class="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -137,13 +156,13 @@ export const AllDestinations = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
                 placeholder="Search Place"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-white hover:text-sky-900 absolute end-2.5 bottom-1 bg-sky-900 hover:bg-white border border-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Search
               </button>
@@ -151,7 +170,7 @@ export const AllDestinations = () => {
           </form>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
             <Button
-              className="flex items-center gap-3 border border-sky-900 bg-sky-900 hover:bg-white hover:text-sky-900"
+              className="flex items-center gap-3 border border-fourth-color bg-fourth-color hover:bg-second-color hover:text-fourth-color"
               size="sm"
               onClick={() => {
                 onSelectedPage("addDestination");
@@ -176,9 +195,9 @@ export const AllDestinations = () => {
           </div>
         </div>
       </CardHeader>
-      <CardBody className="px-0 overflow-auto">
-        <table className="w-full min-w-max table-auto text-left">
-          <thead>
+      <CardBody className="px-0 overflow-auto h-[820px] mb-auto">
+        <table className="w-full table-auto text-left">
+          <thead className="bg-third-color text-second-color">
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
@@ -188,7 +207,7 @@ export const AllDestinations = () => {
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal leading-none opacity-70"
+                    className="font-normal leading-none"
                   >
                     {head}
                   </Typography>
@@ -197,7 +216,7 @@ export const AllDestinations = () => {
             </tr>
           </thead>
           <tbody>
-            {currentPlaces.map((place, index) => {
+            {filteredPlaces.map((place, index) => {
               const isLast =
                 (index === filteredPlaces.length) === 0
                   ? destinations.length - 1
@@ -209,7 +228,11 @@ export const AllDestinations = () => {
               return (
                 <tr
                   key={index}
-                  className={index % 2 !== 0 ? "bg-white" : "bg-gray-200"}
+                  className={
+                    index % 2 !== 0
+                      ? "bg-second-color"
+                      : "bg-transparent-first-color"
+                  }
                 >
                   <td className={classes}>
                     <div className="flex items-center gap-3">
@@ -242,17 +265,17 @@ export const AllDestinations = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {place.location}
+                        {place.country}
                       </Typography>
                     </div>
                   </td>
-                  <td className={classes}>
+                  <td className={`${classes} flex flex-nowrap`}>
                     <Tooltip content="Edit Place">
                       <IconButton
                         onClick={() => handleEdit(place.destinations_id)}
                         variant="text"
                       >
-                        <PencilIcon className="h-4 w-4 text-sky-900" />
+                        <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete Place">
@@ -266,7 +289,7 @@ export const AllDestinations = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          className="text-sky-900 w-4 h-4 font-bold"
+                          className="text-Base-color w-4 h-4 font-bold"
                         >
                           <path
                             stroke-linecap="round"
@@ -283,6 +306,33 @@ export const AllDestinations = () => {
           </tbody>
         </table>
       </CardBody>
+      <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
+        <Typography variant="small" color="blue-gray" className="font-normal">
+          Page {currentPage} of {totalPages}
+        </Typography>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => currentPage !== 1 && setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="text-Base-color hover:bg-transparent-first-color"
+            variant="outlined"
+            size="sm"
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={() =>
+              currentPage != totalPages && setCurrentPage(currentPage + 1)
+            }
+            disabled={currentPage == totalPages}
+            className="text-Base-color hover:bg-transparent-first-color"
+            variant="outlined"
+            size="sm"
+          >
+            Next
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 };

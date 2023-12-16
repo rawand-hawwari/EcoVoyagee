@@ -6,20 +6,37 @@ const Firebase = require("../Middleware/FirebaseConfig/FireBaseConfig");
 
 const addActivities = async (req, res) => {
     try {
-        const activitiesData = req.body;
-        console.log(activitiesData);
-        // const files = req.files;
-        // if (files && files.length > 0) {
-        //     const fileUrls = await Promise.all(files.map(async (file) => {
-        //         const fileName = `${Date.now()}_${file.originalname}`;
-        //         return await Firebase.uploadFileToFirebase(file, fileName);
-        //     }));
+        // console.log("Request received:", req.body, req.files);
+        // console.log("Modified request body:", req.body);
 
-        //     req.body.imageactivity = fileUrls;
-        // }
+        const activitiesData = req.body;
+
+        const files = req.files;
+        if (files && files.length > 0) {
+            const fileUrls = await Promise.all(files.map(async (file) => {
+                const fileName = `${Date.now()}_${file.originalname}`;
+                return await Firebase.uploadFileToFirebase(file, fileName);
+            }));
+
+            console.log("File URLs:", fileUrls);
+
+            req.body.imageactivity = fileUrls;
+        } else {
+            console.log("No files in the request.");
+        }
+
+
+        if (!activitiesData || !files) {
+            return res.status(400).json({ error: 'Invalid request data' });
+        }
+
+        console.log("Modified request body:", req.body);
+
         const result = await activityModel.addActivities(activitiesData);
 
-        res.json({ message: 'activities has been added!', data: result[0] });
+        // console.log("Result from the database:", result);
+
+        res.json({ message: 'activities have been added!', data: result[0] });
 
     } catch (err) {
         console.error(err);
@@ -63,6 +80,7 @@ const updateActivities = async (req, res) => {
 
             req.body.imageactivity = fileUrls;
         }
+        
 
         const result = await activityModel.updateActivities(activities_id, activitiesData);
 
@@ -126,25 +144,19 @@ const getActivitiesWithComments = async (req, res) => {
 const getActivitiesPaginated = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 4;
+        const pageSize = parseInt(req.query.pageSize) || 3;
+        const search = req.query.search;
 
-        const result = await activityModel.getActivitiesPaginated(page, pageSize);
-
-        if (!result) {
-            return res.status(404).json({ error: "No Data !" });
-        } else {
-            res.json({
-                data: result,
-                currentPage: page,
-                pageSize: pageSize,
-            });
+        if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or limit parameter")
         }
+        const result = await activityModel.getActivitiesPaginated(page, pageSize, search);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
 };
-
 
 module.exports = {
     getActivities,

@@ -11,11 +11,11 @@ router.get('/getPackages', packagesController.getPackages);
 
 router.get('/getBookPackages', packagesController.getBookPackages);
 
-router.get('/getPackagesPaginated', packagesController.getPackagesPaginated); //
+router.get('/getPackagesPaginated', packagesController.getPackagesPaginated); 
 
-router.post('/addPackages', upload.single('image'), verifyJWT.authorize([2]), packagesController.addPackages);
+router.post('/addPackages', upload.array('image', 4), verifyJWT.authorize([2]), packagesController.addPackages);
 
-router.put(`/updatePackages/:id`, upload.single('image'), verifyJWT.authorize([2]), packagesController.updatePackages);
+router.put(`/updatePackages/:id`, upload.array('image', 6), verifyJWT.authorize([2]), packagesController.updatePackages);
 
 router.put('/markPackagesAsDeleted/:id', verifyJWT.authorize([2]), packagesController.markPackagesAsDeleted);
 

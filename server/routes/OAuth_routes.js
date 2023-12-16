@@ -8,7 +8,7 @@ router.get("/", OAuthController.button);
 
 router.get("/auth/google", OAuthController.authentication);
 
-router.get("/auth/google/callback", OAuthController.authenticationCallback);
+router.get("/auth/google/callback", OAuthController.authenticationCallback, OAuthController.handleSuccessfulAuthentication);
 
 router.get("/auth/google/failure", OAuthController.authenticationFailure);
 

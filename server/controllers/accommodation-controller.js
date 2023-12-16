@@ -6,6 +6,10 @@ const addAccommodation = async (req, res) => {
     try {
         const accommodationData = req.body;
 
+        // Assuming amenities is a comma-separated string
+        if (accommodationData.amenities) {
+            accommodationData.amenities = accommodationData.amenities.split(',');
+        }
         const files = req.files;
         if (files && files.length > 0) {
             const fileUrls = await Promise.all(files.map(async (file) => {
@@ -15,7 +19,7 @@ const addAccommodation = async (req, res) => {
 
             req.body.imageurl = fileUrls;
         }
-        
+
         const result = await AccommodationModel.addAccommodation(accommodationData);
 
         res.json({ message: 'Accommodation has been added!', data: result[0] });
@@ -36,7 +40,6 @@ const getAccommodations = async (req, res) => {
     }
 };
 
-
 const getAccommodationsByID = async (req, res) => {
     const accommodation_id = req.params.id;
     try {
@@ -52,6 +55,10 @@ const updateAccommodation = async (req, res) => {
     const accommodation_id = req.params.id;
     try {
         const accommodationData = req.body;
+
+        if (accommodationData.amenities) {
+            accommodationData.amenities = accommodationData.amenities.split(',');
+        }
 
         const files = req.files;
         if (files && files.length > 0) {
@@ -124,21 +131,21 @@ const getAccommodationsWithComments = async (req, res) => {
 
 const bookAccommodation = async (req, res) => {
     const accommodation_id = req.params.id;
-    const { address, phone, room_preference, cost, adults, children, date_from, date_to } = req.body;
+    const { cost, address, phone, room_preference, adults, children, date_from, date_to } = req.body;
     const user_id = req.user.user_id;
 
     try {
-        const result = await AccommodationModel.bookAccommodation(accommodation_id, user_id, address, phone, room_preference, cost, adults, children, date_from, date_to);
+        const result = await AccommodationModel.bookAccommodation(cost, accommodation_id, user_id, address, phone, room_preference, adults, children, date_from, date_to);
         res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
 };
-const CancelBook = async (req, res) => {
+const CancelBookAccomm = async (req, res) => {
     const book_id = req.params.id;
     try {
-        const result = await AccommodationModel.CancelBook(book_id);
+        const result = await AccommodationModel.CancelBookAccomm(book_id);
         res.json(result);
     } catch (err) {
         console.error(err);
@@ -166,18 +173,14 @@ const getAccommodationsPaginated = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 4;
+        const search = req.query.search;
 
-        const result = await AccommodationModel.getAccommodationsPaginated(page, pageSize);
 
-        if (!result) {
-            return res.status(404).json({ error: "No Data !" });
-        } else {
-            res.json({
-                data: result,
-                currentPage: page,
-                pageSize: pageSize,
-            });
+        if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or limit parameter")
         }
+        const result = await AccommodationModel.getAccommodationsPaginated(page, pageSize, search);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
@@ -206,5 +209,6 @@ module.exports = {
 
     getAccommodationsPaginated,
 
-    CancelBook
+    CancelBookAccomm
+
 }

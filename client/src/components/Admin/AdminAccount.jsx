@@ -56,36 +56,54 @@ const AdminAccount = () => {
         <div className={`${page === "dashboard" ? "block" : "hidden"}`}>
           <Dashboard />
         </div>
-        <div className={`${page === "profile" ? "block" : "hidden"}`}>
-          <Profile />
+        <div className="flex flex-col justify-center items-center">
+          <div
+            className={`${
+              page === "profile" ? "block" : "hidden"
+            } lg:w-3/4 p-5`}
+          >
+            <Profile />
+          </div>
         </div>
-        <div className={`${page === "users" ? "block" : "hidden"} w-3/4 py-5`}>
+        <div
+          className={`${page === "users" ? "block" : "hidden"} lg:w-3/4 p-5`}
+        >
           <AllUsers />
         </div>
         <div
           className={`${
             page === "destinations" ? "block" : "hidden"
-          } w-3/4 py-5`}
+          } lg:w-3/4 p-5`}
         >
           <AllDestinations />
         </div>
         <div
-          className={`${page === "activities" ? "block" : "hidden"} w-3/4 py-5`}
+          className={`${
+            page === "activities" ? "block" : "hidden"
+          } lg:w-3/4 p-5`}
         >
           <AllActivities />
         </div>
         <div
-          className={`${page === "packages" ? "block" : "hidden"} w-3/4 py-5`}
+          className={`${page === "packages" ? "block" : "hidden"} lg:w-3/4 p-5`}
         >
           <AllPackages />
         </div>
-        <div className={`${page === "accommodations" ? "block" : "hidden"} w-3/4 py-5`}>
+        <div
+          className={`${
+            page === "accommodations" ? "block" : "hidden"
+          } w-3/4 p-5`}
+        >
           <AllHousing />
         </div>
-        <div className={`${page === "flights" ? "block" : "hidden"} w-3/4 py-5`}>
+        <div
+          className={`${page === "flights" ? "block" : "hidden"} lg:w-3/4 p-5`}
+        >
           <AllFlights />
         </div>
-        <div className={`${page === "messages" ? "block" : "hidden"} w-3/4 py-5`}>
+        <div
+          className={`${page === "messages" ? "block" : "hidden"} lg:w-3/4 p-5`}
+        >
           <Contact />
         </div>
 

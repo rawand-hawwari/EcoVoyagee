@@ -11,9 +11,9 @@ router.get('/getActivities', activitiesController.getActivities);
 
 router.get('/getActivitiesPaginated', activitiesController.getActivitiesPaginated); //
 
-router.post('/addActivities', upload.array('image', 4), activitiesController.addActivities);
+router.post('/addActivities', upload.array('files[]'), activitiesController.addActivities);
 
-router.put('/updateActivities/:id', upload.array('image', 4), verifyJWT.authorize([2]), activitiesController.updateActivities);
+router.put(`/updateActivities/:id`, upload.array('files[]'), verifyJWT.authorize([2]), activitiesController.updateActivities);
 
 router.put('/markActivityAsDeleted/:id', verifyJWT.authorize([2]), activitiesController.markActivityAsDeleted);
 

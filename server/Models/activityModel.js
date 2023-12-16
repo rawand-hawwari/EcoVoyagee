@@ -117,17 +117,39 @@ const getActivitiesWithComments = async (activities_id) => {
     }
 };
 
-const getActivitiesPaginated = async (page, pageSize) => {
+const getActivitiesPaginated = async (page, pageSize, search) => {
     try {
+        if (page <= 0 || pageSize <= 0) {
+            throw new Error("Invalid page or pageSize");
+        }
+
         const offset = (page - 1) * pageSize;
-        return await db('activities')
+
+        let query = db('activities')
             .orderBy('title', 'asc')
             .where('is_deleted', false)
             .limit(pageSize)
             .offset(offset);
+
+        if (search) {
+            query = query.whereRaw('LOWER(title) LIKE ?', `%${search.toLowerCase()}%`);
+        }
+
+        // Subquery to get total count
+        const totalCountQuery = db('activities')
+            .count('* as count')
+            .where('is_deleted', false);
+
+        if (search) {
+            totalCountQuery.whereRaw('LOWER(title) LIKE ?', `%${search.toLowerCase()}%`);
+        }
+
+        const totalCountResult = await totalCountQuery.first();
+
+        return { data: await query, totalCount: totalCountResult.count };
     } catch (err) {
         console.error(err);
-        throw new Error('Error fetching paginated accommodations');
+        throw new Error('Error fetching paginated activities');
     }
 };
 

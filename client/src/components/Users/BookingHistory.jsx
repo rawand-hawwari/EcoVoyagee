@@ -36,7 +36,7 @@ const BookingHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {bookings.map((booking, index) => {
+          {bookings&&bookings.map((booking, index) => {
             const isLast = bookings.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
             return (

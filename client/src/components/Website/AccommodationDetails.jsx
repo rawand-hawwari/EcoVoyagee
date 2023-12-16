@@ -5,9 +5,7 @@ import Comments from "./Comments";
 import { useBooking } from "../Context/BookingContext";
 import { useNavigate } from "react-router-dom";
 
-import DatetimePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parse } from 'date-fns';
 
 const AccommodationDetails = () => {
   const { id } = useParams();
@@ -24,12 +22,7 @@ const AccommodationDetails = () => {
     last_name: "",
     address: "",
     phone: "",
-    room_preference: "Standard",
-    adults: 0,
-    children: 0,
     cost: 0,
-    date_from: 0,
-    date_to: 0,
     accommodation_id: 0,
   });
   const [accommodation, setAccommodation] = useState(null);
@@ -265,7 +258,7 @@ const AccommodationDetails = () => {
                                 <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
                                   {item.title}
                                 </h1>
-                                <div className="w-16 h-2 bg-third-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                                <div className="w-16 h-2 bg-fourth-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
                                 <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
                                   {item.accommodation_details}
                                 </p>
@@ -286,7 +279,7 @@ const AccommodationDetails = () => {
               {/* booking form */}
               <div className="p-3 border border-third-color rounded-xl bg-transparent-first-color">
                 <form action="" onSubmit={handleSubmit}>
-                  <div className="min-h-screen flex justify-center items-start md:items-center">
+                  <div className="flex justify-center items-start md:items-center">
                     <div className="py-12 px-12 w-full">
                       <h1 className="text-3xl text-third-color font-bold text-center mb-4 cursor-pointer">
                         Book a room
@@ -335,7 +328,7 @@ const AccommodationDetails = () => {
                           className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                         />
 
-                        {/* date from-to */}
+                        {/* date from-to
                         <label className="px-3 self-start">Date</label>
                         <div className="flex gap-4 w-full items-center">
                           <label className="px-3">From:</label>
@@ -364,7 +357,7 @@ const AccommodationDetails = () => {
                           />
                         </div>
 
-                        {/* guests */}
+                        guests
                         <label className="px-3 self-start">Guests</label>
                         <div className="flex self-start w-1/2 gap-5 items-center">
                           <label className="px-3">Adults:</label>
@@ -386,7 +379,7 @@ const AccommodationDetails = () => {
                             onChange={handleChange}
                             className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
                           />
-                        </div>
+                        </div> */}
                       </div>
                       <div className="text-center mt-6">
                         <button

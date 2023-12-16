@@ -14,6 +14,10 @@ function authorize(allowedRoles) {
       const secretKey = process.env.SECRET_KEY;
       const decodedToken = jwt.verify(token, secretKey);
       const role_id = decodedToken.role_id;
+      // Inside your authorize middleware
+      // console.log('Headers:', req.headers);
+      // console.log('Decoded Token:', decodedToken);
+
       req.user = decodedToken;
       if (allowedRoles.includes(role_id)) {
         next();
@@ -32,3 +36,4 @@ function authorize(allowedRoles) {
 module.exports = {
   authorize,
 };
+
