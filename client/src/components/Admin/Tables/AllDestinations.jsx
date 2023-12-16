@@ -50,10 +50,6 @@ export const AllDestinations = () => {
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     axios

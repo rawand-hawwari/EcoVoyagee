@@ -114,7 +114,7 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-gray-50"
+                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
                 placeholder="Search user"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
