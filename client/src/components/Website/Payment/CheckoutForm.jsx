@@ -25,7 +25,6 @@ export default function CheckoutForm() {
       card: elements.getElement(CardElement),
     });
 
-    console.log(bookData);
     if (!error) {
       try {
         const { id } = paymentMethod;
@@ -42,28 +41,37 @@ export default function CheckoutForm() {
 
         if (response.data.success) {
           try {
-            const booking = {
-              first_name: bookData.first_name,
-              last_name: bookData.last_name,
-              address: bookData.address,
-              phone: bookData.phone,
-              room_preference: bookData.room_preference,
-              adults: bookData.adults,
-              children: bookData.children,
-              cost: bookData.cost,
-              date_from: bookData.date_from,
-              date_to: bookData.date_to,
-            };
+            
             if (bookData.accommodation_id) {
-              // console.log(bookData.accommodation_id);
+              const booking = {
+                room_id: bookData.rooms_ids[0],
+                accommodation_id: bookData.accommodation_id,
+                adults: bookData.adults,
+                children: bookData.children,
+                cost: bookData.cost,
+                date_from: bookData.date_from,
+                date_to: bookData.date_to,
+              };
+              console.log(booking);
+              console.log("hbdjds");
               const response = await axios.post(
-                `http://localhost:3999/BookAccommodation/${bookData.accommodation_id}`,
+                `http://localhost:3999/BookRoom`,
                 booking,
                 {
                   headers: headers,
                 }
               );
             } else if (bookData.packages_id) {
+              const booking = {
+                accommodation_id: bookData.accommodation_id,
+                adults: bookData.adults,
+                children: bookData.children,
+                address: bookData.address,
+                phone: bookData.phone,
+                cost: bookData.cost,
+                date_from: bookData.date_from,
+                date_to: bookData.date_to,
+              };
               // console.log(bookData.packages_id);
               const response = await axios.post(
                 `http://localhost:3999/BookPackage/${bookData.packages_id}`,

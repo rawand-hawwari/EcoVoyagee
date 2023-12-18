@@ -19,7 +19,7 @@ import AdminAccount from "./components/Admin/AdminAccount";
 import Payment from "./components/Website/Payment/Payment";
 import Flights from "./components/Website/Flights";
 import Profile from "./components/Users/Profile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActivityDetails from "./components/Website/ActivityDetails";
 import { useAuth } from "./components/Context/AuthContext";
 import Rooms from "./components/Website/Rooms";
@@ -27,11 +27,10 @@ import Rooms from "./components/Website/Rooms";
 function App() {
   // const pathname = window.location.pathname;
   // const [spaces, setSpaces] = useState("pt-28");
-  const {isAdmin} = useAuth();
+  const { isAdmin } = useAuth();
   return (
     <div className="App bg-second-color">
       <Router>
-
         <Header />
         <div className="min-h-screen" id="root">
           <Routes>

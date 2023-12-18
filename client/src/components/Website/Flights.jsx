@@ -41,13 +41,14 @@ const Flights = () => {
             (data) => data.destinations_id == destination
           );
           setFlights(filtered);
+          setFilteredFlights(filtered);
         } else {
           setFlights(newData);
+          setFilteredFlights(newData);
         }
         axios.get(`http://localhost:3999/getDestinations`).then((response) => {
           setDestinations(response.data);
         });
-        setFilteredFlights(newData);
       })
       .catch((error) => {
         // Handle errors here
@@ -479,7 +480,7 @@ const Flights = () => {
                             </div>
                             <button
                               onClick={(e) =>
-                                bookingFlight(flight.flights_id, "economy")
+                                bookingFlight(flight.flights_id, "business")
                               }
                               type="button"
                               class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
@@ -519,7 +520,7 @@ const Flights = () => {
                             </div>
                             <button
                               onClick={(e) =>
-                                bookingFlight(flight.flights_id, "economy")
+                                bookingFlight(flight.flights_id, "first")
                               }
                               type="button"
                               class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"

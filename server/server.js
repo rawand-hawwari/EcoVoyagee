@@ -19,6 +19,8 @@ const destinations_routes = require('./routes/destinations_routes');
 
 const accommodationRoutes = require('./routes/accommodation-routes');
 
+const roomsRoutes = require('./routes/rooms-routes');
+
 const activitiesRoutes = require('./routes/activities_routes');
 
 const packagesRoutes = require('./routes/packages-routes');
@@ -40,6 +42,8 @@ app.use(OAuthRouter);
 app.use(destinations_routes);
 
 app.use(accommodationRoutes);
+
+app.use(roomsRoutes);
 
 app.use(activitiesRoutes);
 

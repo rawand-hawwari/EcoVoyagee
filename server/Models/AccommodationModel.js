@@ -118,7 +118,7 @@ const getAccommodationsWithComments = async (accommodation_id) => {
     }
 };
 
-const bookAccommodation = async (accommodation_id, cost, user_id, address, phone, room_preference, adults, children, date_from, date_to) => {
+const bookAccommodation = async (accommodation_id, cost, user_id, address, phone, adults, children, date_from, date_to) => {
     try {
         return await db('booking')
             .insert({
@@ -127,7 +127,6 @@ const bookAccommodation = async (accommodation_id, cost, user_id, address, phone
                 user_id: user_id,
                 address: address,
                 phone: phone,
-                room_preference: room_preference,
                 adults: adults,
                 children: children,
                 date_from: date_from,
@@ -164,7 +163,6 @@ const getBookAccommodations = async (accommodation_id) => {
                 'accommodation.accommodation_id',
                 'booking.book_id',
                 'booking.phone',
-                'booking.room_preference',
                 'booking.adults',
                 'booking.children',
                 'users.user_id',

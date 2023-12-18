@@ -119,7 +119,7 @@ const getPackagesWithComments = async (packages_id) => {
     }
 };
 
-const BookPackage = async (packages_id, cost,user_id, address, phone, room_preference, adults, children, date_from, date_to) => {
+const BookPackage = async (packages_id, cost,user_id, address, phone, adults, children, date_from, date_to) => {
     try {
         return await db('booking')
             .insert({
@@ -128,14 +128,13 @@ const BookPackage = async (packages_id, cost,user_id, address, phone, room_prefe
                 user_id: user_id,
                 address: address,
                 phone: phone,
-                room_preference: room_preference,
                 adults: adults,
                 children: children,
                 date_from:date_from, 
                 date_to:date_to,
                 is_shown : true
             })
-            .returning('*');
+            // .returning('*');
     } catch (err) {
         console.error(err);
         throw new Error('Error booking packages');
@@ -154,7 +153,6 @@ const getBookPackages = async (packages_id) => {
                 'packages.packages_id',
                 'booking.book_id',
                 'booking.phone',
-                'booking.room_preference',
                 'booking.adults',
                 'booking.children',
                 'users.user_id',

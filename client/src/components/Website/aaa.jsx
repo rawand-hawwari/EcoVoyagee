@@ -16,8 +16,8 @@ const Rooms = () => {
   const { bookData, onBooking } = useBooking();
   //   const [activeIndex, setActiveIndex] = useState(0);
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [date_from, setdate_from] = useState(new Date());
+  const [date_to, setdate_to] = useState(new Date());
   const [roomDetails, setRoomDetails] = useState(false);
   const [roomModal, setRoomModal] = useState([]);
   const [index, setIndex] = useState(0);
@@ -27,8 +27,7 @@ const Rooms = () => {
   const [roomsNum, setRoomsNum] = useState(1);
   const [children, setChildren] = useState(0);
   const [total, setTotal] = useState(0);
-  const [roomToSelect, setRoomToSelect] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+
 
   const [booking, setBooking] = useState({
     first_name: bookData.first_name,
@@ -38,7 +37,7 @@ const Rooms = () => {
     adults: bookData.adults || 1,
     rooms: bookData.rooms || 1,
     children: bookData.children || 0,
-    cost: bookData.cost||0,
+    cost: bookData.cost,
     date_from: bookData.date_from || 0,
     date_to: bookData.date_to || 0,
     accommodation_id: bookData.accommodation_id,
@@ -46,52 +45,35 @@ const Rooms = () => {
   });
   // console.log(bookData);
   const [rooms, setRooms] = useState([]);
-  const [roomGuests, setRoomGuests] = useState([{ adults: 1, children: 0 }]);
-  // options for date
-  const options = {
-    weekday: "short",
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
-  };
-  // date formatting
-  const formattedStartDate = startDate.toLocaleDateString("en-US", options);
-  const formattedEndDate = endDate.toLocaleDateString("en-US", options);
 
+  //   const [similarPlace, setSimilarPlace] = useState([]);
+
+  //   end carousel images
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+
     axios
-      // .get(`http://localhost:3009/rooms`)
       .post(`http://localhost:3999/getFilteredRooms`, {
-        accommodation_id: id,
-        date_from: startDate,
-        date_to: endDate,
+        date_from,
+        date_to,
+        accommodation_id: id, // Include accommodation_id in the request
       })
       .then((response) => {
+        // Handle the response data here
         let data = response.data;
-        // console.log(response);
-        setRooms(data.filter((item) => item.accommodation_id == id));
+        setRooms(data);
+        console.log(response.data);
+
       })
       .catch((error) => {
         // Handle errors here
         console.error("Error:", error);
       });
-  }, [startDate, endDate, id]);
+  }, [date_from, date_to, bookData.accommodation_id]);
 
-  const roomPerPage = 3;
-  const indexOfLastRoom = currentPage * roomPerPage;
-  const indexOfFirstRoom =
-    indexOfLastRoom - roomPerPage;
-  const currentRooms = rooms.slice(
-    indexOfFirstRoom,
-    indexOfLastRoom
-  );
-  const totalPages = Math.ceil(
-    rooms.length / roomPerPage
-  );
 
   const openModal = (id) => {
-    console.log(id);
     setRoomModal(rooms.filter((room) => room.room_id === id));
     setRoomDetails(true);
     setIndex(id);
@@ -103,42 +85,36 @@ const Rooms = () => {
     setDropdownPopoverShow(!dropdownPopoverShow);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
     e.preventDefault();
   };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    booking.cost = roomGuests.reduce((total, rooom) => {
-      return total + + rooom.room.cost;
+    booking.cost = booking.rooms_ids.reduce((total, room) => {
+      return total + room.price;
     }, 0);
-    booking.date_to = endDate;
-    booking.date_from = startDate;
+    booking.date_to = date_to;
+    booking.date_from = date_from;
     booking.adults = adults;
     booking.children = children;
     booking.rooms = roomsNum;
-
-    try {
-      onBooking(booking);
-      history(`/payment`);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    // try {
+    //   onBooking(booking);
+    //   history(`/payment`);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+    console.log(booking);
   }
   const handleRoomSelect = (index) => {
     if (booking.rooms_ids.length < roomsNum) {
-      booking.rooms_ids.push(rooms[index].room_id);
+      booking.rooms_ids.push(rooms[index]);
       setTotal(
         booking.rooms_ids.reduce((total, room) => {
-          return total + room.cost;
+          return total + room.price;
         }, 0)
       );
-      setRoomGuests(
-        roomGuests.map((object, id) =>
-          id === roomToSelect ? { ...object, room: rooms[index] } : object
-        )
-      );
-      setRoomToSelect(roomToSelect + 1);
     } else {
       Swal.fire({
         icon: "error",
@@ -152,228 +128,13 @@ const Rooms = () => {
       });
     }
   };
-  const addRoom = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setDropdownPopoverShow(true);
-  };
-
-  // handle change of number of rooms
-  const increment = (type, index) => {
-    if (type == "adults") {
-      if (roomGuests[index].adults < 4) {
-        setRoomGuests(
-          roomGuests.map((object, id) =>
-            id === index
-              ? { ...object, adults: roomGuests[index].adults + 1 }
-              : object
-          )
-        );
-      }
-    } else {
-      if ((roomGuests[index].children, 4)) {
-        setRoomGuests(
-          roomGuests.map((object, id) =>
-            id === index
-              ? { ...object, children: roomGuests[index].children + 1 }
-              : object
-          )
-        );
-      }
-    }
-  };
-  const decrement = (type, index) => {
-    if (type == "adults") {
-      if (roomGuests[index].adults > 1) {
-        setRoomGuests(
-          roomGuests.map((object, id) =>
-            id === index
-              ? { ...object, adults: roomGuests[index].adults - 1 }
-              : object
-          )
-        );
-      }
-    } else {
-      if (roomGuests[index].children > 0) {
-        setRoomGuests(
-          roomGuests.map((object, id) =>
-            id === index
-              ? { ...object, children: roomGuests[index].children - 1 }
-              : object
-          )
-        );
-      }
-    }
-  };
-  useEffect(() => {
-    setAdults(
-      roomGuests.reduce((total, guest) => {
-        return total + guest.adults;
-      }, 0)
-    );
-    setChildren(
-      roomGuests.reduce((total, guest) => {
-        return total + guest.children;
-      }, 0)
-    );
-  }, [roomGuests]);
-  const renderRoomNumber = () => {
-    let roomInputs = [];
-    for (let i = 0; i < roomsNum; i++) {
-      roomInputs.push(
-        <div key={i} className="p-5 text-start">
-          <div className="inline">
-            <h1 className="text-fourth-color font-bold">Room {i + 1}</h1>
-          </div>
-          <div className="flex justify-between text-start text-gray-500">
-            <div>
-              <label>Adults</label>
-              <fieldset className="input-number-wrapper group flex items-center mt-1">
-                <button
-                  id="decremnt"
-                  className="decremnt-left-large bg-third-color text-second-color p-2 rounded-l border border-third-color hover:bg-white hover:text-third-color"
-                  onClick={() => {
-                    decrement("adults", i);
-                  }}
-                  disabled={roomGuests[i] && roomGuests[i].adults == 1}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-4 h-4"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5.25 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-                <input
-                  className="p-1 w-16 text-center border border-third-color"
-                  type="text"
-                  value={roomGuests[i].adults}
-                  onChange={(e) =>
-                    parseInt(e.target.value, 10) &&
-                    parseInt(e.target.value, 10) <= 4 &&
-                    setRoomGuests(
-                      roomGuests.map((object, id) =>
-                        id === i
-                          ? {
-                              ...object,
-                              adults: parseInt(e.target.value, 10) || 1,
-                            }
-                          : object
-                      )
-                    )
-                  }
-                  inputmode="numeric"
-                ></input>
-                <button
-                  id="increment"
-                  className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
-                  onClick={() => {
-                    increment("adults", i);
-                  }}
-                  disabled={roomGuests[i] && roomGuests[i].adults == 4}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-4 h-4"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M12 5.25a.75.75 0 01.75.75v5.25H18a.75.75 0 010 1.5h-5.25V18a.75.75 0 01-1.5 0v-5.25H6a.75.75 0 010-1.5h5.25V6a.75.75 0 01.75-.75z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </fieldset>
-            </div>
-            <div>
-              <label>Children</label>
-              <fieldset className="input-number-wrapper group flex items-center mt-1">
-                <button
-                  id="decremnt"
-                  className="decremnt-left-large bg-third-color text-second-color p-2 rounded-l border border-third-color hover:bg-white hover:text-third-color"
-                  onClick={() => {
-                    decrement("children", i);
-                  }}
-                  disabled={roomGuests[i].children == 0}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-4 h-4"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5.25 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-                <input
-                  className="p-1 w-16 text-center border border-third-color"
-                  type="text"
-                  value={roomGuests[i].children}
-                  onChange={(e) =>
-                    parseInt(e.target.value, 10) &&
-                    parseInt(e.target.value, 10) <= 4 &&
-                    setRoomGuests(
-                      roomGuests.map((object, id) =>
-                        id === i
-                          ? {
-                              ...object,
-                              children: parseInt(e.target.value, 10) || 1,
-                            }
-                          : object
-                      )
-                    )
-                  }
-                  inputmode="numeric"
-                ></input>
-                <button
-                  id="increment"
-                  className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
-                  onClick={() => {
-                    increment("children", i);
-                  }}
-                  disabled={roomGuests[i].children == 4}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-4 h-4"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M12 5.25a.75.75 0 01.75.75v5.25H18a.75.75 0 010 1.5h-5.25V18a.75.75 0 01-1.5 0v-5.25H6a.75.75 0 010-1.5h5.25V6a.75.75 0 01.75-.75z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </fieldset>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return roomInputs;
-  };
-  // end of room change
-
   return (
     <div className="text-Base-color">
       <div className="flex flex-col justify-center items-center gap-5 my-10">
         {/* searching */}
         <div className="flex flex-wrap justify-center items-center gap-5 w-full">
           {/* pick rooms and # of guests */}
-          <div className="relative w-2/3 md:w-1/2 lg:w-1/4">
+          <div className="relative">
             <button
               id="dropdownInformationButton"
               data-dropdown-toggle="dropdownInformation"
@@ -381,85 +142,15 @@ const Rooms = () => {
               type="button"
               onClick={() => dropdownPopover()}
             >
-              {adults} {adults > 1 ? "Adults," : "Adult,"}{" "}
-              {children != 0 &&
-                (children > 1
-                  ? `${children} Children,`
-                  : `${children} Child,`)}{" "}
-              {roomsNum} {roomsNum > 1 ? "Rooms" : "Room"}
+              {adults} Adults {children} Children {roomsNum} Rooms
             </button>
 
             <div
               id="dropdownInformation"
-              className={`z-10 absolute ${
-                dropdownPopoverShow ? "block" : "hidden"
-              } bg-white divide-y divide-gray-100 rounded-lg shadow w-full max-h-80 overflow-auto`}
+              className={`z-10 absolute ${dropdownPopoverShow ? "block" : "hidden"
+                } bg-white divide-y divide-gray-100 rounded-lg shadow w-full`}
             >
               <div className="px-4 py-3 text-sm text-Base-color flex justify-between items-center">
-                <h1>Rooms</h1>
-                <fieldset className="input-number-wrapper group flex items-center">
-                  <button
-                    id="decremnt"
-                    className="decremnt-left-large bg-third-color text-second-color p-2 rounded-l border border-third-color hover:bg-white hover:text-third-color"
-                    onClick={() => {
-                      roomsNum != 1 && setRoomsNum(roomsNum - 1);
-                      // roomGuests.pop();
-                      setRoomGuests(roomGuests.slice(0, -1));
-                    }}
-                    disabled={roomsNum == 1}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.25 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  <input
-                    className="p-1.5 w-16 text-center border border-third-color"
-                    type="text"
-                    value={roomsNum}
-                    onChange={(e) =>
-                      parseInt(e.target.value, 10) &&
-                      parseInt(e.target.value, 10) <= 5 &&
-                      setRoomsNum(parseInt(e.target.value, 10) || 1)
-                    }
-                    inputmode="numeric"
-                  ></input>
-                  <button
-                    id="increment"
-                    className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
-                    onClick={() => {
-                      roomsNum < 5 && setRoomsNum(roomsNum + 1);
-                      setRoomGuests([
-                        ...roomGuests,
-                        { adults: 1, children: 0 },
-                      ]);
-                    }}
-                    disabled={roomsNum == 5}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M12 5.25a.75.75 0 01.75.75v5.25H18a.75.75 0 010 1.5h-5.25V18a.75.75 0 01-1.5 0v-5.25H6a.75.75 0 010-1.5h5.25V6a.75.75 0 01.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </fieldset>
-              </div>
-              {/* <div className="px-4 py-3 text-sm text-Base-color flex justify-between items-center">
                 <h1>Adults</h1>
                 <fieldset className="input-number-wrapper group flex items-center">
                   <button
@@ -468,7 +159,6 @@ const Rooms = () => {
                     onClick={() => {
                       adults != 1 && setAdults(adults - 1);
                     }}
-                    disabled={adults == 1}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -488,8 +178,6 @@ const Rooms = () => {
                     type="text"
                     value={adults}
                     onChange={(e) =>
-                      parseInt(e.target.value, 10) &&
-                      parseInt(e.target.value, 10) <= 4 &&
                       setAdults(parseInt(e.target.value, 10) || 1)
                     }
                     inputmode="numeric"
@@ -498,9 +186,8 @@ const Rooms = () => {
                     id="increment"
                     className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
                     onClick={() => {
-                      adults < 4 && setAdults(adults + 1);
+                      setAdults(adults + 1);
                     }}
-                    disabled={adults == 4}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -526,7 +213,6 @@ const Rooms = () => {
                     onClick={() => {
                       children != 0 && setChildren(children - 1);
                     }}
-                    disabled={children == 0}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -546,8 +232,6 @@ const Rooms = () => {
                     type="text"
                     value={children}
                     onChange={(e) =>
-                      parseInt(e.target.value, 10) &&
-                      parseInt(e.target.value, 10) <= 4 &&
                       setChildren(parseInt(e.target.value, 10) || 0)
                     }
                     inputmode="numeric"
@@ -556,9 +240,8 @@ const Rooms = () => {
                     id="increment"
                     className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
                     onClick={() => {
-                      children < 4 && setChildren(children + 1);
+                      setChildren(children + 1);
                     }}
-                    disabled={children == 4}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -574,37 +257,88 @@ const Rooms = () => {
                     </svg>
                   </button>
                 </fieldset>
-              </div> */}
-
-              {renderRoomNumber()}
+              </div>
+              <div className="px-4 py-3 text-sm text-Base-color flex justify-between items-center">
+                <h1>Rooms</h1>
+                <fieldset className="input-number-wrapper group flex items-center">
+                  <button
+                    id="decremnt"
+                    className="decremnt-left-large bg-third-color text-second-color p-2 rounded-l border border-third-color hover:bg-white hover:text-third-color"
+                    onClick={() => {
+                      roomsNum != 1 && setRoomsNum(roomsNum - 1);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.25 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <input
+                    className="p-1.5 w-16 text-center border border-third-color"
+                    type="text"
+                    value={roomsNum}
+                    onChange={(e) =>
+                      setRoomsNum(parseInt(e.target.value, 10) || 1)
+                    }
+                    inputmode="numeric"
+                  ></input>
+                  <button
+                    id="increment"
+                    className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
+                    onClick={() => {
+                      setRoomsNum(roomsNum + 1);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 5.25a.75.75 0 01.75.75v5.25H18a.75.75 0 010 1.5h-5.25V18a.75.75 0 01-1.5 0v-5.25H6a.75.75 0 010-1.5h5.25V6a.75.75 0 01.75-.75z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </fieldset>
+              </div>
             </div>
           </div>
           {/* pick date */}
           <div className="flex items-center">
             <label className="px-3">From:</label>
             <DatetimePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              selected={date_from}
+              onChange={(date) => setdate_from(date)}
               selectsStart
-              startDate={startDate}
-              endDate={endDate}
+              date_from={date_from}
+              date_to={date_to}
+              // dateFormat="yyyy-mm-dd"
               placeholderText="Start Date"
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none focus:border-third-color"
-              calendarClassName="custom-calendar"
+              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
             />
 
             <label className="px-3">To:</label>
             <DatetimePicker
-              selected={endDate}
+              selected={date_to}
               name="date_to"
-              onChange={(date) => setEndDate(date)}
+              onChange={(date) => setdate_to(date)}
               selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
+              date_from={date_from}
+              date_to={date_to}
+              minDate={date_from}
               placeholderText="End Date"
               className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-              calendarClassName="custom-calendar"
             />
           </div>
           {/* search button */}
@@ -616,101 +350,10 @@ const Rooms = () => {
           </button>
         </div>
         {/* rooms list */}
-        <div className="flex flex-col lg:flex-row w-full">
-          {/* summary */}
-          <div
-            className={`bg-white border relative border-third-color ${
-              rooms.length > 0 ? "lg:w-1/2" : "lg:w-1/4"
-            } h-fit lg:mx-5 my-6 text-start pb-10`}
-          >
-            <h1 className="text-third-color text-2xl md:text-4xl px-5 my-3">
-              Summary
-            </h1>
-            <hr />
-            <div>
-              {
-                <>
-                  {roomGuests.map((item, id) => (
-                    <div
-                      className={`p-5 ${
-                        item.room ? "bg-white" : "bg-second-color"
-                      }`}
-                      key={id}
-                    >
-                      <div className="flex justify-between">
-                        <h1 className="flex items-center gap-3 text-xl">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="w-6 h-6"
-                          >
-                            <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
-                            <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
-                          </svg>
-                          Room {id + 1}
-                        </h1>
-                        {item.room && (
-                          <h1 className="text-third-color font-bold text-xl">
-                            {item.room.cost} JOD
-                          </h1>
-                        )}
-                      </div>
-                      {item.room && (
-                        <div>
-                          <p>{item.room.room_type}</p>
-                          <p>{item.room.room_description}</p>
-                        </div>
-                      )}
-                      <p className="font-bold">
-                        {formattedStartDate} - {formattedEndDate}
-                      </p>
-                      <p>
-                        {item.adults > 0 &&
-                          (item.adults == 1
-                            ? "1 Adult"
-                            : `${item.adults} Adults`)}
-                        {item.children > 0 &&
-                          (item.children == 1
-                            ? ", 1 Child"
-                            : `, ${item.children} Children`)}
-                      </p>
-                    </div>
-                  ))}
-                </>
-              }
-            </div>
-            <button
-              className="text-fourth-color w-full px-5 py-2 bg-white text-start flex items-center gap-2 border-y-2 "
-              onClick={() => addRoom()}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Add room
-            </button>
-            <button
-              className="bg-fourth-color absolute -bottom-3 left-1/2 transform -translate-x-1/2 hover:bg-white text-white hover:text-fourth-color border border-fourth-color rounded px-3 py-2 w-4/5"
-              onClick={(e) => handleSubmit(e)}
-            >
-              Continue
-            </button>
-          </div>
-          {/* list */}
+        <div className="flex flex-col lg:flex-row">
           <div className="text-Base-color text-start flex flex-col gap-10 lg:m-10">
-            {currentRooms ? (
-              currentRooms.map((room, index) => (
+            {rooms &&
+              rooms.map((room, index) => (
                 <div
                   key={index}
                   className="flex flex-col lg:flex-row justify-center items-center gap-3"
@@ -732,9 +375,13 @@ const Rooms = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="w-4 h-4 mx-1"
+                            className="w-4 h-4 mx-1"
                           >
-                            <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
+                            <path
+                              fill-rule="evenodd"
+                              d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                              clip-rule="evenodd"
+                            />
                           </svg>
                         </p>
                         <div className="flex flex-wrap gap-4">
@@ -770,7 +417,7 @@ const Rooms = () => {
                       </div>
                       <div className="flex items-baseline text-Base-color mb-5">
                         <span className="text-4xl font-extrabold tracking-tight">
-                          {room.cost}
+                          {room.price}
                         </span>
                         <span className="text-3xl font-semibold">JOD</span>
                       </div>
@@ -847,10 +494,18 @@ const Rooms = () => {
                   )}
                   <div id="details"></div>
                 </div>
-              ))
-            ) : (
-              <div></div>
-            )}
+              ))}
+          </div>
+          <div className="float-right bg-white border relative p-5 border-third-color lg:w-1/4 h-44 lg:mx-5 my-6 text-start">
+            <h1 className="text-third-color text-2xl md:text-4xl">Summary</h1>
+            <hr className="my-3" />
+            <button className="text-fourth-color">Add room</button>
+            <button
+              className="bg-fourth-color absolute -bottom-3 left-1/2 transform -translate-x-1/2 hover:bg-white text-white hover:text-fourth-color border border-fourth-color rounded px-3 py-2 w-4/5"
+              onClick={(e) => handleSubmit(e)}
+            >
+              Continue
+            </button>
           </div>
         </div>
       </div>
