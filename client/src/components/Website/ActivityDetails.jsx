@@ -2,11 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Comments from "./Comments";
+import { useBooking } from "../Context/BookingContext";
+import BookingModal from "./Payment/BookingModal";
+import DatetimePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ActivityDetails = () => {
   const { id } = useParams();
   const [activity, setActivity] = useState([]);
   const [related, setRelated] = useState([]);
+  const [isBooking, setIsBooking] = useState(false);
+  const [total, setTotal] = useState(0);
+  const { bookData, onBooking } = useBooking();
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [booking, setBooking] = useState({
+    first_name: "",
+    last_name: "",
+    address: "",
+    phone: "",
+    adults: 1,
+    children: 0,
+  });
 
   //   for images
   const [currentImage, setCurrentImage] = useState(0);
@@ -37,6 +54,7 @@ const ActivityDetails = () => {
       .then((response) => {
         // Handle the response data here
         setActivity(response.data[0]);
+        setTotal(response.data[0].pricing);
       })
       .catch((error) => {
         // Handle errors here
@@ -66,6 +84,48 @@ const ActivityDetails = () => {
       });
   }, [activity]);
 
+  // booking modal and payment
+  const openBooking = () => {
+    setIsBooking(true);
+    onBooking({
+      ...bookData,
+      activities_id: id,
+      adults: 1,
+      children: 0,
+    });
+  };
+  const closeBookingModal = () => {
+    setIsBooking(false);
+  };
+  useEffect(() => {
+    onBooking({ ...bookData, date_from: startDate, date_to: endDate });
+  }, [startDate, endDate]);
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setBooking({
+      ...booking,
+      [name]: value,
+    });
+    onBooking({
+      ...bookData,
+      [name]: value,
+    });
+    if (name == "adults" || name == "children") {
+      let totalCost;
+      if (name == "adults") {
+        totalCost =
+          value * activity.pricing + ((booking.children * activity.pricing) / 2);
+      } else {
+        totalCost =
+        booking.adults * activity.pricing + ((value * activity.pricing) / 2);
+      }
+      setTotal(totalCost);
+      onBooking({
+        ...bookData,
+        cost: total,
+      });
+    }
+  }
   return (
     <>
       <div>
@@ -152,9 +212,18 @@ const ActivityDetails = () => {
             {activity && (
               <div className="flex flex-col gap-10">
                 {/* title */}
-                <h1 className="text-third-color text-start text-3xl font-bold">
-                  {activity.title}
-                </h1>
+                <div className="flex flex-wrap justify-between">
+                  <h1 className="text-Base-color text-start text-3xl font-bold">
+                    {activity.title}
+                  </h1>
+                  <button
+                    type="submit"
+                    onClick={(e) => openBooking(e)}
+                    className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+                  >
+                    Book Activity
+                  </button>
+                </div>
                 <h5 className="text-start text-xl">
                   {activity.activity_details}
                 </h5>
@@ -423,6 +492,125 @@ const ActivityDetails = () => {
             )}
           </div>
         </div>
+        <div id="booking"></div>
+        {isBooking && (
+          <BookingModal onClose={closeBookingModal}>
+            <div className="p-5 w-full">
+              <h1 className="text-3xl text-third-color font-bold text-center mb-3 cursor-pointer">
+                Book your trip
+              </h1>
+              <div className="space-y-2 flex flex-col justify-center items-center">
+                {/* name */}
+                <label className="px-3 self-start">Name</label>
+                <div className="flex w-full gap-5">
+                  <input
+                    type="text"
+                    name="first_name"
+                    placeholder="First Name"
+                    value={booking.first_name}
+                    onChange={handleChange}
+                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  />
+                  <input
+                    type="text"
+                    name="last_name"
+                    placeholder="Last Name"
+                    value={booking.last_name}
+                    onChange={handleChange}
+                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  />
+                </div>
+
+                {/* address */}
+                <label className="px-3 self-start">Address</label>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Address"
+                  value={booking.address}
+                  onChange={handleChange}
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                />
+
+                {/* phone */}
+                <label className="px-3 self-start">Phone</label>
+                <input
+                  type="number"
+                  name="phone"
+                  placeholder="Phone"
+                  value={booking.phone}
+                  onChange={handleChange}
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                />
+
+                {/* date from-to */}
+                <label className="px-3 self-start">Date</label>
+                <div className="flex gap-4 w-full items-center">
+                  <label className="px-3">From:</label>
+                  <DatetimePicker
+                    selected={startDate}
+                    onChange={(date) => {
+                      setStartDate(date);
+                      onBooking({
+                        ...bookData,
+                        date_from: date,
+                      });
+                    }}
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    // dateFormat="yyyy-mm-dd"
+                    placeholderText="Start Date"
+                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                  />
+
+                  <label className="px-3">To:</label>
+                  <DatetimePicker
+                    selected={endDate}
+                    onChange={(date) => {
+                      setEndDate(date);
+                      onBooking({
+                        ...bookData,
+                        date_to: date,
+                      });
+                    }}
+                    name="date_to"
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    minDate={startDate}
+                    placeholderText="End Date"
+                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                  />
+                </div>
+
+                {/* guests */}
+                <label className="px-3 self-start">Guests</label>
+                <div className="flex self-start w-1/2 gap-5">
+                  <input
+                    type="number"
+                    name="adults"
+                    placeholder="Adults"
+                    value={booking.adults}
+                    onChange={handleChange}
+                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  />
+                  <input
+                    type="number"
+                    name="children"
+                    placeholder="Children"
+                    value={booking.children}
+                    onChange={handleChange}
+                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  />
+                </div>
+                <h1 className="text-Base-color text-lg w-full text-start px-5">
+                  Total: {total} JOD
+                </h1>
+              </div>
+            </div>
+          </BookingModal>
+        )}
       </div>
     </>
   );

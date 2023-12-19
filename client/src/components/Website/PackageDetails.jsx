@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import DatetimePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import BookingModal from "./Payment/BookingModal";
 
 const PackageDetails = () => {
   const { id } = useParams();
@@ -16,7 +17,10 @@ const PackageDetails = () => {
   const [inclusions, setInclusions] = useState([]);
   const [exclusions, setExclusions] = useState([]);
   const [highlights, setHighlights] = useState([]);
+  const [isBooking, setIsBooking] = useState(false);
+  const [total, setTotal] = useState(0);
   const history = useNavigate();
+
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -26,41 +30,46 @@ const PackageDetails = () => {
     last_name: "",
     address: "",
     phone: "",
-    adults: 0,
+    adults: 1,
     children: 0,
   });
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setBooking({
-      ...booking,
-      [name]: value,
-    });
-  }
+  // function handleChange(e) {
+  //   const { name, value } = e.target;
+  //   setBooking({
+  //     ...booking,
+  //     [name]: value,
+  //   });
+  // }
 
   const handleDate = (date) => {
     setStartDate(date);
     let newDate = new Date(date);
     newDate.setDate(date.getDate() + 5);
     setEndDate(newDate);
+    onBooking({
+      ...bookData,
+      date_from: date,
+      date_to: newDate,
+    });
   };
 
-  async function handleSubmit(e) {
-    let total =
-      booking.adults * booking.cost + (booking.children * booking.cost) / 2;
-    booking.cost = total;
-    booking.packages_id = id;
-    booking.date_to = endDate;
-    booking.date_from = startDate;
+  // async function handleSubmit(e) {
+  //   let total =
+  //     booking.adults * booking.cost + (booking.children * booking.cost) / 2;
+  //   booking.cost = total;
+  //   booking.packages_id = id;
+  //   booking.date_to = endDate;
+  //   booking.date_from = startDate;
 
-    e.preventDefault();
-    try {
-      onBooking(booking);
-      history("/payment");
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  }
+  //   e.preventDefault();
+  //   try {
+  //     onBooking(booking);
+  //     history("/payment");
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // }
   // image
   const [currentImage, setCurrentImage] = useState(0);
   const nextSlide = () => {
@@ -90,6 +99,7 @@ const PackageDetails = () => {
         // Handle the response data here
         setPackageData(response.data[0]);
         booking.cost = response.data[0].cost;
+        setTotal(response.data[0].cost);
       })
       .catch((error) => {
         // Handle errors here
@@ -121,6 +131,44 @@ const PackageDetails = () => {
     );
   }
 
+  // booking modal and payment
+  const openBooking = () => {
+    setIsBooking(true);
+    onBooking({
+      ...bookData,
+      packages_id: id,
+      adults: 1,
+      children: 0,
+    });
+  };
+  const closeBookingModal = () => {
+    setIsBooking(false);
+  };
+  useEffect(() => {
+    onBooking({ ...bookData, date_from: startDate, date_to: endDate });
+  }, [startDate, endDate]);
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setBooking({
+      ...booking,
+      [name]: value,
+    });
+    if (name == "adults" || name == "children") {
+      let totalCost = 0;
+      if (name == "adults") {
+        totalCost =
+          value * packageData.cost + (booking.children * packageData.cost) / 2;
+      } else {
+        totalCost =
+        booking.adults * packageData.cost + (value * packageData.cost) / 2;
+      }
+      setTotal(totalCost);
+      onBooking({
+        ...bookData,
+        cost: total,
+      });
+    }
+  }
   return (
     <div>
       {/* images */}
@@ -220,9 +268,13 @@ const PackageDetails = () => {
                     )}
                   </span>
                 </h1>
-                <h5 className="text-start text-3xl px-3 text-Base-color">
-                  {packageData.cost} JOD/person
-                </h5>
+                <button
+                  type="submit"
+                  onClick={(e) => openBooking(e)}
+                  className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+                >
+                  Book Package
+                </button>
               </div>
               {/* overview */}
               <h5 className="text-start text-xl">
@@ -232,6 +284,15 @@ const PackageDetails = () => {
                 <br />
                 {packageData.overview}
               </h5>
+              {/* price */}
+              <div className="flex flex-col gap-6">
+                <h1 className="text-third-color text-start text-3xl font-bold">
+                  Price
+                </h1>
+                <h5 className="text-start text-xl">
+                  {packageData.cost} JOD / Person
+                </h5>
+              </div>
               {/* details */}
               <h1 className="text-Base-color text-start text-3xl font-bold">
                 Trip details
@@ -318,126 +379,115 @@ const PackageDetails = () => {
               </div>
 
               {/* book form */}
-              <div>
-                <form
-                  onSubmit={handleSubmit}
-                  className="bg-gray-100 border border-third-color rounded-xl"
-                >
-                  <div className="min-h-screen flex justify-center items-start md:items-center">
-                    <div className="p-8 w-full">
-                      <h1 className="text-3xl text-third-color font-bold text-center mb-4 cursor-pointer">
-                        Book your trip
-                      </h1>
-                      <div className="space-y-4 flex flex-col justify-center items-center">
-                        {/* name */}
-                        <label className="px-3 self-start">Name</label>
-                        <div className="flex w-full gap-5">
-                          <input
-                            type="text"
-                            name="first_name"
-                            placeholder="First Name"
-                            value={booking.first_name}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                          <input
-                            type="text"
-                            name="last_name"
-                            placeholder="Last Name"
-                            value={booking.last_name}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                        </div>
-
-                        {/* address */}
-                        <label className="px-3 self-start">Address</label>
-                        <input
-                          type="text"
-                          name="address"
-                          placeholder="Address"
-                          value={booking.address}
-                          onChange={handleChange}
-                          className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                        />
-
-                        {/* phone */}
-                        <label className="px-3 self-start">Phone</label>
-                        <input
-                          type="number"
-                          name="phone"
-                          placeholder="Phone"
-                          value={booking.phone}
-                          onChange={handleChange}
-                          className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                        />
-
-                        {/* date from-to */}
-                        <label className="px-3 self-start">Date</label>
-                        <div className="flex gap-4 w-full items-center">
-                          <label className="px-3">From:</label>
-                          <DatetimePicker
-                            selected={startDate}
-                            onChange={(date) => handleDate(date)}
-                            selectsStart
-                            startDate={startDate}
-                            endDate={endDate}
-                            // dateFormat="yyyy-mm-dd"
-                            placeholderText="Start Date"
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-                          />
-
-                          <label className="px-3">To:</label>
-                          <DatetimePicker
-                            selected={endDate}
-                            name="date_to"
-                            disabled
-                            selectsEnd
-                            startDate={startDate}
-                            endDate={endDate}
-                            minDate={startDate}
-                            placeholderText="End Date"
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-                          />
-                        </div>
-
-                        {/* guests */}
-                        <label className="px-3 self-start">Guests</label>
-                        <div className="flex self-start w-1/2 gap-5">
-                          <input
-                            type="number"
-                            name="adults"
-                            placeholder="Adults"
-                            value={booking.adults}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                          <input
-                            type="number"
-                            name="children"
-                            placeholder="Children"
-                            value={booking.children}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                        </div>
-                      </div>
-                      <div className="text-center mt-6">
-                        <button
-                          type="submit"
-                          className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
-                        >
-                          Book
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
             </div>
           )}
         </div>
       </div>
+      <div id="booking"></div>
+      {isBooking && (
+        <BookingModal onClose={closeBookingModal}>
+          <div className="p-5 w-full">
+            <h1 className="text-3xl text-third-color font-bold text-center mb-3 cursor-pointer">
+              Book your trip
+            </h1>
+            <div className="space-y-2 flex flex-col justify-center items-center">
+              {/* name */}
+              <label className="px-3 self-start">Name</label>
+              <div className="flex w-full gap-5">
+                <input
+                  type="text"
+                  name="first_name"
+                  placeholder="First Name"
+                  value={booking.first_name}
+                  onChange={handleChange}
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                />
+                <input
+                  type="text"
+                  name="last_name"
+                  placeholder="Last Name"
+                  value={booking.last_name}
+                  onChange={handleChange}
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                />
+              </div>
+
+              {/* address */}
+              <label className="px-3 self-start">Address</label>
+              <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={booking.address}
+                onChange={handleChange}
+                className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+              />
+
+              {/* phone */}
+              <label className="px-3 self-start">Phone</label>
+              <input
+                type="number"
+                name="phone"
+                placeholder="Phone"
+                value={booking.phone}
+                onChange={handleChange}
+                className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+              />
+
+              {/* date from-to */}
+              <label className="px-3 self-start">Date</label>
+              <div className="flex gap-4 w-full items-center">
+                <label className="px-3">From:</label>
+                <DatetimePicker
+                  selected={startDate}
+                  onChange={(date) => handleDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  // dateFormat="yyyy-mm-dd"
+                  placeholderText="Start Date"
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                />
+
+                <label className="px-3">To:</label>
+                <DatetimePicker
+                  selected={endDate}
+                  name="date_to"
+                  disabled
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={startDate}
+                  placeholderText="End Date"
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                />
+              </div>
+
+              {/* guests */}
+              <label className="px-3 self-start">Guests</label>
+              <div className="flex self-start w-1/2 gap-5">
+                <input
+                  type="number"
+                  name="adults"
+                  placeholder="Adults"
+                  value={booking.adults}
+                  onChange={handleChange}
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                />
+                <input
+                  type="number"
+                  name="children"
+                  placeholder="Children"
+                  value={booking.children}
+                  onChange={handleChange}
+                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                />
+              </div>
+              <h1 className="text-Base-color text-lg w-full text-start px-5">Total: {total} JOD</h1>
+            </div>
+          </div>
+        </BookingModal>
+      )}
     </div>
   );
 };

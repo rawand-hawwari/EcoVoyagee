@@ -5,19 +5,19 @@ const CARD_ELEMENT_OPTIONS = {
   // hidePostalCode: false,
   style: {
     base: {
-      iconColor: "#0369a1",
-      color: "#0c4a6e",
+      iconColor: "#115e59",
+      color: "#115e59",
       fontSize: "20px",
       fontFamily: '"Open Sans", sans-serif',
       fontSmoothing: "antialiased",
       "::placeholder": {
-        color: "#6b7280"
+        color: "#0f766e"
       },
     },
     invalid: {
-      color: "#e5424d",
+      color: "#be123c",
       ":focus": {
-        color: "#303238"
+        color: "#be123c"
       }
     }
   }

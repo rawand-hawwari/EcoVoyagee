@@ -18,10 +18,6 @@ const AccommodationDetails = () => {
 
   const history = useNavigate();
   const [booking, setBooking] = useState({
-    first_name: "",
-    last_name: "",
-    address: "",
-    phone: "",
     cost: 0,
     accommodation_id: 0,
   });
@@ -85,23 +81,12 @@ const AccommodationDetails = () => {
       });
   }, [accommodation]);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setBooking({
-      ...booking,
-      [name]: value,
-    });
-  }
-  
   async function handleSubmit(e) {
     e.preventDefault();
-    let total =
-    booking.adults * booking.cost + (booking.children * booking.cost) / 2;
-    booking.cost = total;
     booking.accommodation_id = id;
-    booking.date_to=endDate;
-    booking.date_from=startDate;
-    
+    booking.date_to = endDate;
+    booking.date_from = startDate;
+
     console.log(booking);
     try {
       onBooking(booking);
@@ -194,9 +179,18 @@ const AccommodationDetails = () => {
           {accommodation && (
             <div className="flex flex-col gap-10">
               {/* title */}
+              <div className="flex flex-wrap justify-between items-center">
               <h1 className="text-third-color text-start text-3xl font-bold">
                 {accommodation.title}
               </h1>
+              <button
+                type="submit"
+                onClick={(e)=>handleSubmit(e)}
+                className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+              >
+                Select Room
+              </button>
+              </div>
               <h5 className="text-start text-xl">
                 {accommodation.accommodation_details}
               </h5>
@@ -274,124 +268,6 @@ const AccommodationDetails = () => {
               {/* comments */}
               <div className="py-12">
                 <Comments id={id} type="Accommodations"></Comments>
-              </div>
-
-              {/* booking form */}
-              <div className="p-3 border border-third-color rounded-xl bg-transparent-first-color">
-                <form action="" onSubmit={handleSubmit}>
-                  <div className="flex justify-center items-start md:items-center">
-                    <div className="py-12 px-12 w-full">
-                      <h1 className="text-3xl text-third-color font-bold text-center mb-4 cursor-pointer">
-                        Book a room
-                      </h1>
-                      <div className="space-y-4 flex flex-col justify-center items-center">
-                        {/* name */}
-                        <label className="px-3 self-start">Name</label>
-                        <div className="flex w-full gap-5">
-                          <input
-                            type="text"
-                            name="first_name"
-                            placeholder="First Name"
-                            value={booking.first_name}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                          <input
-                            type="text"
-                            name="last_name"
-                            placeholder="Last Name"
-                            value={booking.last_name}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                        </div>
-
-                        {/* address */}
-                        <label className="px-3 self-start">Address</label>
-                        <input
-                          type="text"
-                          name="address"
-                          placeholder="Address"
-                          value={booking.address}
-                          onChange={handleChange}
-                          className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                        />
-
-                        {/* phone number */}
-                        <label className="px-3 self-start">Phone</label>
-                        <input
-                          type="number"
-                          name="phone"
-                          placeholder="Phone"
-                          value={booking.phone}
-                          onChange={handleChange}
-                          className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                        />
-
-                        {/* date from-to
-                        <label className="px-3 self-start">Date</label>
-                        <div className="flex gap-4 w-full items-center">
-                          <label className="px-3">From:</label>
-                          <DatetimePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            selectsStart
-                            startDate={startDate}
-                            endDate={endDate}
-                            // dateFormat="yyyy-mm-dd"
-                            placeholderText="Start Date"
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-                          />
-
-                          <label className="px-3">To:</label>
-                          <DatetimePicker
-                            selected={endDate}
-                            name="date_to"
-                            onChange={(date) => setEndDate(date)}
-                            selectsEnd
-                            startDate={startDate}
-                            endDate={endDate}
-                            minDate={startDate}
-                            placeholderText="End Date"
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-                          />
-                        </div>
-
-                        guests
-                        <label className="px-3 self-start">Guests</label>
-                        <div className="flex self-start w-1/2 gap-5 items-center">
-                          <label className="px-3">Adults:</label>
-                          <input
-                            type="number"
-                            name="adults"
-                            placeholder="Adults"
-                            value={booking.adults}
-                            onChange={handleChange}
-                            required
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                          <label className="px-3">Children:</label>
-                          <input
-                            type="number"
-                            name="children"
-                            placeholder="Children"
-                            value={booking.children}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          />
-                        </div> */}
-                      </div>
-                      <div className="text-center mt-6">
-                        <button
-                          type="submit"
-                          className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
-                        >
-                          Select Room
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
               </div>
             </div>
           )}

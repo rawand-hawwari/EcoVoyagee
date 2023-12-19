@@ -63,7 +63,7 @@ export default function CheckoutForm() {
               );
             } else if (bookData.packages_id) {
               const booking = {
-                accommodation_id: bookData.accommodation_id,
+                packages_id: bookData.packages_id,
                 adults: bookData.adults,
                 children: bookData.children,
                 address: bookData.address,
@@ -75,6 +75,25 @@ export default function CheckoutForm() {
               // console.log(bookData.packages_id);
               const response = await axios.post(
                 `http://localhost:3999/BookPackage/${bookData.packages_id}`,
+                booking,
+                {
+                  headers: headers,
+                }
+              );
+            }else if (bookData.activities_id) {
+              const booking = {
+                activities_id: bookData.activities_id,
+                adults: bookData.adults,
+                children: bookData.children,
+                address: bookData.address,
+                phone: bookData.phone,
+                cost: bookData.cost,
+                date_from: bookData.date_from,
+                date_to: bookData.date_to,
+              };
+              // console.log(bookData.packages_id);
+              const response = await axios.post(
+                `http://localhost:3999/BookPackage/${bookData.activities_id}`,
                 booking,
                 {
                   headers: headers,
@@ -145,7 +164,7 @@ export default function CheckoutForm() {
   return (
     <div>
       <form
-        className="flex flex-col gap-3 border border-sky-700 p-5 bg-gray-200"
+        className="flex flex-col gap-3 px-5"
         onSubmit={(e) => handleSubmit(e)}
       >
         <div className="p-5">
@@ -153,7 +172,7 @@ export default function CheckoutForm() {
         </div>
         <button
           type="submit"
-          className="btn-pay py-2 px-4 w-1/3 text-md text-white hover:text-sky-900 bg-sky-900 border-2 hover:bg-white border-sky-900 rounded-2xl"
+          className="btn-pay py-2 px-4 w-full text-md text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
         >
           Buy Now
         </button>

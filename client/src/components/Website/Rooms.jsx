@@ -9,6 +9,7 @@ import DatetimePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import RoomDetailsModal from "./RoomDetailsModal";
 import Swal from "sweetalert2";
+import BookingModal from "./Payment/BookingModal";
 
 const Rooms = () => {
   const { id } = useParams();
@@ -28,17 +29,14 @@ const Rooms = () => {
   const [children, setChildren] = useState(0);
   const [total, setTotal] = useState(0);
   const [roomToSelect, setRoomToSelect] = useState(0);
+  const [isBooking, setIsBooking] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [booking, setBooking] = useState({
-    first_name: bookData.first_name,
-    last_name: bookData.last_name,
-    address: bookData.address,
-    phone: bookData.phone,
     adults: bookData.adults || 1,
     rooms: bookData.rooms || 1,
     children: bookData.children || 0,
-    cost: bookData.cost||0,
+    cost: bookData.cost || 0,
     date_from: bookData.date_from || 0,
     date_to: bookData.date_to || 0,
     accommodation_id: bookData.accommodation_id,
@@ -80,15 +78,9 @@ const Rooms = () => {
 
   const roomPerPage = 3;
   const indexOfLastRoom = currentPage * roomPerPage;
-  const indexOfFirstRoom =
-    indexOfLastRoom - roomPerPage;
-  const currentRooms = rooms.slice(
-    indexOfFirstRoom,
-    indexOfLastRoom
-  );
-  const totalPages = Math.ceil(
-    rooms.length / roomPerPage
-  );
+  const indexOfFirstRoom = indexOfLastRoom - roomPerPage;
+  const currentRooms = rooms.slice(indexOfFirstRoom, indexOfLastRoom);
+  const totalPages = Math.ceil(rooms.length / roomPerPage);
 
   const openModal = (id) => {
     console.log(id);
@@ -104,35 +96,34 @@ const Rooms = () => {
   };
 
   const handleSearch = () => {
-    e.preventDefault();
+    // e.preventDefault();
   };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    booking.cost = roomGuests.reduce((total, rooom) => {
-      return total + + rooom.room.cost;
-    }, 0);
-    booking.date_to = endDate;
-    booking.date_from = startDate;
-    booking.adults = adults;
-    booking.children = children;
-    booking.rooms = roomsNum;
+    if (booking.rooms_ids.length > 0) {
+      let totalCost = roomGuests.reduce((total, rooom) => {
+        return total + +rooom.room.cost;
+      }, 0);
+      booking.cost = totalCost;
+      booking.date_to = endDate;
+      booking.date_from = startDate;
+      booking.adults = adults;
+      booking.children = children;
+      booking.rooms = roomsNum;
 
-    try {
-      onBooking(booking);
-      history(`/payment`);
-    } catch (error) {
-      console.error("Error:", error);
+      try {
+        onBooking(booking);
+        setIsBooking(true);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   }
   const handleRoomSelect = (index) => {
     if (booking.rooms_ids.length < roomsNum) {
       booking.rooms_ids.push(rooms[index].room_id);
-      setTotal(
-        booking.rooms_ids.reduce((total, room) => {
-          return total + room.cost;
-        }, 0)
-      );
+      setTotal(total + +rooms[index].cost);
       setRoomGuests(
         roomGuests.map((object, id) =>
           id === roomToSelect ? { ...object, room: rooms[index] } : object
@@ -151,6 +142,9 @@ const Rooms = () => {
         },
       });
     }
+  };
+  const closeBookingModal = () => {
+    setIsBooking(false);
   };
   const addRoom = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -206,13 +200,13 @@ const Rooms = () => {
   };
   useEffect(() => {
     setAdults(
-      roomGuests.reduce((total, guest) => {
-        return total + guest.adults;
+      roomGuests.reduce((totalCost, guest) => {
+        return totalCost + guest.adults;
       }, 0)
     );
     setChildren(
-      roomGuests.reduce((total, guest) => {
-        return total + guest.children;
+      roomGuests.reduce((totalCost, guest) => {
+        return totalCost + guest.children;
       }, 0)
     );
   }, [roomGuests]);
@@ -609,7 +603,7 @@ const Rooms = () => {
           </div>
           {/* search button */}
           <button
-            onClick={(e) => handleSearch(e)}
+            onClick={() => handleSearch()}
             className="border-fourth-color border-2 hover:bg-second-color bg-fourth-color hover:text-fourth-color text-second-color font-bold py-2 px-4 rounded-md"
           >
             Search
@@ -631,10 +625,15 @@ const Rooms = () => {
               {
                 <>
                   {roomGuests.map((item, id) => (
-                    <div
-                      className={`p-5 ${
-                        item.room ? "bg-white" : "bg-second-color"
+                    <button
+                      className={`p-5 w-full text-start ${
+                        item.room
+                          ? "bg-white"
+                          : roomToSelect == id
+                          ? "bg-white"
+                          : "bg-second-color"
                       }`}
+                      onClick={() => setRoomToSelect(id)}
                       key={id}
                     >
                       <div className="flex justify-between">
@@ -675,7 +674,7 @@ const Rooms = () => {
                             ? ", 1 Child"
                             : `, ${item.children} Children`)}
                       </p>
-                    </div>
+                    </button>
                   ))}
                 </>
               }
@@ -700,6 +699,17 @@ const Rooms = () => {
               </svg>
               Add room
             </button>
+            <div className="flex justify-between p-4 font-bold">
+              <h1>
+                {adults} {adults > 1 ? "Adults," : "Adult,"}{" "}
+                {children != 0 &&
+                  (children > 1
+                    ? `${children} Children,`
+                    : `${children} Child,`)}{" "}
+                {roomsNum} {roomsNum > 1 ? "Rooms" : "Room"}
+              </h1>
+              <h1>Total: {total}JOD</h1>
+            </div>
             <button
               className="bg-fourth-color absolute -bottom-3 left-1/2 transform -translate-x-1/2 hover:bg-white text-white hover:text-fourth-color border border-fourth-color rounded px-3 py-2 w-4/5"
               onClick={(e) => handleSubmit(e)}
@@ -854,6 +864,8 @@ const Rooms = () => {
           </div>
         </div>
       </div>
+      <div id="booking"></div>
+      {isBooking && <BookingModal onClose={closeBookingModal}></BookingModal>}
     </div>
   );
 };
