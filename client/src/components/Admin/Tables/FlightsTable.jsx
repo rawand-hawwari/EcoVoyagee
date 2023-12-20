@@ -22,10 +22,11 @@ const FlightsTable = () => {
   const [filteredFlights, setFilteredFlights] = useState(flights);
   const [searchQuery, setSearchQuery] = useState("");
   const [destination, setDestination] = useState("");
+  const [totalCount, setTotalCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const { headers } = useAuth();
   const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
-  const flightsPerPage = 3;
+  const itemsPerPage = 3;
 
   const TABLE_HEAD = [
     "Number",
@@ -38,52 +39,50 @@ const FlightsTable = () => {
   ];
   useEffect(() => {
     axios
-      .get(`http://localhost:3999/getFlights`)
+      .get(
+        `http://localhost:3999/getFlightsPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
+      )
       .then((response) => {
-        // Handle the response data here
-        let newData = response.data.map((data) => ({
+        let newData = response.data.data.map((data) => ({
           ...data,
           depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
           return: new Date(data.return_date).toLocaleDateString("en-GB"),
         }));
-        axios.get(`http://localhost:3999/getDestinations`).then((response) => {
-          setDestination(response.data);
-        });
         setFlights(newData);
         setFilteredFlights(newData);
-        // setTypes(response.data.destinations_type);
+        setTotalCount(response.data.totalCount);
       })
       .catch((error) => {
         // Handle errors here
         console.error("Error:", error);
       });
-  }, []);
+  }, [currentPage]);
 
-  const indexOfLastUser = currentPage * flightsPerPage;
-  const indexOfFirstUser = indexOfLastUser - flightsPerPage;
-  const currentFlights = filteredFlights.slice(
-    indexOfFirstUser,
-    indexOfLastUser
-  );
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery === "") {
-      setFilteredFlights(flights);
-    } else {
-      setFilteredFlights(
-        flights.filter(
-          (flight) =>
-            flight.destination
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            flight.operatedby.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    }
+    axios
+      .get(
+        `http://localhost:3999/getFlightsPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
+      )
+      // {search:searchTerm}
+      .then((response) => {
+        let newData = response.data.data.map((data) => ({
+          ...data,
+          depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
+          return: new Date(data.return_date).toLocaleDateString("en-GB"),
+        }));
+        setFlights(newData);
+        setFilteredFlights(newData);
+        setTotalCount(response.data.totalCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching data.data:", error);
+      });
+    setCurrentPage(1);
   };
+
   const handleEdit = (id) => {
     console.log(id);
     onSelectedId(id);
@@ -127,24 +126,24 @@ const FlightsTable = () => {
     });
   };
   return (
-    <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-sky-700">
-      <h1 className="text-sky-900 text-start mt-5 mx-5 text-lg font-bold">
+    <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-Base-color bg-second-color">
+      <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Flights
       </h1>
-      <hr className="text-sky-700" />
-      <CardHeader floated={false} shadow={false} className="rounded-none mt-0">
+      <hr className="text-third-color" />
+      <CardHeader floated={false} shadow={false} className="rounded-none mt-0 bg-second-color">
         <div className="flex items-center justify-between gap-8 m-4">
-          <form className="w-full lg:w-1/3" onSubmit={() => handleSearch()}>
+        <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  class="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -162,13 +161,13 @@ const FlightsTable = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search Flight"
+                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
+                placeholder="Search user"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-white hover:text-sky-900 absolute end-2.5 bottom-1 bg-sky-900 hover:bg-white border border-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Search
               </button>
@@ -178,12 +177,13 @@ const FlightsTable = () => {
             <Button
               variant="outlined"
               size="sm"
+              className="hover:bg-transparent-first-color border-third-color bg-second-color text-third-color"
               onClick={() => onSelectedPage("flights")}
             >
               view all
             </Button>
             <Button
-              className="flex items-center gap-3 border border-sky-900 bg-sky-900 hover:bg-white hover:text-sky-900"
+              className="flex items-center gap-3 border border-fourth-color bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color"
               size="sm"
               onClick={() => {
                 onSelectedPage("addFlight");
@@ -208,9 +208,9 @@ const FlightsTable = () => {
           </div>
         </div>
       </CardHeader>
-      <CardBody className="px-3 pt-0 h-[312px] overflow-auto">
+      <CardBody className="px-3 pt-0 h-[360px] overflow-auto bg-second-color">
         <table className="w-full min-w-max table-auto text-left">
-          <thead>
+          <thead className="bg-third-color text-second-color">
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
@@ -229,7 +229,7 @@ const FlightsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {currentFlights.map((flight, index) => {
+            {filteredFlights.map((flight, index) => {
               const isLast =
                 (index === filteredFlights.length) === 0
                   ? flights.length - 1
@@ -241,7 +241,7 @@ const FlightsTable = () => {
               return (
                 <tr
                   key={flight.flights_id}
-                  className={index % 2 !== 0 ? "bg-white" : "bg-gray-200"}
+                  className={index % 2 !== 0 ? "bg-second-color" : "bg-transparent-first-color"}
                 >
                   <td className={classes}>
                     <div className="flex items-center gap-3">
@@ -264,12 +264,7 @@ const FlightsTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {destination &&
-                            destination.map(
-                              (item) =>
-                                item.destinations_id ===
-                                  flight.destinations_id && `${item.title}`
-                            )}
+                          {flight.destination_name}
                         </Typography>
                       </div>
                     </div>
@@ -391,7 +386,7 @@ const FlightsTable = () => {
                         onClick={() => handleEdit(flight.flights_id)}
                         variant="text"
                       >
-                        <PencilIcon className="h-4 w-4 text-sky-900" />
+                        <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip content="Delete flight">
@@ -405,7 +400,7 @@ const FlightsTable = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          className="text-sky-900 w-4 h-4 font-bold"
+                          className="text-Base-color w-4 h-4 font-bold"
                         >
                           <path
                             stroke-linecap="round"
@@ -424,20 +419,13 @@ const FlightsTable = () => {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Page {currentPage} of{" "}
-          {Math.ceil(
-            filteredFlights.length === 0
-              ? flights.length === 0
-                ? 1
-                : flights.length / flightsPerPage
-              : filteredFlights.length / flightsPerPage
-          )}
+          Page {currentPage} of {totalPages}
         </Typography>
         <div className="flex gap-2">
           <Button
-            onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
+            onClick={() => currentPage !== 1 && setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="text-sky-900"
+            className="text-Base-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"
           >
@@ -445,22 +433,10 @@ const FlightsTable = () => {
           </Button>
           <Button
             onClick={() =>
-              currentPage !==
-                Math.ceil(
-                  filteredFlights.length === 0
-                    ? flights.length / flightsPerPage
-                    : filteredFlights.length / flightsPerPage
-                ) && paginate(currentPage + 1)
+              currentPage != totalPages && setCurrentPage(currentPage + 1)
             }
-            disabled={
-              currentPage ===
-              Math.ceil(
-                filteredFlights.length === 0
-                  ? flights.length / flightsPerPage
-                  : filteredFlights.length / flightsPerPage
-              )
-            }
-            className="text-sky-900"
+            disabled={currentPage == totalPages}
+            className="text-Base-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"
           >

@@ -13,6 +13,7 @@ const Login = () => {
   const [cookies, setCookie] = useCookies(["token"]);
   const [error, setError] = useState("");
   const { isAdmin, onLogin } = useAuth();
+  const [userGoogle, setUserGoogle] = useState([]);
 
   const history = useNavigate();
   const [formData, setFormData] = useState({
@@ -87,15 +88,83 @@ const Login = () => {
     }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
-    onError: (error) => errorMessage(error),
-  });
-
   const handleGoogle = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
+    onSuccess: (codeResponse) => setUserGoogle(codeResponse),
     onError: (error) => errorMessage(error),
   });
+  useEffect(() => {
+    if (userGoogle.access_token) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`
+        )
+        .then(async (res) => {
+          try {
+            const response = await axios.post(
+              "http://localhost:3999/google",
+              res.data
+            );
+            const token = response.data.token;
+
+            if (token) {
+              if (response.data.role_id === 2) {
+                onLogin(true, token);
+                history("/dashboard");
+              } else {
+                onLogin(false, token);
+                history(-1);
+              }
+              setError("Sign-in successful");
+              Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "You have Signed in successfully.",
+                confirmButtonText: "OK",
+                customClass: {
+                  confirmButton:
+                    "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+                },
+              });
+            }
+
+            // Rest of your code...
+          } catch (error) {
+            // Delay the error message and handle it
+            setTimeout(() => {
+              console.error("Sign-in error:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Sign-in failed. Email or password is invalid.",
+                confirmButtonText: "OK",
+                customClass: {
+                  confirmButton:
+                    "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+                },
+              });
+              setError("Sign-in failed. Email or password is invalid");
+            }, 100);
+          }
+        })
+        .catch((err) => {
+          // Delay the error message and handle it
+          setTimeout(() => {
+            console.error("Sign-in error:", err);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Sign-in failed. Email or password is invalid.",
+              confirmButtonText: "OK",
+              customClass: {
+                confirmButton:
+                  "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+              },
+            });
+            setError("Sign-in failed. Email or password is invalid");
+          }, 100);
+        });
+    }
+  }, [userGoogle, navigate]);
   // () => {
   //   googleLogin;
   //   // history('/');
@@ -159,11 +228,11 @@ const Login = () => {
         <div className="min-h-screen flex justify-center items-center">
           <div className="py-8 px-12 bg-second-color rounded-2xl shadow-xl z-20">
             <div className="flex flex-col justify-center items-center">
-            <div className="flex items-center gap-5 mb-5">
+              <div className="flex items-center gap-5 mb-5">
                 <img className=" w-16" src={logo} alt="EcoVoyage logo" />
                 <h1 className="text-5xl font-bold text-fourth-color font-grape-nuts">
-                EcoVoyage
-              </h1>
+                  EcoVoyage
+                </h1>
               </div>
               <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                 Log In
