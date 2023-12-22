@@ -35,7 +35,7 @@ const AllFlights = () => {
     "Cost",
     "",
   ];
-  useEffect(() => {
+  const fetchData = () => {
     axios
       .get(
         `http://localhost:3999/getFlightsPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
@@ -54,6 +54,9 @@ const AllFlights = () => {
         // Handle errors here
         console.error("Error:", error);
       });
+  };
+  useEffect(() => {
+    fetchData();
   }, [currentPage]);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -91,8 +94,8 @@ const AllFlights = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#0f766e",
+      cancelButtonColor: "#be123c",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -106,6 +109,8 @@ const AllFlights = () => {
               text: "Your file has been deleted.",
               icon: "success",
             });
+            fetchData();
+
           })
           .catch((error) => {
             Swal.fire({
@@ -128,19 +133,23 @@ const AllFlights = () => {
         Flights
       </h1>
       <hr className="text-third-color mb-5" />
-      <CardHeader floated={false} shadow={false} className="rounded-none mt-0 bg-second-color">
+      <CardHeader
+        floated={false}
+        shadow={false}
+        className="rounded-none mt-0 bg-second-color"
+      >
         <div className="flex items-center justify-between gap-8 m-4">
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -158,13 +167,13 @@ const AllFlights = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
+                className="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
                 placeholder="Search user"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="text-second-color hover:text-fourth-color absolute end-0 bottom-0 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none font-medium rounded-r-lg text-sm px-4 py-2"
               >
                 Search
               </button>
@@ -179,7 +188,7 @@ const AllFlights = () => {
               }}
             >
               <svg
-                class="w-4 h-4"
+                className="w-4 h-4"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -209,7 +218,7 @@ const AllFlights = () => {
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal leading-none opacity-70"
+                    className="font-normal leading-none"
                   >
                     {head}
                   </Typography>
@@ -286,7 +295,7 @@ const AllFlights = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="w-6 h-6"
+                          className="w-6 h-6"
                         >
                           <path
                             stroke-linecap="round"
@@ -328,7 +337,7 @@ const AllFlights = () => {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="w-6 h-6"
+                          className="w-6 h-6"
                         >
                           <path
                             stroke-linecap="round"

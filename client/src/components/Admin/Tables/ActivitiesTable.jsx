@@ -27,7 +27,7 @@ export const ActivitiesTable = () => {
   const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
 
   const TABLE_HEAD = ["Activities", "Type", "Availability", "Action"];
-  useEffect(() => {
+  const fetchData = () => {
     axios
       .get(
         `http://localhost:3999/getActivitiesPaginated?page=${currentPage}&search=${searchQuery}`
@@ -42,6 +42,9 @@ export const ActivitiesTable = () => {
       .catch((error) => {
         console.error("Error fetching data.data:", error);
       });
+  };
+  useEffect(() => {
+    fetchData();
   }, [currentPage]);
   const { headers } = useAuth();
 
@@ -79,8 +82,8 @@ export const ActivitiesTable = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#0f766e",
+      cancelButtonColor: "#be123c",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -94,6 +97,7 @@ export const ActivitiesTable = () => {
               text: "Your file has been deleted.",
               icon: "success",
             });
+            fetchData();
           })
           .catch((error) => {
             Swal.fire({
@@ -116,19 +120,23 @@ export const ActivitiesTable = () => {
         Activities
       </h1>
       <hr className="text-third-color mb-5" />
-      <CardHeader floated={false} shadow={false} className="rounded-none bg-second-color">
+      <CardHeader
+        floated={false}
+        shadow={false}
+        className="rounded-none bg-second-color"
+      >
         <div className="flex flex-col-reverse items-center justify-center gap-8 m-4">
           <form className="w-full" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -146,13 +154,13 @@ export const ActivitiesTable = () => {
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-Base-color border border-Base-color rounded-lg bg-second-color"
+                className="block w-full p-2 ps-10 text-sm text-Base-color border border-Base-color rounded-lg bg-second-color"
                 placeholder="Search Activity"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-1"
+                className="text-second-color hover:text-fourth-color absolute end-0 bottom-0 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none font-medium rounded-r-lg text-sm px-4 py-2"
               >
                 Search
               </button>
@@ -175,7 +183,7 @@ export const ActivitiesTable = () => {
               }}
             >
               <svg
-                class="w-4 h-4"
+                className="w-4 h-4"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -226,7 +234,11 @@ export const ActivitiesTable = () => {
               return (
                 <tr
                   key={index}
-                  className={index % 2 !== 0 ? "bg-second-color" : "bg-transparent-first-color"}
+                  className={
+                    index % 2 !== 0
+                      ? "bg-second-color"
+                      : "bg-transparent-first-color"
+                  }
                 >
                   <td className={classes}>
                     <div className="flex items-center gap-3">
@@ -306,8 +318,7 @@ export const ActivitiesTable = () => {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Page {currentPage} of{" "}
-          {totalPages}
+          Page {currentPage} of {totalPages}
         </Typography>
         <div className="flex gap-2">
           <Button
@@ -321,13 +332,9 @@ export const ActivitiesTable = () => {
           </Button>
           <Button
             onClick={() =>
-              currentPage !=
-                totalPages && setCurrentPage(currentPage + 1)
+              currentPage != totalPages && setCurrentPage(currentPage + 1)
             }
-            disabled={
-              currentPage ==
-              totalPages
-            }
+            disabled={currentPage == totalPages}
             className="text-Base-color hover:bg-transparent-first-color"
             variant="outlined"
             size="sm"

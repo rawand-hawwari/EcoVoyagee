@@ -7,8 +7,9 @@ const flightsModel = require('../Models/flightsModel');
 const addFlight = async (req, res) => {
     try {
         const flightsData = req.body;
+        console.log(flightsData);
+        
         const file = req.file;
-
         if (file) {
             const fileName = `${Date.now()}_${file.originalname}`;
             const fileUrl = await Firebase.uploadFileToFirebase(file, fileName);

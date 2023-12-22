@@ -158,14 +158,25 @@ const PackageDetails = () => {
       if (name == "adults") {
         totalCost =
           value * packageData.cost + (booking.children * packageData.cost) / 2;
+          onBooking({
+            ...bookData,
+            cost: totalCost,
+            adults: value,
+          });
       } else {
         totalCost =
         booking.adults * packageData.cost + (value * packageData.cost) / 2;
+        onBooking({
+          ...bookData,
+          cost: totalCost,
+          adults: value,
+        });
       }
       setTotal(totalCost);
+    }else{
       onBooking({
         ...bookData,
-        cost: total,
+        [name]: value,
       });
     }
   }
@@ -386,7 +397,7 @@ const PackageDetails = () => {
       <div id="booking"></div>
       {isBooking && (
         <BookingModal onClose={closeBookingModal}>
-          <div className="p-5 w-full">
+          <div className="p-5 pt-0 w-full">
             <h1 className="text-3xl text-third-color font-bold text-center mb-3 cursor-pointer">
               Book your trip
             </h1>
@@ -444,9 +455,10 @@ const PackageDetails = () => {
                   selectsStart
                   startDate={startDate}
                   endDate={endDate}
-                  // dateFormat="yyyy-mm-dd"
+                  minDate={new Date()}
                   placeholderText="Start Date"
                   className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+              calendarClassName="custom-calendar"
                 />
 
                 <label className="px-3">To:</label>
@@ -460,6 +472,7 @@ const PackageDetails = () => {
                   minDate={startDate}
                   placeholderText="End Date"
                   className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+              calendarClassName="custom-calendar"
                 />
               </div>
 

@@ -59,7 +59,6 @@ const Rooms = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     axios
-      // .get(`http://localhost:3009/rooms`)
       .post(`http://localhost:3999/getFilteredRooms`, {
         accommodation_id: id,
         date_from: startDate,
@@ -67,8 +66,7 @@ const Rooms = () => {
       })
       .then((response) => {
         let data = response.data;
-        // console.log(response);
-        setRooms(data.filter((item) => item.accommodation_id == id));
+        setRooms(data);
       })
       .catch((error) => {
         // Handle errors here
@@ -96,7 +94,20 @@ const Rooms = () => {
   };
 
   const handleSearch = () => {
-    // e.preventDefault();
+    axios
+      .post(`http://localhost:3999/getFilteredRooms`, {
+        accommodation_id: id,
+        date_from: startDate,
+        date_to: endDate,
+      })
+      .then((response) => {
+        let data = response.data;
+        setRooms(data);
+      })
+      .catch((error) => {
+        // Handle errors here
+        console.error("Error:", error);
+      });
   };
 
   async function handleSubmit(e) {
@@ -582,6 +593,7 @@ const Rooms = () => {
               selectsStart
               startDate={startDate}
               endDate={endDate}
+              minDate={new Date()}
               placeholderText="Start Date"
               className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none focus:border-third-color"
               calendarClassName="custom-calendar"
@@ -737,7 +749,7 @@ const Rooms = () => {
                           {room.room_type}
                         </h1>
                         <p className="flex items-center p-1">
-                          <span>{room.guests}</span>{" "}
+                          <span>{room.capacity}</span>{" "}
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -768,7 +780,7 @@ const Rooms = () => {
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                               />
                             </svg>
-                            <span>{room.view} View</span>
+                            <span>{room.view}</span>
                           </p>
                           <button
                             className="underline text-fourth-color"

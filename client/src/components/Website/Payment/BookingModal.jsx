@@ -15,8 +15,8 @@ const BookingModal = ({ children, onClose }) => {
   const portalRoot = document.getElementById("booking");
 
   return ReactDOM.createPortal(
-    <div className="fixed z-30 top-0 left-0 w-full h-full flex items-center justify-center bg-black/80 bg-opacity-50">
-      <div className="bg-second-color p-6 rounded shadow-lg w-full md:w-2/5 text-black flex flex-col gap-3 justify-center">
+    <div className="fixed z-[55] top-0 left-0 w-full h-full flex items-center justify-center bg-black/80 bg-opacity-50">
+      <div className="bg-second-color p-6 pt-5 rounded shadow-lg w-full md:w-2/5 text-black flex flex-col gap-3 justify-center">
         {children}
         {clientSecret && stripePromise && (
           <Elements stripe={stripePromise}>

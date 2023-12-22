@@ -112,9 +112,9 @@ export default function CheckoutForm() {
               };
               console.log("hi");
               if (bookData.bag_details === "1 X 25KG") {
-                booking.cost = bookData.cost + 40;
+                booking.cost = bookData.cost + + 40;
               } else if (bookData.bag_details === "1 X 30KG") {
-                booking.cost = bookData.cost + 80;
+                booking.cost = bookData.cost + + 80;
               }
 
               setSuccess(true);

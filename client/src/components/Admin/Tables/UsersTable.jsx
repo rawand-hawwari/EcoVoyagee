@@ -27,45 +27,32 @@ export const UsersTable = () => {
   const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
 
   const TABLE_HEAD = ["Users", "Country", "Admin", ""];
-  useEffect(() => {
+  const fetchData = () => {
     axios
-      .get(
-        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}`
-      )
-      // {search:searchTerm}
-      .then((response) => {
-        // Assuming the API response has a data property that contains the rows
-        setUsers(response.data.data);
-        setFilteredUsers(response.data.data);
-        // console.log('asdkjasdnkj',response.data.data.data.data);
-        setTotalCount(response.data.totalCount);
-      })
-      .catch((error) => {
-        console.error("Error fetching data.data:", error);
-      });
+    .get(
+      `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}`
+    )
+    // {search:searchTerm}
+    .then((response) => {
+      // Assuming the API response has a data property that contains the rows
+      setUsers(response.data.data);
+      setFilteredUsers(response.data.data);
+      // console.log('asdkjasdnkj',response.data.data.data.data);
+      setTotalCount(response.data.totalCount);
+    })
+    .catch((error) => {
+      console.error("Error fetching data.data:", error);
+    });
+  }
+  useEffect(() => {
+    fetchData();
   }, [currentPage]);
 
 const totalPages = Math.ceil(totalCount/ itemsPerPage);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://localhost:3999/getUsersPaginated?page=${currentPage}&search=${searchQuery}`
-      )
-      // {search:searchTerm}
-      .then((response) => {
-        // Assuming the API response has a data property that contains the rows
-        setUsers(response.data.data);
-        setFilteredUsers(response.data.data);
-        // console.log('asdkjasdnkj',response.data.data.data.data);
-        setTotalCount(response.data.totalCount);
-
-        console.log("ttttt", response.data.totalCount);
-      })
-      .catch((error) => {
-        console.error("Error fetching data.data:", error);
-      });
+    fetchData();
     setCurrentPage(1);
   };
 
@@ -73,6 +60,7 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
     axios.put(`http://localhost:3999/MakeAdmin/${id}`, null, {
       headers: headers,
     });
+    fetchData();
   };
   return (
     <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-third-color bg-second-color">
@@ -89,14 +77,14 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only"
             >
               Search
             </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -114,13 +102,13 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
+                className="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
                 placeholder="Search user"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="text-second-color hover:text-fourth-color absolute end-0 bottom-0 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none font-medium rounded-r-lg text-sm px-4 py-2"
               >
                 Search
               </button>
@@ -234,7 +222,7 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="w-6 h-6 text-Base-color"
+                          className="w-6 h-6 text-Base-color"
                         >
                           <path
                             stroke-linecap="round"

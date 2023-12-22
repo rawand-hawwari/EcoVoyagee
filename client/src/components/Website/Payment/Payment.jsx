@@ -184,7 +184,7 @@ function Payment() {
                             bag_details: "1 X 20KG",
                           });
                         }}
-                        class="h-6 w-6 border-gray-300 focus:ring-2"
+                        className="relative h-5 w-5 rounded-full border-2 border-solid border-third-color checked:border-third-color hover:cursor-pointer  focus:shadow-none focus:outline-none focus:ring-0  checked:focus:border-third-color text-third-color"
                         aria-labelledby="country-option-1"
                         aria-describedby="country-option-1"
                         checked
@@ -219,7 +219,7 @@ function Payment() {
                             bag_details: "1 X 25KG",
                           });
                         }}
-                        class="h-6 w-6 border-gray-300 focus:ring-2 focus:ring-blue-300"
+                        className="relative h-5 w-5 rounded-full border-2 border-solid border-third-color checked:border-third-color hover:cursor-pointer  focus:shadow-none focus:outline-none focus:ring-0  checked:focus:border-third-color text-third-color"
                         aria-labelledby="country-option-2"
                         aria-describedby="country-option-2"
                       />
@@ -252,7 +252,7 @@ function Payment() {
                             bag_details: "1 X 30KG",
                           });
                         }}
-                        class="h-6 w-6 border-gray-300 focus:ring-2 focus:ring-blue-300"
+                        className="relative h-5 w-5 rounded-full border-2 border-solid border-third-color checked:border-third-color hover:cursor-pointer  focus:shadow-none focus:outline-none focus:ring-0  checked:focus:border-third-color text-third-color"
                         aria-labelledby="country-option-3"
                         aria-describedby="country-option-3"
                       />

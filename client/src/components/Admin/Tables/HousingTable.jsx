@@ -51,20 +51,7 @@ const HousingTable = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://localhost:3999/getAccommodationsPaginated?page=${currentPage}&search=${searchQuery}&pageSize=${itemsPerPage}`
-      )
-      // {search:searchTerm}
-      .then((response) => {
-        // Assuming the API response has a data property that contains the rows
-        setDestinations(response.data.data);
-        setFilteredPlaces(response.data.data);
-        setTotalCount(response.data.totalCount);
-      })
-      .catch((error) => {
-        console.error("Error fetching data.data:", error);
-      });
+    fetchData();
     setCurrentPage(1);
   };
 
@@ -78,8 +65,8 @@ const HousingTable = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#0f766e",
+      cancelButtonColor: "#be123c",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -93,6 +80,7 @@ const HousingTable = () => {
               text: "Your file has been deleted.",
               icon: "success",
             });
+            fetchData();
           })
           .catch((error) => {
             Swal.fire({
@@ -127,14 +115,14 @@ const HousingTable = () => {
             <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
               <label
                 for="default-search"
-                class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
               >
                 Search
               </label>
-              <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <div className="relative">
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg
-                    class="w-4 h-4 text-gray-500"
+                    className="w-4 h-4 text-gray-500"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -152,13 +140,13 @@ const HousingTable = () => {
                 <input
                   type="search"
                   id="default-search"
-                  class="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
+                  className="block w-full p-2 ps-10 text-sm text-Base-color border border-transparent-third-color rounded-lg bg-second-color"
                   placeholder="Search user"
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                   type="submit"
-                  class="text-second-color hover:text-fourth-color absolute end-2.5 bottom-1 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="text-second-color hover:text-fourth-color absolute end-0 bottom-0 bg-fourth-color hover:bg-second-color border border-fourth-color focus:ring-4 focus:outline-none font-medium rounded-r-lg text-sm px-4 py-2"
                 >
                   Search
                 </button>
@@ -181,7 +169,7 @@ const HousingTable = () => {
                 size="sm"
               >
                 <svg
-                  class="w-4 h-4"
+                  className="w-4 h-4"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -211,7 +199,7 @@ const HousingTable = () => {
                     <Typography
                       variant="small"
                       color="blue-gray"
-                      className="font-normal leading-none opacity-70"
+                      className="font-normal leading-none"
                     >
                       {head}
                     </Typography>
@@ -283,7 +271,7 @@ const HousingTable = () => {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="w-4 h-4 text-yellow-400"
+                            className="w-4 h-4 text-yellow-400"
                           >
                             <path
                               fill-rule="evenodd"

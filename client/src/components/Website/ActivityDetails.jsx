@@ -106,26 +106,36 @@ const ActivityDetails = () => {
       ...booking,
       [name]: value,
     });
-    onBooking({
-      ...bookData,
-      [name]: value,
-    });
     if (name == "adults" || name == "children") {
       let totalCost;
       if (name == "adults") {
         totalCost =
-          value * activity.pricing + ((booking.children * activity.pricing) / 2);
+          value * activity.pricing + (booking.children * activity.pricing) / 2;
+        onBooking({
+          ...bookData,
+          cost: totalCost,
+          adults: value,
+        });
       } else {
         totalCost =
-        booking.adults * activity.pricing + ((value * activity.pricing) / 2);
+          booking.adults * activity.pricing + (value * activity.pricing) / 2;
+        onBooking({
+          ...bookData,
+          cost: totalCost,
+          children: value,
+        });
       }
       setTotal(totalCost);
+    } else {
       onBooking({
         ...bookData,
-        cost: total,
+        [name]: value,
       });
     }
   }
+  useEffect(() => {
+    console.log(bookData);
+  }, [bookData]);
   return (
     <>
       <div>
@@ -218,7 +228,7 @@ const ActivityDetails = () => {
                   </h1>
                   <button
                     type="submit"
-                    onClick={(e) => openBooking(e)}
+                    onClick={() => openBooking()}
                     className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
                   >
                     Book Activity
@@ -495,7 +505,7 @@ const ActivityDetails = () => {
         <div id="booking"></div>
         {isBooking && (
           <BookingModal onClose={closeBookingModal}>
-            <div className="p-5 w-full">
+            <div className="p-5 pt-0 w-full">
               <h1 className="text-3xl text-third-color font-bold text-center mb-3 cursor-pointer">
                 Book your trip
               </h1>
@@ -551,6 +561,7 @@ const ActivityDetails = () => {
                     selected={startDate}
                     onChange={(date) => {
                       setStartDate(date);
+                      setEndDate(date);
                       onBooking({
                         ...bookData,
                         date_from: date,
@@ -559,7 +570,8 @@ const ActivityDetails = () => {
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
-                    // dateFormat="yyyy-mm-dd"
+                    calendarClassName="custom-calendar"
+                    minDate={new Date()}
                     placeholderText="Start Date"
                     className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                   />
@@ -580,6 +592,7 @@ const ActivityDetails = () => {
                     endDate={endDate}
                     minDate={startDate}
                     placeholderText="End Date"
+                    calendarClassName="custom-calendar"
                     className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                   />
                 </div>

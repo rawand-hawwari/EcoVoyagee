@@ -19,7 +19,7 @@ const AboutUs = () => {
         </h1>
         <article
           data-aos="fade-right"
-          className="text-start flex flex-col gap-8 md:mr-24 p-10 min-h-116 max-w-2xl w-full rounded-xl text-second-color xl:col-span-2 bg-center bg-cover bg-[#000000d2]"
+          className="text-start flex flex-col gap-8 md:mr-[30rem] p-10 min-h-116 max-w-2xl w-full rounded-xl text-second-color xl:col-span-2 bg-center bg-cover bg-[#000000d2]/70"
         >
           <h1 className="mt-5 text-2xl md:text-4xl font-bold text-second-color leading-snug  min-h-33">
             WHAT WE DO
@@ -37,7 +37,7 @@ const AboutUs = () => {
         </article>
         <article
           data-aos="fade-left"
-          className="text-start flex flex-col gap-8 md:ml-24 p-10 min-h-116 max-w-2xl w-full rounded-xl text-second-color xl:col-span-2 bg-center bg-cover bg-[#000000d2]"
+          className="text-start flex flex-col gap-8 md:ml-[35rem] p-10 min-h-116 max-w-2xl w-full rounded-xl text-second-color xl:col-span-2 bg-center bg-cover bg-[#000000d2]/70"
         >
           <h1 className="mt-5 text-2xl md:text-4xl font-bold text-second-color leading-snug  min-h-33">
             WHAT WE BELIEVE
@@ -56,12 +56,12 @@ const AboutUs = () => {
           </div>
         </article>
       </div>
-      <div className="my-10 flex flex-col-reverse md:flex-row justify-center items-center gap-8">
+      <div className="my-10 flex flex-col-reverse md:flex-row justify-center items-center gap-8 text-Base-color">
         <div data-aos="fade-right" className="max-w-xl m-5">
           <h1 className="mt-5 text-start text-2xl md:text-4xl font-bold text-sky-00 leading-snug text-third-color min-h-33">
             Why choose us?
           </h1>
-          <div className="text-lg md:text-xl text-start">
+          <div className="text-lg md:text-xl text-start my-3">
             <span>
               We are more than just a travel provider; we are your partners in
               sustainable adventures. Here's why we stand out:
