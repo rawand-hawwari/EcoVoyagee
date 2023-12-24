@@ -23,6 +23,9 @@ const Header = () => {
   if (
     location.pathname === "/login" ||
     location.pathname === "/signup" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/verify-code" ||
+    location.pathname === "/reset-password" ||
     location.pathname === "/dashboard"
   ) {
     return null;

@@ -36,7 +36,7 @@ const AddFlight = () => {
     if (name === "image") {
       setFormData({
         ...formData,
-        [name]: e.target.files[0],
+        files: Array.from(e.target.files),
       });
     } else if (name === "boardingD") {
       setDepartTime({
@@ -76,7 +76,6 @@ const AddFlight = () => {
     }
   };
   const handleDestination = (id, title) => {
-    
     setFormData({
       ...formData,
       destinations_id: id,
@@ -96,20 +95,28 @@ const AddFlight = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const departTimeJSON = JSON.stringify(formData.depart_time);
+    const returnTimeJSON = JSON.stringify(formData.return_time);
+    const departDateJSON = formData.depart_date.toJSON();
+    const returnDateJSON = formData.return_date.toJSON();
+
     const formDataToSend = new FormData();
-    if(formData.image){
-      formDataToSend.append("file", formData.image);
+    if (formData.files) {
+      formData.files.forEach((file, index) => {
+        formDataToSend.append(`files[]`, file);
+      });
     }
+
     // Append other form data fields if needed
     formDataToSend.append("average", formData.average);
     formDataToSend.append("best", formData.best);
     formDataToSend.append("economy", formData.economy);
     formDataToSend.append("business", formData.business);
     formDataToSend.append("first", formData.first);
-    formDataToSend.append("depart_date", formData.depart_date);
-    formDataToSend.append("return_date", formData.return_date);
-    formDataToSend.append("depart_time", formData.depart_time);
-    formDataToSend.append("return_time", formData.return_time);
+    formDataToSend.append("depart_time", departTimeJSON);
+    formDataToSend.append("return_time", returnTimeJSON);
+    formDataToSend.append("depart_date", departDateJSON);
+    formDataToSend.append("return_date", returnDateJSON);
     formDataToSend.append("destinations_id", formData.destinations_id);
     formDataToSend.append("operatedby", formData.operatedby);
 
@@ -129,7 +136,6 @@ const AddFlight = () => {
         });
         setFormData([]);
         onSelectedPage("dashboard");
-        setFormData([]);
       })
       .catch((err) => {
         Swal.fire({
@@ -151,7 +157,7 @@ const AddFlight = () => {
   };
   return (
     <div>
-      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-full">
+      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
         <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="p-6 w-full">
@@ -296,7 +302,7 @@ const AddFlight = () => {
                       <input
                         type="number"
                         name="economy"
-                        value={time.economy}
+                        value={formData && formData.economy}
                         placeholder="Economy Class"
                         onChange={(e) => handleChange(e)}
                         required
@@ -310,7 +316,7 @@ const AddFlight = () => {
                       <input
                         type="number"
                         name="business"
-                        value={time.business}
+                        value={formData && formData.business}
                         placeholder="Business Class"
                         onChange={(e) => handleChange(e)}
                         required
@@ -324,7 +330,7 @@ const AddFlight = () => {
                       <input
                         type="number"
                         name="first"
-                        value={time.first}
+                        value={formData && formData.first}
                         placeholder="First Class"
                         onChange={(e) => handleChange(e)}
                         required

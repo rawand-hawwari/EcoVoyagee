@@ -144,13 +144,29 @@ const getActivitiesWithComments = async (req, res) => {
 const getActivitiesPaginated = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 3;
+        const pageSize = parseInt(req.query.pageSize) || 4;
         const search = req.query.search;
 
         if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
             throw new Error("Invalid page or limit parameter")
         }
         const result = await activityModel.getActivitiesPaginated(page, pageSize, search);
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+
+const BookActivity = async (req, res) => {
+    const activities_id = req.params.id;
+    const { cost, address, phone, adults, children, date_from, date_to } = req.body;
+    const user_id = req.user.user_id;
+
+    try {
+        const result = await activityModel.BookActivity(activities_id, cost, user_id, address, phone, adults, children, date_from, date_to);
         res.json(result);
     } catch (err) {
         console.error(err);
@@ -173,5 +189,7 @@ module.exports = {
 
     getActivitiesWithComments,
 
-    getActivitiesPaginated
+    getActivitiesPaginated,
+
+    BookActivity
 }

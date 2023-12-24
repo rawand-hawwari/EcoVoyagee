@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import NoMatchingResults from "./NoMatchingResults";
 
 const Accommodations = () => {
   const [accommodations, setAccommodations] = useState([]);
@@ -145,7 +146,9 @@ const Accommodations = () => {
     e.preventDefault();
     if (searchPrice != "") {
       setFilteredAccommodations(
-        accommodations.filter((accommodation) => accommodation.pricing <= searchPrice)
+        accommodations.filter(
+          (accommodation) => accommodation.pricing <= searchPrice
+        )
       );
     } else {
       setFilteredAccommodations(accommodations);
@@ -251,13 +254,13 @@ const Accommodations = () => {
                   type="text"
                   id="simple-search"
                   onChange={(e) => handleSearch(e)}
-                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
+                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
                   placeholder="Search branch name..."
                 />
               </div>
               <button
                 type="submit"
-                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:bg-second-color hover:text-fourth-color"
               >
                 <svg
                   class="w-4 h-4"
@@ -292,13 +295,13 @@ const Accommodations = () => {
                     type="number"
                     step="0.01"
                     onChange={(e) => setSearchPrice(e.target.value)}
-                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
+                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded block w-full p-2"
                     placeholder="Search branch name..."
                   />
                 </div>
                 <button
                   type="submit"
-                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
+                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:text-fourth-color hover:bg-second-color"
                 >
                   <svg
                     class="w-4 h-4"
@@ -326,7 +329,7 @@ const Accommodations = () => {
                 <div>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
                     id="menu-button"
                     aria-expanded={menuOpen}
                     aria-haspopup="true"
@@ -352,7 +355,7 @@ const Accommodations = () => {
 
                 {menuOpen && (
                   <div
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
@@ -449,7 +452,7 @@ const Accommodations = () => {
                 <div>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-transparent-first-color hover:bg-transparent-first-color"
                     id="menu-button"
                     aria-expanded={typeMenuOpen}
                     aria-haspopup="true"
@@ -475,7 +478,7 @@ const Accommodations = () => {
 
                 {typeMenuOpen && (
                   <div
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
@@ -530,54 +533,64 @@ const Accommodations = () => {
         </div>
         {/* content list */}
         <div className="my-16 mx-8">
-          <div className="flex flex-col gap-5 mb-5 min-h-[1146px]">
-            {currentAccommodations.map((accommodation, id) => (
-              <div key={id}>
-                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl md:w-[768px] group transform duration-500 mb-2">
-                  <img
-                    className="w-full sm:w-60 h-auto object-cover"
-                    src={accommodation.imageurl[0]}
-                    alt=""
-                  />
-                  <div className="h-auto w-full flex flex-col justify-between">
-                    <div className="p-5 text-start">
-                      <h1 className="text-xl font-semibold text-Base-color">
-                        {accommodation.title}
-                      </h1>
-                      <p className="text-md overflow-hidden text-Base-color mt-2 leading-relaxed">
-                        {accommodation.location}
-                      </p>
-                      <p className="text-lg overflow-hidden flex gap-1 text-Base-color mt-2 leading-relaxed">
-                        {accommodation.rating}{" "}
-                        <svg
-                          class="h-6 w-6 shrink-0 fill-amber-400"
-                          viewBox="0 0 256 256"
-                        >
-                          <path d="M239.2 97.4A16.4 16.4.0 00224.6 86l-59.4-4.1-22-55.5A16.4 16.4.0 00128 16h0a16.4 16.4.0 00-15.2 10.4L90.4 82.2 31.4 86A16.5 16.5.0 0016.8 97.4 16.8 16.8.0 0022 115.5l45.4 38.4L53.9 207a18.5 18.5.0 007 19.6 18 18 0 0020.1.6l46.9-29.7h.2l50.5 31.9a16.1 16.1.0 008.7 2.6 16.5 16.5.0 0015.8-20.8l-14.3-58.1L234 115.5A16.8 16.8.0 00239.2 97.4z"></path>
-                        </svg>
-                      </p>
-                      <p className="text-md overflow-hidden max-h-20 text-third-color mt-2 leading-relaxed">
-                        {accommodation.accommodation_details}
-                      </p>
-                      <p className="text-md overflow-hidden text-Base-color mt-2 leading-relaxed">
-                        {accommodation.pricing} JOD
-                      </p>
-                    </div>
-                    <div className="px-2 m-4">
-                      <div className="sm:flex sm:justify-end">
-                        <Link
-                          to={`/accommodation/${accommodation.accommodation_id}`}
-                        >
-                          <button className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md">
-                            Read more
-                          </button>
-                        </Link>
+          <div
+            className={`flex flex-col gap-5 mb-5 max-w-3xl md:w-[768px] ${
+              currentAccommodations.length > 0
+                ? "min-h-[1146px]"
+                : "min-h-[700px]"
+            }`}
+          >
+            {currentAccommodations.length > 0 ? (
+              currentAccommodations.map((accommodation, id) => (
+                <div key={id}>
+                  <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto group transform duration-500 mb-2">
+                    <img
+                      className="w-full sm:w-60 h-auto object-cover"
+                      src={accommodation.imageurl[0]}
+                      alt=""
+                    />
+                    <div className="h-auto w-full flex flex-col justify-between">
+                      <div className="p-5 text-start">
+                        <h1 className="text-xl font-semibold text-Base-color">
+                          {accommodation.title}
+                        </h1>
+                        <p className="text-md overflow-hidden text-Base-color mt-2 leading-relaxed">
+                          {accommodation.location}
+                        </p>
+                        <p className="text-lg overflow-hidden flex gap-1 text-Base-color mt-2 leading-relaxed">
+                          {accommodation.rating}{" "}
+                          <svg
+                            class="h-6 w-6 shrink-0 fill-amber-400"
+                            viewBox="0 0 256 256"
+                          >
+                            <path d="M239.2 97.4A16.4 16.4.0 00224.6 86l-59.4-4.1-22-55.5A16.4 16.4.0 00128 16h0a16.4 16.4.0 00-15.2 10.4L90.4 82.2 31.4 86A16.5 16.5.0 0016.8 97.4 16.8 16.8.0 0022 115.5l45.4 38.4L53.9 207a18.5 18.5.0 007 19.6 18 18 0 0020.1.6l46.9-29.7h.2l50.5 31.9a16.1 16.1.0 008.7 2.6 16.5 16.5.0 0015.8-20.8l-14.3-58.1L234 115.5A16.8 16.8.0 00239.2 97.4z"></path>
+                          </svg>
+                        </p>
+                        <p className="text-md overflow-hidden max-h-20 text-third-color mt-2 leading-relaxed">
+                          {accommodation.accommodation_details}
+                        </p>
+                        <p className="text-md overflow-hidden text-Base-color mt-2 leading-relaxed">
+                          {accommodation.pricing} JOD
+                        </p>
+                      </div>
+                      <div className="px-2 m-4">
+                        <div className="sm:flex sm:justify-end">
+                          <Link
+                            to={`/accommodation/${accommodation.accommodation_id}`}
+                          >
+                            <button className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded shadow-md">
+                              Read more
+                            </button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </article>
-              </div>
-            ))}
+                  </article>
+                </div>
+              ))
+            ) : (
+              <NoMatchingResults />
+            )}
           </div>
           <div>
             <div className="flex justify-center gap-2">

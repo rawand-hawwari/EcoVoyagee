@@ -1,25 +1,110 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
-import { Typography } from "@material-tailwind/react";
+import { CardFooter, Typography } from "@material-tailwind/react";
+import { Button } from "flowbite-react";
 
 const FlightsHistory = () => {
   const [bookings, setBookings] = useState([]);
   const { headers } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const options = { day: "numeric", month: "short", year: "numeric" };
   useEffect(() => {
     if (headers) {
       axios
         .get("http://localhost:3999/getFlightsOfUser", { headers: headers })
         .then((response) => {
-          setBookings(response.data);
+          if (response.data != "Ticket not found for the user") {
+            let newData = response.data.map((data) => {
+              const departDate = new Date(data.depart_date).toLocaleDateString(
+                "en-US",
+                options
+              );
+              const returnDate = new Date(data.return_date).toLocaleDateString(
+                "en-US",
+                options
+              );
+              return {
+                ...data,
+                depart: departDate,
+                return: returnDate,
+              };
+            });
+            newData.reverse();
+            setBookings(newData);
+          }
         });
     }
   }, [headers]);
 
-  const tableHeader = ["id", "Type", "Guests", "Cost"];
+  const tableHeader = [
+    "id",
+    "Destination",
+    "Depart Date",
+    "Return Date",
+    "Ticket Type",
+    "Cost",
+  ];
+
+  const itemsPerPage = 3;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentBookings = bookings.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(bookings.length / itemsPerPage);
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 3;
+    if (totalPages > 2) {
+      let start = Math.max(
+        1,
+        Math.min(currentPage - 1, totalPages - maxPagesToShow + 1)
+      );
+      const end = Math.min(start + maxPagesToShow - 1, totalPages);
+      if (end === totalPages) {
+        start = totalPages - 2;
+      }
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded w-[42px] ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(
+          <button
+            key={i}
+            onClick={() => paginate(i)}
+            className={`mx-1 px-3 py-1 rounded w-[42px] ${
+              i === currentPage
+                ? "bg-third-color text-second-color"
+                : "text-third-color"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    }
+    return pageNumbers;
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <div className="flex flex-col justify-center items-center m-10">
-      <table className="w-2/3 overflow-auto text-start">
+    <div className="flex flex-col justify-between items-center m-10 mb-5 bg-second-color h-[280px] rounded border border-transparent-third-color">
+      <table className="overflow-auto text-start w-full border-0">
         <thead className="w-full min-w-max table-auto text-left">
           <tr className="bg-third-color">
             {tableHeader.map((label, index) => (
@@ -36,122 +121,78 @@ const FlightsHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {bookings.map((booking, index) => {
-            const isLast = bookings.length - 1;
-            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-            return (
-              <tr
-                key={index}
-                className={index % 2 !== 0 ? "bg-second-color" : "bg-transparent-first-color"}
-              >
-                <td className={classes}>
-                  <div className="flex items-center gap-3">
-                    <div className="flex flex-col">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {index+1}
-                      </Typography>
+          {currentBookings &&
+            currentBookings.map((booking, index) => {
+              const isLast = bookings.length - 1;
+              const classes = isLast
+                ? "p-4"
+                : "p-4 border-b border-blue-gray-50";
+              return (
+                <tr
+                  key={index}
+                  className={
+                    index % 2 !== 0
+                      ? "bg-second-color"
+                      : "bg-transparent-first-color"
+                  }
+                >
+                  <td className={classes}>
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-col">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {index + 1}
+                        </Typography>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td>{booking.phone}</td>
-                <td>
-                  {booking.adults}Adults {booking.children}Children
-                </td>
-                <td>{booking.cost}JOD</td>
-              </tr>
-            );
-          })}
-          {/* {currentActivities.map((activity, index) => {
-            const isLast =
-              (index === filteredActivities.length) === 0
-                ? activities.length - 1
-                : filteredActivities.length - 1;
-            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-
-            return (
-              <tr
-                key={index}
-                className={index % 2 !== 0 ? "bg-white" : "bg-gray-200"}
-              >
-                <td className={classes}>
-                  <div className="flex items-center gap-3">
-                    <div className="flex flex-col">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {activity.title}
-                      </Typography>
-                    </div>
-                  </div>
-                </td>
-                <td className={classes}>
-                  <div className="flex flex-col">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {activity.type}
-                    </Typography>
-                  </div>
-                </td>
-                <td className={classes}>
-                  <div className="w-max">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {activity.availability}
-                    </Typography>
-                  </div>
-                </td>
-                <td className={classes}>
-                  <Tooltip content="Edit Activity">
-                    <IconButton
-                      onClick={() => {
-                        handleEdit(activity.activities_id);
-                      }}
-                      variant="text"
-                    >
-                      <PencilIcon className="h-4 w-4 text-sky-900" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip content="Delete Activity">
-                    <IconButton
-                      onClick={() => {
-                        handleDelete(activity.activities_id);
-                      }}
-                      variant="text"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        className="text-sky-900 w-4 h-4 font-bold"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                        />
-                      </svg>
-                    </IconButton>
-                  </Tooltip>
-                </td>
-              </tr>
-            );
-          })} */}
+                  </td>
+                  <td>Brazil {/* booking.destination_name */}</td>
+                  <td>{booking.depart}</td>
+                  <td>{booking.return}</td>
+                  <td>
+                    {booking.ticket_type == "economy"
+                      ? "Economy"
+                      : booking.ticket_type == "business"
+                      ? "Business"
+                      : "First"}
+                  </td>
+                  <td>{booking.cost}JOD</td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
+      <CardFooter className="flex items-center justify-center border-t border-blue-gray-50 p-4 w-full">
+        <Typography variant="small" color="blue-gray" className="font-normal">
+          {/* Page {currentPage} of {totalPages} */}
+        </Typography>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => currentPage !== 1 && setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="text-Base-color hover:bg-transparent-first-color"
+            variant="outlined"
+            size="sm"
+          >
+            Previous
+          </Button>
+          <div>{renderPageNumbers()}</div>
+          <Button
+            onClick={() =>
+              currentPage != totalPages && setCurrentPage(currentPage + 1)
+            }
+            disabled={currentPage == totalPages}
+            className="text-Base-color hover:bg-transparent-first-color"
+            variant="outlined"
+            size="sm"
+          >
+            Next
+          </Button>
+        </div>
+      </CardFooter>
     </div>
   );
 };

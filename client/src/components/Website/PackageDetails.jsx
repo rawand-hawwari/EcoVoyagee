@@ -34,13 +34,6 @@ const PackageDetails = () => {
     children: 0,
   });
 
-  // function handleChange(e) {
-  //   const { name, value } = e.target;
-  //   setBooking({
-  //     ...booking,
-  //     [name]: value,
-  //   });
-  // }
 
   const handleDate = (date) => {
     setStartDate(date);
@@ -154,26 +147,26 @@ const PackageDetails = () => {
       [name]: value,
     });
     if (name == "adults" || name == "children") {
-      let totalCost = 0;
+      let totalCost;
       if (name == "adults") {
         totalCost =
           value * packageData.cost + (booking.children * packageData.cost) / 2;
-          onBooking({
-            ...bookData,
-            cost: totalCost,
-            adults: value,
-          });
-      } else {
-        totalCost =
-        booking.adults * packageData.cost + (value * packageData.cost) / 2;
         onBooking({
           ...bookData,
           cost: totalCost,
           adults: value,
         });
+      } else {
+        totalCost =
+          booking.adults * packageData.cost + (value * packageData.cost) / 2;
+        onBooking({
+          ...bookData,
+          cost: totalCost,
+          children: value,
+        });
       }
       setTotal(totalCost);
-    }else{
+    } else {
       onBooking({
         ...bookData,
         [name]: value,
@@ -188,7 +181,7 @@ const PackageDetails = () => {
         className="relative w-full"
         data-carousel="slide"
       >
-        <div className="relative h-[420px] overflow-hidden rounded-lg">
+        <div className="relative h-[420px] overflow-hidden rounded">
           {packageData &&
             packageData.imagePAC &&
             packageData.imagePAC.map((image, id) => (
@@ -282,7 +275,7 @@ const PackageDetails = () => {
                 <button
                   type="submit"
                   onClick={(e) => openBooking(e)}
-                  className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+                  className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
                 >
                   Book Package
                 </button>
@@ -411,7 +404,7 @@ const PackageDetails = () => {
                   placeholder="First Name"
                   value={booking.first_name}
                   onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
                 <input
                   type="text"
@@ -419,7 +412,7 @@ const PackageDetails = () => {
                   placeholder="Last Name"
                   value={booking.last_name}
                   onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
               </div>
 
@@ -431,7 +424,7 @@ const PackageDetails = () => {
                 placeholder="Address"
                 value={booking.address}
                 onChange={handleChange}
-                className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
               />
 
               {/* phone */}
@@ -442,7 +435,7 @@ const PackageDetails = () => {
                 placeholder="Phone"
                 value={booking.phone}
                 onChange={handleChange}
-                className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
               />
 
               {/* date from-to */}
@@ -457,7 +450,7 @@ const PackageDetails = () => {
                   endDate={endDate}
                   minDate={new Date()}
                   placeholderText="Start Date"
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
               calendarClassName="custom-calendar"
                 />
 
@@ -471,7 +464,7 @@ const PackageDetails = () => {
                   endDate={endDate}
                   minDate={startDate}
                   placeholderText="End Date"
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
               calendarClassName="custom-calendar"
                 />
               </div>
@@ -485,7 +478,7 @@ const PackageDetails = () => {
                   placeholder="Adults"
                   value={booking.adults}
                   onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
                 <input
                   type="number"
@@ -493,7 +486,7 @@ const PackageDetails = () => {
                   placeholder="Children"
                   value={booking.children}
                   onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
               </div>
               <h1 className="text-Base-color text-lg w-full text-start px-5">Total: {total} JOD</h1>

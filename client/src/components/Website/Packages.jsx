@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import NoMatchingResults from "./NoMatchingResults";
 
 const Packages = () => {
   const [packages, setPackages] = useState([]);
@@ -201,13 +202,13 @@ const Packages = () => {
                   type="text"
                   id="simple-search"
                   onChange={(e) => handleSearch(e)}
-                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
+                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
                   placeholder="Search branch name..."
                 />
               </div>
               <button
                 type="submit"
-                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:bg-second-color hover:text-fourth-color"
               >
                 <svg
                   class="w-4 h-4"
@@ -242,13 +243,13 @@ const Packages = () => {
                     type="number"
                     step="0.01"
                     onChange={(e) => setSearchPrice(e.target.value)}
-                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
+                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded block w-full p-2"
                     placeholder="Search branch name..."
                   />
                 </div>
                 <button
                   type="submit"
-                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
+                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:text-fourth-color hover:bg-second-color"
                 >
                   <svg
                     class="w-4 h-4"
@@ -273,10 +274,10 @@ const Packages = () => {
         </div>
         {/* packages list */}
         <div className="my-16 mx-8">
-          <div className="flex flex-col gap-5 min-h-[901px] mb-5">
-            {currentPackages.map((data, id) => (
+          <div className={`flex flex-col gap-5 max-w-3xl md:w-[768px] ${currentPackages.length>0?"min-h-[835px]":"h-[700px]"} mb-5`}>
+            {currentPackages.length>0?currentPackages.map((data, id) => (
               <div key={id}>
-                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl md:w-[768px] group transform duration-500 hover:-translate-y-1 mb-2">
+                <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto group transform duration-500 hover:-translate-y-1 mb-2">
                   <img
                     className="w-full sm:w-52 h-auto object-fill"
                     src={data.imagePAC[0]}
@@ -301,7 +302,7 @@ const Packages = () => {
                         </p>
                       </div>
                       <Link to={`/package/${data.packages_id}`}>
-                        <button className="py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md">
+                        <button className="py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded shadow-md">
                           Read more
                         </button>
                       </Link>
@@ -309,11 +310,11 @@ const Packages = () => {
                   </div>
                 </article>
               </div>
-            ))}
+            )):<NoMatchingResults />}
           </div>
           {/* pagination */}
           <div>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center items-center gap-2">
               <button
                 onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
                 disabled={currentPage === 1}

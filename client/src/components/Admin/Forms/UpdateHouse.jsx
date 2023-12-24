@@ -15,11 +15,16 @@ const UpdateHouse = ({ id }) => {
   const [isPool, setIsPool] = useState(false);
   const [isFreeWifi, setIsFreeWifi] = useState(false);
   const [isParking, setParking] = useState(false);
-  const {headers} = useAuth();
+  const { headers } = useAuth();
+  const [amenities, setAmenities] = useState([]);
+  const [amenitiestInput, setAmenitiesInput] = useState("");
 
   const dropdownStyles = {
-    backgroundColor: "#ffffff",
-    color: "#0369a1",
+    backgroundColor: "#FFFFFF",
+    color: "#115e59",
+    textAlign: "start",
+    border: "1px solid #0F766E99",
+    borderRadius: "0.25rem",
   };
 
   useEffect(() => {
@@ -28,6 +33,8 @@ const UpdateHouse = ({ id }) => {
       .then((response) => {
         // Handle the response data here
         setFormData(response.data[0]);
+        setAmenities(response.data[0].amenities)
+        setSelectedType(response.data[0].type.toLowerCase())
         // setTypes(response.data.destinations_type);
       })
       .catch((error) => {
@@ -35,6 +42,19 @@ const UpdateHouse = ({ id }) => {
         console.error("Error:", error);
       });
   }, []);
+
+  const addTag = (e) => {
+    e.preventDefault();
+    if (amenitiestInput.trim() !== "" && !amenities.includes(amenitiestInput)) {
+      setAmenities([...amenities, amenitiestInput]);
+      setAmenitiesInput("");
+    }
+  };
+  const removeTag = (index) => {
+    const updatedAmenities = [...amenities];
+    updatedAmenities.splice(index, 1);
+    setAmenities(updatedAmenities);
+  };
 
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => {
@@ -56,16 +76,6 @@ const UpdateHouse = ({ id }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    const amenities = [];
-    if (isPool) {
-      amenities.push("Pool");
-    }
-    if (isFreeWifi) {
-      amenities.push("Free Wi-Fi");
-    }
-    if (isParking) {
-      amenities.push("Free Parking");
-    }
     setFormData({
       ...formData,
       type: selectedType === "inside" ? "inside" : "outside",
@@ -76,27 +86,36 @@ const UpdateHouse = ({ id }) => {
         ...formData,
         rating: selected.replace(/\D/g, ""),
       });
-      axios.put(`http://localhost:3999/updateAccommodation/${id}`, formData, {headers:headers}).then((response) => {
-        Swal.fire({
-          title: "Success!",
-          text: "Item has been updated.",
-          icon: "success",
+      axios
+        .put(`http://localhost:3999/updateAccommodation/${id}`, formData, {
+          headers: headers,
+        })
+        .then((response) => {
+          Swal.fire({
+            title: "Success!",
+            text: "Item has been updated.",
+            icon: "success",
+            customClass: {
+              confirmButton:
+                "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+            }
+          });
+          setFormData([]);
+          onSelectedPage("dashboard");
+          setFormData([]);
+        })
+        .catch((err) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong.",
+            confirmButtonText: "OK",
+            customClass: {
+              confirmButton:
+                "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+            }
+          });
         });
-        setFormData([]);
-        onSelectedPage("dashboard");
-        setFormData([]);
-      }).catch((err)=>{
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something went wrong.",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton:
-              "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-          },
-        });
-      });
     }
   };
   const handleClose = (e) => {
@@ -107,11 +126,11 @@ const UpdateHouse = ({ id }) => {
   return (
     <div>
       <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
-        <div className="lg:w-2/3 w-full bg-gray-200 p-6 rounded shadow-lg h-auto m-6">
+        <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={handleSubmit}>
             <div className="p-6 w-full">
               <div className="flex flex-col justify-center">
-                <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+                <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                   Update Accommodation
                 </h1>
               </div>
@@ -119,13 +138,13 @@ const UpdateHouse = ({ id }) => {
                 {/* image */}
                 <div className="text-start">
                   <label
-                    class="block mb-2 text-sm font-medium text-sky-900"
+                    class="block mb-2 text-sm font-medium text-Base-color"
                     for="multiple_files"
                   >
                     Upload Image
                   </label>
                   <input
-                    class="block w-full text-md file:bg-sky-900 file:hover:bg-white file:border-sky-900 file:text-white file:hover:text-sky-900  text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none file:py-2 file:px-4"
+                    class="block w-full text-md file:bg-fourth-color file:hover:bg-light-pink/20 file:border-0 file:text-second-color file:hover:text-fourth-color  text-Base-color border border-transparent-third-color rounded cursor-pointer bg-second-color focus:outline-none file:py-2 file:px-4"
                     name="image"
                     onChange={(e) => handleChange(e)}
                     type="file"
@@ -135,30 +154,30 @@ const UpdateHouse = ({ id }) => {
 
                 {/* title */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Title
                   </label>
                   <input
                     type="text"
                     name="title"
-                    value={formData&&formData.title}
+                    value={formData && formData.title}
                     placeholder="Place Name"
                     onChange={(e) => handleChange(e)}
                     required
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
                 {/* overview */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Overview
                   </label>
                   <textarea
                     name="activity_details"
                     rows="4"
-                    value={formData&&formData.accommodation_details}
-                    class="block p-2.5 w-full my-2 text-sm rounded-lg border border-[#0c4a6e69] outline-none"
+                    value={formData && formData.accommodation_details}
+                    class="block p-2.5 w-full my-2 text-sm rounded border border-transparent-third-color outline-none"
                     placeholder="Enter a description or an overview about the place..."
                     required
                     onChange={(e) => handleChange(e)}
@@ -167,7 +186,7 @@ const UpdateHouse = ({ id }) => {
 
                 {/* price */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Price
                   </label>
                   <input
@@ -175,41 +194,41 @@ const UpdateHouse = ({ id }) => {
                     step="0.01"
                     name="pricing"
                     placeholder="Enter the country the place in"
-                    value={formData&&formData.pricing}
+                    value={formData && formData.pricing}
                     required
                     onChange={(e) => handleChange(e)}
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
                 {/* location */}
                 <div className="flex flex-col md:flex-row text-start gap-5">
                   <div className="w-full md:w-auto">
-                    <label className="text-sm font-medium text-sky-900">
+                    <label className="text-sm font-medium text-Base-color">
                       City
                     </label>
                     <input
                       type="text"
                       name="location"
                       placeholder="City"
-                      value={formData&&formData.location}
+                      value={formData && formData.location}
                       required
                       onChange={(e) => handleChange(e)}
-                      className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                      className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                     />
                   </div>
                   <div className="w-full md:w-auto">
-                    <label className="text-sm font-medium text-sky-900">
+                    <label className="text-sm font-medium text-Base-color">
                       Country
                     </label>
                     <input
                       type="text"
                       name="country"
                       placeholder="Country"
-                      value={formData&&formData.country}
+                      value={formData && formData.country}
                       required
                       onChange={(e) => handleChange(e)}
-                      className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                      className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                     />
                   </div>
                 </div>
@@ -217,14 +236,14 @@ const UpdateHouse = ({ id }) => {
                 {/* type */}
                 <div className="text-start">
                   <div className="my-2">
-                    <label className="text-sm font-medium text-sky-900">
+                    <label className="text-sm font-medium text-Base-color">
                       Type
                     </label>
                   </div>
                   <div className="flex flex-col md:flex-row text-start gap-8">
-                    <div className="flex">
+                    <div className="flex items-center gap-1">
                       <input
-                        className="relative h-5 w-5 rounded-full border-2 border-solid border-sky-700 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-sky-700 checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-sky-700 checked:after:bg-sky-700 checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-primary checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-primary dark:checked:after:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                        className="relative h-5 w-5 rounded-full border-2 border-solid border-third-color checked:border-third-color hover:cursor-pointer  focus:shadow-none focus:outline-none focus:ring-0  checked:focus:border-third-color text-third-color"
                         type="radio"
                         name="type"
                         id="indoor"
@@ -239,9 +258,9 @@ const UpdateHouse = ({ id }) => {
                         Indoor
                       </label>
                     </div>
-                    <div className="flex">
+                    <div className="flex items-center gap-1">
                       <input
-                        className="relative h-5 w-5 rounded-full border-2 border-solid border-sky-700 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-sky-700 checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-sky-700 checked:after:bg-sky-700 checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-primary checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-primary dark:checked:after:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                        className="relative h-5 w-5 rounded-full border-2 border-solid border-third-color checked:border-third-color hover:cursor-pointer  focus:shadow-none focus:outline-none focus:ring-0  checked:focus:border-third-color text-third-color"
                         type="radio"
                         name="type"
                         id="outdoor"
@@ -262,7 +281,7 @@ const UpdateHouse = ({ id }) => {
                 {/* rating */}
                 <div className="text-start">
                   <div className="my-2">
-                    <label className="text-sm font-medium text-sky-900">
+                    <label className="text-sm font-medium text-Base-color">
                       Rating
                     </label>
                   </div>
@@ -313,27 +332,43 @@ const UpdateHouse = ({ id }) => {
 
                 {/* amenities */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Amenities
                   </label>
-                  <div className="flex flex-wrap justify-around">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="Wifi"
-                        onClick={() => setIsFreeWifi(!isFreeWifi)}
+                  <div className="mt-1">
+                    <div className="flex">
+                      <input
+                        type="text"
+                        value={amenitiestInput}
+                        onChange={(e) => setAmenitiesInput(e.target.value)}
+                        className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
+                        placeholder="Add a tag..."
                       />
-                      <Label htmlFor="Wifi">Free Wi-Fi</Label>
+                      <button
+                        onClick={(e) => {
+                          addTag(e);
+                        }}
+                        className="m-2 py-3 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
+                      >
+                        Add
+                      </button>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="parking"
-                        onClick={() => setParking(!isParking)}
-                      />
-                      <Label htmlFor="parking">Free parking</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="pool" onClick={() => setIsPool(!isPool)} />
-                      <Label htmlFor="pool">Pool</Label>
+                    <div className="flex flex-wrap">
+                      {amenities.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-light-pink/20 border border-light-pink/60 text-fourth-color rounded-md px-2 py-1 m-1 flex items-center"
+                        >
+                          <span className="mr-1">{tag}</span>
+                          <button
+                            type="button"
+                            onClick={() => removeTag(index)}
+                            className="text-fourth-color/80 hover:text-fourth-color focus:outline-none"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -342,14 +377,14 @@ const UpdateHouse = ({ id }) => {
               <div className="text-center mt-6">
                 <button
                   type="submit"
-                  className="mt-4 m-2 py-2 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                  className="mt-4 m-2 py-2 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                 >
                   Update
                 </button>
                 <button
                   type="clear"
                   onClick={(e) => handleClose(e)}
-                  className="mt-4 m-2 py-2 px-5 border-2 border-sky-900 text-sky-900 rounded-2xl hover:bg-white"
+                  className="mt-4 m-2 py-2 px-5 border-2 border-fourth-color text-fourth-color rounded hover:bg-second-color"
                 >
                   Close
                 </button>

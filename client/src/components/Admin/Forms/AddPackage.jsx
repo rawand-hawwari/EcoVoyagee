@@ -23,7 +23,7 @@ const AddPackage = () => {
     if (name === "image") {
       setFormData({
         ...formData,
-        [name]: e.target.file,
+        files: Array.from(e.target.files),
       });
     } else {
       setFormData({
@@ -34,6 +34,7 @@ const AddPackage = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+
     formData.itinerary = Object.fromEntries(
       itinerary.map((item, index) => [`Day ${index + 1}`, item])
     );
@@ -46,30 +47,57 @@ const AddPackage = () => {
     formData.highlights = Object.fromEntries(
       highlight.map((item, index) => [`high ${index + 1}`, item])
     );
-    console.log(formData);
-    axios.post(`http://localhost:3999/addPackages`, formData, {
-      headers: headers,
-    }).then((response) => {
-      Swal.fire({
-        title: "Success!",
-        text: "Item has been updated.",
-        icon: "success",
+
+    const itineraryJSON = JSON.stringify(formData.itinerary);
+    const inclusionsJSON = JSON.stringify(formData.inclusions);
+    const exclusionsJSON = JSON.stringify(formData.exclusions);
+    const highlightsJSON = JSON.stringify(formData.highlights);
+    const formDataToSend = new FormData();
+    if (formData.files) {
+      formData.files.forEach((file, index) => {
+        formDataToSend.append(`files[]`, file);
       });
-      setFormData([]);
-      onSelectedPage("dashboard");
-      setFormData([]);
-    }).catch((err)=>{
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong.",
-        confirmButtonText: "OK",
-        customClass: {
-          confirmButton:
-            "bg-fourth-color hover:bg-second-color text-second-color hover:text-Base-color border border-fourth-color py-2 px-4 rounded",
-        },
+    }
+    // Append other form data fields
+    formDataToSend.append("cost", formData.cost);
+    formDataToSend.append("country", formData.country);
+    formDataToSend.append("exclusions", exclusionsJSON);
+    formDataToSend.append("highlights", highlightsJSON);
+    formDataToSend.append("inclusions", inclusionsJSON);
+    formDataToSend.append("itinerary", itineraryJSON);
+    formDataToSend.append("overview", formData.overview);
+    formDataToSend.append("title", formData.title);
+
+    axios
+      .post(`http://localhost:3999/addPackages`, formDataToSend, {
+        headers: headers,
+      })
+      .then((response) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Item has been updated.",
+          icon: "success",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
+        setFormData([]);
+        onSelectedPage("dashboard");
+        setFormData([]);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong.",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
       });
-    });
   };
   const handleClose = (e) => {
     e.preventDefault();
@@ -123,13 +151,13 @@ const AddPackage = () => {
   // console.log(formData);
   return (
     <div>
-      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-full">
+      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
         <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="p-6 w-full">
               <div className="flex flex-col justify-center">
                 <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
-                  Update Package
+                  Add Package
                 </h1>
               </div>
               <div className="space-y-4">

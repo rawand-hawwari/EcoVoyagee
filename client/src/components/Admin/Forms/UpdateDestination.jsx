@@ -12,8 +12,11 @@ const UpdateDestination = ({ id }) => {
   const { headers } = useAuth();
 
   const dropdownStyles = {
-    backgroundColor: "#ffffff",
-    color: "#0369a1",
+    backgroundColor: "#FFFFFF",
+    color: "#115e59",
+    textAlign: "start",
+    border: "1px solid #0F766E99",
+    borderRadius: "0.25rem",
   };
 
   useEffect(() => {
@@ -22,7 +25,7 @@ const UpdateDestination = ({ id }) => {
       .then((response) => {
         // Handle the response data here
         setFormData(response.data[0]);
-        setSelected(response.data[0]&&response.data[0].destinations_type);
+        setSelected(response.data[0] && response.data[0].destinations_type);
         // setTypes(response.data.destinations_type);
       })
       .catch((error) => {
@@ -72,6 +75,10 @@ const UpdateDestination = ({ id }) => {
           title: "Success!",
           text: "Item has been updated.",
           icon: "success",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          }
         });
         setFormData([]);
         onSelectedPage("dashboard");
@@ -85,11 +92,11 @@ const UpdateDestination = ({ id }) => {
   return (
     <div>
       <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
-        <div className="lg:w-2/3 w-full bg-gray-200 p-6 rounded shadow-lg h-auto m-6">
+        <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={handleSubmit}>
             <div className="p-6 w-full">
               <div className="flex flex-col justify-center">
-                <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+                <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                   Update destination
                 </h1>
               </div>
@@ -97,13 +104,13 @@ const UpdateDestination = ({ id }) => {
                 {/* image */}
                 <div className="text-start">
                   <label
-                    class="block mb-2 text-sm font-medium text-sky-900"
+                    class="block mb-2 text-sm font-medium text-Base-color"
                     for="multiple_files"
                   >
                     Upload Image
                   </label>
                   <input
-                    class="block w-full text-md file:bg-sky-900 file:hover:bg-white file:border-sky-900 file:text-white file:hover:text-sky-900  text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none file:py-2 file:px-4"
+                    class="block w-full text-md file:bg-fourth-color file:hover:bg-light-pink/20 file:border-0 file:text-second-color file:hover:text-fourth-color  text-Base-color border border-transparent-third-color rounded cursor-pointer bg-second-color focus:outline-none file:py-2 file:px-4"
                     name="image"
                     onChange={(e) => handleChange(e)}
                     type="file"
@@ -113,7 +120,7 @@ const UpdateDestination = ({ id }) => {
 
                 {/* title */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Title
                   </label>
                   <input
@@ -123,20 +130,20 @@ const UpdateDestination = ({ id }) => {
                     placeholder="Place Name"
                     onChange={(e) => handleChange(e)}
                     required
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
                 {/* overview */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Overview
                   </label>
                   <textarea
                     name="activity_details"
                     rows="4"
                     value={formData && formData.details}
-                    class="block p-2.5 w-full my-2 text-sm rounded-lg border border-[#0c4a6e69] outline-none"
+                    class="block p-2.5 w-full my-2 text-sm rounded border border-transparent-third-color outline-none"
                     placeholder="Enter a description or an overview about the place..."
                     required
                     onChange={(e) => handleChange(e)}
@@ -145,7 +152,7 @@ const UpdateDestination = ({ id }) => {
 
                 {/* city */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     City
                   </label>
                   <input
@@ -155,13 +162,13 @@ const UpdateDestination = ({ id }) => {
                     value={formData && formData.location}
                     required
                     onChange={(e) => handleChange(e)}
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
                 {/* country */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     City
                   </label>
                   <input
@@ -171,14 +178,14 @@ const UpdateDestination = ({ id }) => {
                     value={formData && formData.country}
                     required
                     onChange={(e) => handleChange(e)}
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
                 {/* Type */}
                 <div className="text-start">
                   <div className="my-2">
-                    <label className="text-sm font-medium text-sky-900">
+                    <label className="text-sm font-medium text-Base-color">
                       Type
                     </label>
                   </div>
@@ -224,14 +231,14 @@ const UpdateDestination = ({ id }) => {
               <div className="text-center mt-6">
                 <button
                   type="submit"
-                  className="mt-4 m-2 py-2 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                  className="mt-4 m-2 py-2 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                 >
                   Update
                 </button>
                 <button
                   type="clear"
                   onClick={(e) => handleClose(e)}
-                  className="mt-4 m-2 py-2 px-5 border-2 border-sky-900 text-sky-900 rounded-2xl hover:bg-white"
+                  className="mt-4 m-2 py-2 px-5 border-2 border-fourth-color text-fourth-color rounded hover:bg-second-color"
                 >
                   Close
                 </button>

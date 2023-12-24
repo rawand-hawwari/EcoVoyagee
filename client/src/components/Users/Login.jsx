@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assests/Images/logo.png";
 import Swal from "sweetalert2";
 import { useCookies } from "react-cookie";
-import { GoogleLogin } from "@react-oauth/google";
-import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
+// import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../Context/AuthContext";
+// import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -14,6 +16,13 @@ const Login = () => {
   const [error, setError] = useState("");
   const { isAdmin, onLogin } = useAuth();
   const [userGoogle, setUserGoogle] = useState([]);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const loginbygoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => setUserGoogle(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
 
   const history = useNavigate();
   const [formData, setFormData] = useState({
@@ -88,140 +97,40 @@ const Login = () => {
     }
   };
 
-  const handleGoogle = useGoogleLogin({
-    onSuccess: (codeResponse) => setUserGoogle(codeResponse),
-    onError: (error) => errorMessage(error),
-  });
   useEffect(() => {
-    if (userGoogle.access_token) {
+   if (userGoogle.access_token) {
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`
         )
         .then(async (res) => {
+          // console.log("Google User Info:", res.data);
+          console.log("googlData", res.data);
+
           try {
             const response = await axios.post(
               "http://localhost:3999/google",
               res.data
             );
+            console.log("Server response:", response.data);
+
             const token = response.data.token;
 
+            // Make sure the token is not undefined or null before storing it
             if (token) {
-              if (response.data.role_id === 2) {
-                onLogin(true, token);
-                history("/dashboard");
-              } else {
-                onLogin(false, token);
-                history(-1);
-              }
-              setError("Sign-in successful");
-              Swal.fire({
-                icon: "success",
-                title: "Success!",
-                text: "You have Signed in successfully.",
-                confirmButtonText: "OK",
-                customClass: {
-                  confirmButton:
-                    "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-                },
-              });
+              login(token);
+              navigate("/");
             }
 
             // Rest of your code...
           } catch (error) {
-            // Delay the error message and handle it
-            setTimeout(() => {
-              console.error("Sign-in error:", error);
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Sign-in failed. Email or password is invalid.",
-                confirmButtonText: "OK",
-                customClass: {
-                  confirmButton:
-                    "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-                },
-              });
-              setError("Sign-in failed. Email or password is invalid");
-            }, 100);
+            console.log("Error:", error);
           }
         })
-        .catch((err) => {
-          // Delay the error message and handle it
-          setTimeout(() => {
-            console.error("Sign-in error:", err);
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Sign-in failed. Email or password is invalid.",
-              confirmButtonText: "OK",
-              customClass: {
-                confirmButton:
-                  "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-              },
-            });
-            setError("Sign-in failed. Email or password is invalid");
-          }, 100);
-        });
+        .catch((err) => console.log("Google User Info Error:", err.message));
     }
-  }, [userGoogle]);
-  // () => {
-  //   googleLogin;
-  //   // history('/');
-  //   // window.location.href = "http://localhost:3999/auth/google";
-  //   // axios
-  //   //   .get("http://localhost:3999/auth/google")
-  //   //   .then((response) => {
-  //   //     console.log(response.data);
-  //   //     const token = response.data.token;
-  //   //     console.log("token:" + token);
-  //   //     // Set the token in a cookie
-  //   //     setCookie("token", token, { path: "/" });
-  //   //     setError("Sign-in successful");
-  //   //     Swal.fire({
-  //   //       icon: "success",
-  //   //       title: "Success!",
-  //   //       text: "You have Signed in successfully.",
-  //   //       confirmButtonText: "OK",
-  //   //       customClass: {
-  //   //         confirmButton:
-  //   //           "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-  //   //       },
-  //   //     });
-  //   //     // history("/");
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     setTimeout(() => {
-  //   //       console.error("Sign-in error:", error);
-  //   //       Swal.fire({
-  //   //         icon: "error",
-  //   //         title: "Oops...",
-  //   //         text: "Sign-in failed. Something went wrong.",
-  //   //         confirmButtonText: "OK",
-  //   //         customClass: {
-  //   //           confirmButton:
-  //   //             "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-  //   //         },
-  //   //       });
-  //   //       setError("Sign-in failed. Email or password is invalid");
-  //   //     }, 100);
-  //   //     // Handle errors here
-  //   //     console.error("Error:", error);
-  //   //   });
-  // };
+  }, [userGoogle, navigate]);
 
-  const errorMessage = (error) => {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Sign-in failed. Something went wrong.",
-      confirmButtonText: "OK",
-      customClass: {
-        confirmButton:
-          "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-      },
-    });
-  };
   return (
     <div className="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
       <form action="" onSubmit={(e) => handleSubmit(e)}>
@@ -256,10 +165,10 @@ const Login = () => {
                 onChange={handleChange}
                 className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
               />
-              <Link to={"/"}>
+              <Link to={"/forgot-password"}>
                 <p className="mt-4 text-sm text-third-color cursor-pointer text-start">
                   {" "}
-                  Forgot yo password?
+                  Forgot your password?
                 </p>
               </Link>
             </div>
@@ -277,7 +186,7 @@ const Login = () => {
                 <div class="mx-10 px-6 sm:px-0 max-w-sm">
                   <button
                     type="button"
-                    onClick={() => handleGoogle()}
+                    onClick={() => loginbygoogle()}
                     class="text-third-color w-full border border-third-color/20 bg-third-color/20 hover:bg-second-color font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-around mr-2 mb-2"
                   >
                     <svg
@@ -298,7 +207,6 @@ const Login = () => {
                     Sign up with Google<div></div>
                   </button>
                 </div>
-                {/* <GoogleLogin onSuccess={handleGoogle} onError={errorMessage} /> */}
               </p>
               <p className="mt-4 text-sm text-Base-color">
                 Don't Have An Account?{" "}

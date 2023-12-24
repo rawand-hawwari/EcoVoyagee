@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import NoMatchingResults from "./NoMatchingResults";
 
 const Destinations = () => {
   const [destinations, setDestinations] = useState([]);
@@ -146,6 +147,7 @@ const Destinations = () => {
 
   return (
     <div className="flex flex-col md:flex-row justify-center">
+      {/* filteration */}
       <div className="">
         <div
           className={`${
@@ -217,13 +219,13 @@ const Destinations = () => {
                 type="text"
                 id="simple-search"
                 onChange={(e) => handleSearch(e)}
-                class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
+                class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
                 placeholder="Search branch name..."
               />
             </div>
             <button
               type="submit"
-              className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+              className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:bg-second-color hover:text-fourth-color"
             >
               <svg
                 class="w-4 h-4"
@@ -251,7 +253,7 @@ const Destinations = () => {
               <div>
                 <button
                   type="button"
-                  className="inline-flex w-full justify-center gap-x-1.5 border border-transparent-third-color rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-Base-color shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-transparent-first-color"
+                  className="inline-flex w-full justify-center gap-x-1.5 border border-transparent-third-color rounded bg-second-color px-3 py-2 text-sm font-semibold text-Base-color shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-transparent-first-color"
                   id="menu-button"
                   aria-expanded={menuOpen}
                   aria-haspopup="true"
@@ -277,7 +279,7 @@ const Destinations = () => {
 
               {menuOpen && (
                 <div
-                  className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="menu-button"
@@ -322,9 +324,10 @@ const Destinations = () => {
           </div>
         </div>
       </div>
+      {/* list */}
       <div className="my-16 mx-8">
-        <div className="flex flex-col gap-8 h-[901.6px]">
-          {currentDestinations.map((destination, id) => (
+        <div className={`flex flex-col gap-8 max-w-3xl md:w-[768px] ${currentDestinations.length>0?"h-[901.6px]":"h-[700px]"}`}>
+          {currentDestinations.length>0?currentDestinations.map((destination, id) => (
             <div key={id}>
               <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl group transform duration-500 hover:-translate-y-1 mb-2">
                 <img
@@ -344,7 +347,7 @@ const Destinations = () => {
                   <div className="px-2">
                     <div className="sm:flex sm:justify-end">
                       <Link to={`/destination/${destination.destinations_id}`}>
-                        <button className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md">
+                        <button className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded shadow-md">
                           Read more
                         </button>
                       </Link>
@@ -353,7 +356,7 @@ const Destinations = () => {
                 </div>
               </article>
             </div>
-          ))}
+          )):<NoMatchingResults />}
         </div>
         <div className="m-5">
           <div className="flex justify-center gap-2">

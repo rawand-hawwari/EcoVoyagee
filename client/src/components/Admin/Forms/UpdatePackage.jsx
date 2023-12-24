@@ -16,7 +16,7 @@ const UpdatePackage = ({ id }) => {
   const [inclusionInput, setInclusionInput] = useState("");
   const [exclusion, setExclusion] = useState([]);
   const [exclusionInput, setExclusionInput] = useState("");
-  const {headers} = useAuth();
+  const { headers } = useAuth();
 
   useEffect(() => {
     axios
@@ -60,6 +60,7 @@ const UpdatePackage = ({ id }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+
     formData.itinerary = Object.fromEntries(
       itinerary.map((item, index) => [`Day ${index + 1}`, item])
     );
@@ -72,28 +73,57 @@ const UpdatePackage = ({ id }) => {
     formData.highlights = Object.fromEntries(
       highlight.map((item, index) => [`high ${index + 1}`, item])
     );
-    console.log(formData);
-    axios.put(`http://localhost:3999/updatePackages/${id}`, formData, {headers:headers}).then((response) => {
-      Swal.fire({
-        title: "Success!",
-        text: "Item has been updated.",
-        icon: "success",
+
+    const itineraryJSON = JSON.stringify(formData.itinerary);
+    const inclusionsJSON = JSON.stringify(formData.inclusions);
+    const exclusionsJSON = JSON.stringify(formData.exclusions);
+    const highlightsJSON = JSON.stringify(formData.highlights);
+    const formDataToSend = new FormData();
+    if (formData.files) {
+      formData.files.forEach((file, index) => {
+        formDataToSend.append(`files[]`, file);
       });
-      setFormData([]);
-      onSelectedPage("dashboard");
-      setFormData([]);
-    }).catch((err)=>{
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong.",
-        confirmButtonText: "OK",
-        customClass: {
-          confirmButton:
-            "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-        },
+    }
+    // Append other form data fields
+    formDataToSend.append("cost", formData.cost);
+    formDataToSend.append("country", formData.country);
+    formDataToSend.append("exclusions", exclusionsJSON);
+    formDataToSend.append("highlights", highlightsJSON);
+    formDataToSend.append("inclusions", inclusionsJSON);
+    formDataToSend.append("itinerary", itineraryJSON);
+    formDataToSend.append("overview", formData.overview);
+    formDataToSend.append("title", formData.title);
+
+    axios
+      .put(`http://localhost:3999/updatePackages/${id}`, formData, {
+        headers: headers,
+      })
+      .then((response) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Item has been updated.",
+          icon: "success",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
+        setFormData([]);
+        onSelectedPage("dashboard");
+        setFormData([]);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong.",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
       });
-    });
   };
   const handleClose = (e) => {
     e.preventDefault();
@@ -148,11 +178,11 @@ const UpdatePackage = ({ id }) => {
   return (
     <div>
       <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
-        <div className="lg:w-2/3 w-full bg-gray-200 p-6 rounded shadow-lg h-auto m-6">
+        <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="p-6 w-full">
               <div className="flex flex-col justify-center">
-                <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
+                <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                   Update Package
                 </h1>
               </div>
@@ -160,13 +190,13 @@ const UpdatePackage = ({ id }) => {
                 {/* upload image */}
                 <div className="text-start">
                   <label
-                    class="block mb-2 text-sm font-medium text-sky-900"
+                    class="block mb-2 text-sm font-medium text-Base-color"
                     for="multiple_files"
                   >
                     Upload Image
                   </label>
                   <input
-                    class="block w-full text-md file:bg-sky-900 file:hover:bg-white file:border-sky-900 file:text-white file:hover:text-sky-900  text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none file:py-2 file:px-4"
+                    class="block w-full text-md file:bg-fourth-color file:hover:bg-light-pink/20 file:border-0 file:text-second-color file:hover:text-fourth-color  text-Base-color border border-transparent-third-color rounded cursor-pointer bg-second-color focus:outline-none file:py-2 file:px-4"
                     name="image"
                     onChange={(e) => handleChange(e)}
                     type="file"
@@ -176,30 +206,30 @@ const UpdatePackage = ({ id }) => {
 
                 {/* title */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Title
                   </label>
                   <input
                     type="text"
                     name="title"
-                    value={formData&&formData.title}
+                    value={formData && formData.title}
                     placeholder="Place Name"
                     onChange={(e) => handleChange(e)}
                     required
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
                 {/* overview */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Overview
                   </label>
                   <textarea
                     name="overview"
                     rows="4"
-                    value={formData&&formData.overview}
-                    class="block p-2.5 w-full my-2 text-sm rounded-lg border border-[#0c4a6e69] outline-none"
+                    value={formData && formData.overview}
+                    class="block p-2.5 w-full my-2 text-sm rounded border border-transparent-third-color outline-none"
                     placeholder="Enter a description or an overview about the place..."
                     required
                     onChange={(e) => handleChange(e)}
@@ -217,14 +247,14 @@ const UpdatePackage = ({ id }) => {
                         type="text"
                         value={highlightInput}
                         onChange={(e) => setHighlightInput(e.target.value)}
-                        className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                        className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                         placeholder="Add a tag..."
                       />
                       <button
                         onClick={(e) => {
                           addTag(e, "highlight");
                         }}
-                        className="m-2 py-3 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                        className="m-2 py-3 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                       >
                         Add
                       </button>
@@ -233,13 +263,13 @@ const UpdatePackage = ({ id }) => {
                       {highlight.map((tag, index) => (
                         <div
                           key={index}
-                          className="bg-blue-100 border border-blue-300 text-blue-800 rounded-md px-2 py-1 m-1 flex items-center"
+                          className="bg-light-pink/20 border border-light-pink/60 text-fourth-color rounded-md px-2 py-1 m-1 flex items-center"
                         >
                           <span className="mr-1">{tag}</span>
                           <button
                             type="button"
                             onClick={() => removeTag(index, "highlight")}
-                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                            className="text-fourth-color/80 hover:text-fourth-color focus:outline-none"
                           >
                             &times;
                           </button>
@@ -260,14 +290,14 @@ const UpdatePackage = ({ id }) => {
                         type="text"
                         value={itineraryInput}
                         onChange={(e) => setItineraryInput(e.target.value)}
-                        className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                        className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                         placeholder="Add a tag..."
                       />
                       <button
                         onClick={(e) => {
                           addTag(e, "itinerary");
                         }}
-                        className="m-2 py-3 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                        className="m-2 py-3 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                       >
                         Add
                       </button>
@@ -276,13 +306,13 @@ const UpdatePackage = ({ id }) => {
                       {itinerary.map((tag, index) => (
                         <div
                           key={index}
-                          className="bg-blue-100 border border-blue-300 text-blue-800 rounded-md px-2 py-1 m-1 flex items-center"
+                          className="bg-light-pink/20 border border-light-pink/60 text-fourth-color rounded-md px-2 py-1 m-1 flex items-center"
                         >
                           <span className="mr-1">{tag}</span>
                           <button
                             type="button"
                             onClick={() => removeTag(index, "itinerary")}
-                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                            className="text-fourth-color/80 hover:text-fourth-color focus:outline-none"
                           >
                             &times;
                           </button>
@@ -303,14 +333,14 @@ const UpdatePackage = ({ id }) => {
                         type="text"
                         value={inclusionInput}
                         onChange={(e) => setInclusionInput(e.target.value)}
-                        className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                        className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                         placeholder="Add a tag..."
                       />
                       <button
                         onClick={(e) => {
                           addTag(e, "inclusion");
                         }}
-                        className="m-2 py-3 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                        className="m-2 py-3 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                       >
                         Add
                       </button>
@@ -319,13 +349,13 @@ const UpdatePackage = ({ id }) => {
                       {inclusion.map((tag, index) => (
                         <div
                           key={index}
-                          className="bg-blue-100 border border-blue-300 text-blue-800 rounded-md px-2 py-1 m-1 flex items-center"
+                          className="bg-light-pink/20 border border-light-pink/60 text-fourth-color rounded-md px-2 py-1 m-1 flex items-center"
                         >
                           <span className="mr-1">{tag}</span>
                           <button
                             type="button"
                             onClick={() => removeTag(index, "inclusion")}
-                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                            className="text-fourth-color/80 hover:text-fourth-color focus:outline-none"
                           >
                             &times;
                           </button>
@@ -346,14 +376,14 @@ const UpdatePackage = ({ id }) => {
                         type="text"
                         value={exclusionInput}
                         onChange={(e) => setExclusionInput(e.target.value)}
-                        className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                        className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                         placeholder="Add a tag..."
                       />
                       <button
                         onClick={(e) => {
                           addTag(e, "exclusion");
                         }}
-                        className="m-2 py-3 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                        className="m-2 py-3 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                       >
                         Add
                       </button>
@@ -362,13 +392,13 @@ const UpdatePackage = ({ id }) => {
                       {exclusion.map((tag, index) => (
                         <div
                           key={index}
-                          className="bg-blue-100 border border-blue-300 text-blue-800 rounded-md px-2 py-1 m-1 flex items-center"
+                          className="bg-light-pink/20 border border-light-pink/60 text-fourth-color rounded-md px-2 py-1 m-1 flex items-center"
                         >
                           <span className="mr-1">{tag}</span>
                           <button
                             type="button"
                             onClick={() => removeTag(index, "exclusion")}
-                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                            className="text-fourth-color/80 hover:text-fourth-color focus:outline-none"
                           >
                             &times;
                           </button>
@@ -381,16 +411,16 @@ const UpdatePackage = ({ id }) => {
                 {/* country */}
                 <div className="text-start">
                   <label className="block text-sm font-medium text-gray-700">
-                  Country
+                    Country
                   </label>
                   <div className="mt-1">
                     <div className="flex">
                       <input
                         type="text"
                         name="country"
-                        value={formData&&formData.country}
+                        value={formData && formData.country}
                         onChange={(e) => handleChange(e)}
-                        className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                        className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                         placeholder="Country"
                       />
                     </div>
@@ -399,7 +429,7 @@ const UpdatePackage = ({ id }) => {
 
                 {/* cost */}
                 <div className="text-start">
-                  <label className="text-sm font-medium text-sky-900">
+                  <label className="text-sm font-medium text-Base-color">
                     Price
                   </label>
                   <input
@@ -407,10 +437,10 @@ const UpdatePackage = ({ id }) => {
                     step="0.01"
                     name="cost"
                     placeholder="Enter the country the place in"
-                    value={formData&&formData.cost}
+                    value={formData && formData.cost}
                     required
                     onChange={(e) => handleChange(e)}
-                    className="block text-sm py-3 px-4 my-2 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 my-2 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
               </div>
@@ -418,14 +448,14 @@ const UpdatePackage = ({ id }) => {
               <div className="text-center mt-6">
                 <button
                   type="submit"
-                  className="mt-4 m-2 py-2 px-5 border-2 border-sky-900 bg-sky-900 hover:bg-white rounded-2xl text-white hover:text-sky-900"
+                  className="mt-4 m-2 py-2 px-5 border-2 border-fourth-color bg-fourth-color hover:bg-second-color rounded text-second-color hover:text-fourth-color"
                 >
-                  Add
+                  Update
                 </button>
                 <button
                   type="clear"
                   onClick={(e) => handleClose(e)}
-                  className="mt-4 m-2 py-2 px-5 border-2 border-sky-900 text-sky-900 rounded-2xl hover:bg-white"
+                  className="mt-4 m-2 py-2 px-5 border-2 border-fourth-color text-fourth-color rounded hover:bg-second-color"
                 >
                   Close
                 </button>

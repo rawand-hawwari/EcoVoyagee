@@ -72,7 +72,7 @@ const ProfileData = () => {
                 }
                 onChange={(e) => handleChange(e)}
                 disabled={firstName}
-                className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                className="block text-sm py-3 px-4 rounded w-full border border-[#0c4a6e69] outline-none"
               />
               <button
                 type="button"
@@ -105,7 +105,7 @@ const ProfileData = () => {
                 }
                 onChange={(e) => handleChange(e)}
                 disabled={lastName}
-                className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+                className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
               />
               <button
                 type="button"
@@ -140,7 +140,7 @@ const ProfileData = () => {
               value={userData.length !== 0 ? userData.country : user.country}
               onChange={(e) => handleChange(e)}
               disabled={country}
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+              className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
             />
             <button
               type="button"
@@ -174,7 +174,7 @@ const ProfileData = () => {
               value={userData.length !== 0 ? userData.email : user.email}
               onChange={(e) => handleChange(e)}
               disabled={email}
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+              className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
             />
             <button
               type="button"
@@ -203,7 +203,7 @@ const ProfileData = () => {
 
           <button
             onClick={(e) => updateData(e)}
-            className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+            className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
           >
             Save Changes
           </button>

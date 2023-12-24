@@ -60,7 +60,9 @@ export default function CheckoutForm() {
                 {
                   headers: headers,
                 }
-              );
+              ).then((response) => {
+                onBooking([])
+              });
             } else if (bookData.packages_id) {
               const booking = {
                 packages_id: bookData.packages_id,
@@ -79,7 +81,9 @@ export default function CheckoutForm() {
                 {
                   headers: headers,
                 }
-              );
+              ).then((response) => {
+                onBooking([])
+              });
             }else if (bookData.activities_id) {
               const booking = {
                 activities_id: bookData.activities_id,
@@ -93,12 +97,14 @@ export default function CheckoutForm() {
               };
               // console.log(bookData.packages_id);
               const response = await axios.post(
-                `http://localhost:3999/BookPackage/${bookData.activities_id}`,
+                `http://localhost:3999/BookActivity/${bookData.activities_id}`,
                 booking,
                 {
                   headers: headers,
                 }
-              );
+              ).then((response) => {
+                onBooking([])
+              });
             } else if (bookData.flights_id) {
               let booking = {
                 first_name: bookData.first_name,
@@ -124,8 +130,9 @@ export default function CheckoutForm() {
                 {
                   headers: headers,
                 }
-              );
-              console.log("whatever");
+              ).then((response) => {
+                onBooking([])
+              });
             }
 
             Swal.fire({
@@ -133,6 +140,7 @@ export default function CheckoutForm() {
               icon: "success",
               showCancelButton: false,
               confirmButtonText: "OK",
+              confirmButtonColor: "#0f766e",
               customClass: {
                 confirmButton:
                   "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
@@ -172,7 +180,7 @@ export default function CheckoutForm() {
         </div>
         <button
           type="submit"
-          className="btn-pay py-2 px-4 w-full text-md text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+          className="btn-pay py-2 px-4 w-full text-md text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
         >
           Buy Now
         </button>

@@ -14,7 +14,7 @@ const addFlight = async (flightsData) => {
 const getFlights = async () => {
     try {
         const flights = await db
-            .select('flights.*', 'destinations.title as destination_name')
+            .select('flights.*', 'destinations.country as destination_name')
             .from('flights')
             .where({
                 'flights.is_deleted': false,
@@ -32,7 +32,7 @@ const getFlights = async () => {
 const getFlightsByID = async (flights_id) => {
     try {
         return await db('flights')
-            .select('flights.*', 'destinations.title as destination_name')
+            .select('flights.*', 'destinations.country as destination_name')
             .where({
                 'flights.is_deleted': false,
                 'flights.flights_id': flights_id
@@ -79,7 +79,7 @@ const getFlightsPaginated = async (page, pageSize, search) => {
         const offset = (page - 1) * pageSize;
 
         let query = db('flights')
-            .select('flights.*', 'destinations.title as destination_name')
+            .select('flights.*', 'destinations.country as destination_name')
             .orderBy('destinations.title', 'asc') // Use the actual column name instead of the alias
             .limit(pageSize)
             .offset(offset)

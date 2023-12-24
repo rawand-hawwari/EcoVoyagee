@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import NoMatchingResults from "./NoMatchingResults";
 
 const Activites = () => {
   const [destinations, setDestinations] = useState([]);
@@ -145,7 +146,9 @@ const Activites = () => {
       setFilteredActivities(destinations);
     } else {
       setFilteredActivities(
-        destinations.filter((destination) => destination.type.toLowerCase().includes(type.toLowerCase()))
+        destinations.filter((destination) =>
+          destination.type.toLowerCase().includes(type.toLowerCase())
+        )
       );
     }
   };
@@ -229,13 +232,13 @@ const Activites = () => {
                   type="text"
                   id="simple-search"
                   onChange={(e) => handleSearch(e)}
-                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded-lg focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
+                  class="bg-second-color border border-transparent-third-color text-fourth-color text-sm rounded focus:ring-transparent-first-color focus:border-transparent-first-color block w-full p-2"
                   placeholder="Search branch name..."
                 />
               </div>
               <button
                 type="submit"
-                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+                className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:bg-second-color hover:text-fourth-color"
               >
                 <svg
                   class="w-4 h-4"
@@ -270,13 +273,13 @@ const Activites = () => {
                     type="number"
                     step="0.01"
                     onChange={(e) => setSearchPrice(e.target.value)}
-                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
+                    class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded block w-full p-2"
                     placeholder="Search branch name..."
                   />
                 </div>
                 <button
                   type="submit"
-                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
+                  class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:text-fourth-color hover:bg-second-color"
                 >
                   <svg
                     class="w-4 h-4"
@@ -304,7 +307,7 @@ const Activites = () => {
                 <div>
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-transparent-first-color"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded bg-second-color px-3 py-2 text-sm font-semibold text-third-color shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-transparent-first-color"
                     id="menu-button"
                     aria-expanded={typeMenuOpen}
                     aria-haspopup="true"
@@ -330,7 +333,7 @@ const Activites = () => {
 
                 {typeMenuOpen && (
                   <div
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
@@ -375,30 +378,34 @@ const Activites = () => {
         {/* content list */}
         <div className="my-10 md:my-16 mx-8 md:w-2/3">
           <div className="flex flex-col flex-wrap justify-start items-start md:flex-row gap-4 min-h-[735px] pb-5">
-            {currentActivities.map((activity, id) => (
-              <Link key={id} to={`/activity/${activity.activities_id}`}>
-                <article
-                  className="md:w-[15rem] w-[20rem] shadow-xl bg-cover bg-center overflow-hidden md:h-[350px] h-[400px] transform duration-500 hover:-translate-y-2 cursor-pointer group"
-                  style={{
-                    backgroundImage: `url(${activity.imageactivity[0]})`,
-                  }}
-                >
-                  <div className="text-start bg-transparent-fourth-color hover:bg-transparent-second-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-40 md:pt-28 hover:bg-opacity-75 transform duration-300">
-                    <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
-                      {activity.title}
-                    </h1>
-                    <div className="w-16 h-2 bg-fourth-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                    <p className="my-3 py-3 opacity-0 max-h-[70px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
-                      {activity.activity_details}
-                    </p>
-                  </div>
-                </article>
-              </Link>
-            ))}
+            {currentActivities.length > 0 ? (
+              currentActivities.map((activity, id) => (
+                <Link key={id} to={`/activity/${activity.activities_id}`}>
+                  <article
+                    className="md:w-[15rem] w-[20rem] shadow-xl bg-cover bg-center overflow-hidden md:h-[350px] h-[400px] transform duration-500 hover:-translate-y-2 cursor-pointer group"
+                    style={{
+                      backgroundImage: `url(${activity.imageactivity[0]})`,
+                    }}
+                  >
+                    <div className="text-start bg-transparent-fourth-color hover:bg-transparent-second-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-40 md:pt-28 hover:bg-opacity-75 transform duration-300">
+                      <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
+                        {activity.title}
+                      </h1>
+                      <div className="w-16 h-2 bg-fourth-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
+                      <p className="my-3 py-3 opacity-0 max-h-[70px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
+                        {activity.activity_details}
+                      </p>
+                    </div>
+                  </article>
+                </Link>
+              ))
+            ) : (
+              <NoMatchingResults />
+            )}
           </div>
           {/* pagination */}
           <div>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center items-center gap-2">
               <button
                 onClick={() => currentPage !== 1 && paginate(currentPage - 1)}
                 disabled={currentPage === 1}

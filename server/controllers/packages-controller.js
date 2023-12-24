@@ -1,11 +1,9 @@
-const db = require('../Models/config/knexConfig');
 const packagesModel = require('../Models/packageModel');
 
 const Firebase = require("../Middleware/FirebaseConfig/FireBaseConfig")
 const addPackages = async (req, res) => {
     try {
         const packagesData = req.body;
-
         const files = req.files;
         if (files && files.length > 0) {
             const fileUrls = await Promise.all(files.map(async (file) => {
@@ -16,8 +14,11 @@ const addPackages = async (req, res) => {
         }
         const result = await packagesModel.addPackages(packagesData);
 
-        res.json({ message: 'packages has been added!', data: result[0] });
-
+        if (result && result.length > 0) {
+            res.json({ message: 'Packages have been added!', data: result[0] });
+        } else {
+            res.status(400).json({ error: 'Failed to add packages' });
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });

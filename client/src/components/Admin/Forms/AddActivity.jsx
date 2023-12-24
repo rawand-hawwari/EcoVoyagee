@@ -14,7 +14,7 @@ const AddActivity = () => {
     if (name === "image") {
       setFormData({
         ...formData,
-        files: e.target.files[0],
+        files: Array.from(e.target.files),
       });
       console.log(e.target.files);
     } else {
@@ -28,42 +28,49 @@ const AddActivity = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formDataToSend = new FormData();
-    if(formData.files){
-      formDataToSend.append("files", formData.files);
+    if (formData.files) {
+      formData.files.forEach((file, index) => {
+        formDataToSend.append(`files[]`, file);
+      });
     }
+
     // Append other form data fields if needed
     formDataToSend.append("title", formData.title);
     formDataToSend.append("activity_details", formData.activity_details);
     formDataToSend.append("type", formData.type);
     formDataToSend.append("availability", formData.availability);
     formDataToSend.append("pricing", formData.pricing);
-    axios.post(`http://localhost:3999/addActivities`, formDataToSend, {
-      headers: headers,
-    }).then((response) => {
-      Swal.fire({
-        title: "Success!",
-        text: "Item has been updated.",
-        icon: "success",
-        customClass: {
-          confirmButton:
-            "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-        },
+    formDataToSend.append("location", formData.location);
+    axios
+      .post(`http://localhost:3999/addActivities`, formDataToSend, {
+        headers: headers,
+      })
+      .then((response) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Item has been updated.",
+          icon: "success",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
+        setFormData([]);
+        onSelectedPage("dashboard");
+        setFormData([]);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong.",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
       });
-      setFormData([]);
-      onSelectedPage("dashboard");
-      setFormData([]);
-    }).catch((err)=>{
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong.",
-        confirmButtonText: "OK",
-        customClass: {
-          confirmButton:
-            "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-        },
-      });
-    });
   };
   const handleClose = (e) => {
     e.preventDefault();
@@ -72,7 +79,7 @@ const AddActivity = () => {
   };
   return (
     <div>
-      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-full">
+      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
         <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="p-6 w-full">
@@ -148,6 +155,20 @@ const AddActivity = () => {
                     name="availability"
                     placeholder="Enter the country the place in"
                     value={formData.availability}
+                    required
+                    onChange={(e) => handleChange(e)}
+                    className="block text-sm py-3 px-4 my-2 bg-second-color rounded w-full border border-transparent-third-color outline-none"
+                  />
+                </div>
+                <div className="text-start">
+                  <label className="text-sm font-medium text-Base-color">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder="Enter the country the place in"
+                    value={formData.location}
                     required
                     onChange={(e) => handleChange(e)}
                     className="block text-sm py-3 px-4 my-2 bg-second-color rounded w-full border border-transparent-third-color outline-none"

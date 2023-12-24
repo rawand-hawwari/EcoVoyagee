@@ -32,7 +32,7 @@ const AddHouse = () => {
     if (name === "image") {
       setFormData({
         ...formData,
-        [name]: e.target.files,
+        files: Array.from(e.target.files),
       });
     } else {
       setFormData({
@@ -70,24 +70,32 @@ const AddHouse = () => {
       });
 
       const formDataToSend = new FormData();
-      if (formData.image) {
-        formDataToSend.append("files", formData.image);
+      if (formData.files) {
+        formData.files.forEach((file, index) => {
+          formDataToSend.append(`files[]`, file);
+        });
       }
-      // Append other form data fields if needed
+      // Append other form data fields
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append(
+        "accommodation_details",
+        formData.accommodation_details
+      );
+      formDataToSend.append("pricing", formData.pricing);
+      formDataToSend.append("location", formData.location);
+      formDataToSend.append("country", formData.country);
       formDataToSend.append(
         "type",
         selectedType === "inside" ? "inside" : "outside"
       );
+      formDataToSend.append(
+        "rating",
+        selected !== "Select rating" ? selected.replace(/\D/g, "") : null
+      );
       formDataToSend.append("amenities", amenities);
-      formDataToSend.append("rating", selected.replace(/\D/g, ""));
-      formDataToSend.append("activity_details", formData.activity_details);
-      formDataToSend.append("country", formData.country);
-      formDataToSend.append("location", formData.location);
-      formDataToSend.append("pricing", formData.pricing);
-      formDataToSend.append("title", formData.title);
 
       axios
-        .post(`http://localhost:3999/addAccommodation`, formData, {
+        .post(`http://localhost:3999/addAccommodation`, formDataToSend, {
           headers: headers,
         })
         .then((response) => {
@@ -95,6 +103,10 @@ const AddHouse = () => {
             title: "Success!",
             text: "Item has been updated.",
             icon: "success",
+            customClass: {
+              confirmButton:
+                "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+            },
           });
           setFormData([]);
           onSelectedPage("dashboard");
@@ -108,7 +120,7 @@ const AddHouse = () => {
             confirmButtonText: "OK",
             customClass: {
               confirmButton:
-                "bg-sky-900 hover:bg-white text-white hover:text-Base-color border border-sky-900 py-2 px-4 rounded",
+                "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
             },
           });
         });
@@ -121,7 +133,7 @@ const AddHouse = () => {
   };
   return (
     <div>
-      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-full">
+      <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">
         <div className="lg:w-2/3 w-full bg-transparent-first-color p-6 rounded shadow-lg h-auto m-6">
           <form action="" onSubmit={handleSubmit}>
             <div className="p-6 w-full">
@@ -170,7 +182,7 @@ const AddHouse = () => {
                     Overview
                   </label>
                   <textarea
-                    name="activity_details"
+                    name="accommodation_details"
                     rows="4"
                     value={formData.accommodation_details}
                     class="block p-2.5 w-full my-2 text-sm rounded border border-transparent-third-color outline-none"
@@ -367,26 +379,6 @@ const AddHouse = () => {
                       ))}
                     </div>
                   </div>
-                  {/* <div className="flex flex-wrap justify-around">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="Wifi"
-                        onClick={() => setIsFreeWifi(!isFreeWifi)}
-                      />
-                      <Label htmlFor="Wifi">Free Wi-Fi</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="parking"
-                        onClick={() => setParking(!isParking)}
-                      />
-                      <Label htmlFor="parking">Free parking</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="pool" onClick={() => setIsPool(!isPool)} />
-                      <Label htmlFor="pool">Pool</Label>
-                    </div>
-                  </div> */}
                 </div>
               </div>
               {/* buttons */}

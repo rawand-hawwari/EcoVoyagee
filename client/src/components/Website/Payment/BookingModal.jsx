@@ -29,7 +29,7 @@ const BookingModal = ({ children, onClose }) => {
         )}
         <button
           onClick={onClose}
-          className="mx-5 py-2 px-4 bg-white hover:bg-second-color border text-fourth-color border-fourth-color md:text-lg rounded-2xl shadow-md"
+          className="mx-5 py-2 px-4 bg-white hover:bg-second-color border text-fourth-color border-fourth-color md:text-lg rounded shadow-md"
         >
           Cancel
         </button>

@@ -1,20 +1,41 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import env from "../../../../env"
-
-// import { Link } from "react-router-dom";
+import { useSearching } from "../../Context/SearchHomePage";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const [isSearch, setIsSearch] = useState(false);
-  const [searchResult, setSearchResult] = useState([]);
+  const { searchResult, setSearchResult } = useSearching([]);
   const [flights, setFlights] = useState([]);
   const [formData, setFormData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const options = { day: "numeric", month: "short", year: "numeric" };
+
     axios
       .get(`http://localhost:3999/getFlights`)
       .then((response) => {
-        setFlights(response.data);
+        let newData = response.data.map((data) => {
+          const departDate = new Date(data.depart_date).toLocaleDateString(
+            "en-US",
+            options
+          );
+          const returnDate = new Date(data.return_date).toLocaleDateString(
+            "en-US",
+            options
+          );
+          const [departDay, departYear] = departDate.split(", ");
+          const [returnDay, returnYear] = returnDate.split(", ");
+          return {
+            ...data,
+            depart_day: departDay,
+            depart_year: departYear,
+            return_day: returnDay,
+            return_year: returnYear,
+          };
+        });
+        setFlights(newData);
       })
       .catch((error) => {
         console.log(error);
@@ -32,33 +53,49 @@ const Hero = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsSearch(true);
+    setSearchResult(flights);
+    let search = flights;
     if (formData.destination) {
       setSearchResult(
-        flights.filter((flight) =>
+        search.filter((flight) =>
           flight.destination_name
             .toLowerCase()
             .includes(formData.destination.toLowerCase())
         )
       );
+      search = search.filter((flight) =>
+        flight.destination_name
+          .toLowerCase()
+          .includes(formData.destination.toLowerCase())
+      );
     }
-    setSearchResult(
-      flights.filter(
-        (flight) =>
-          (formData.destination &&
-            flight.destination_name
-              .toLowerCase()
-              .includes(formData.destination.toLowerCase())) ||
-          (formData.price && flight.best <= formData.price) ||
-          (formData.from &&
+
+    if (formData.price) {
+      setSearchResult(search.filter((flight) => flight.best <= formData.price));
+      search.filter((flight) => flight.best <= formData.price);
+    }
+
+    if (formData.from) {
+      setSearchResult(search.filter((flight) => flight.best <= formData.price));
+      search.filter((flight) => flight.best <= formData.price);
+    }
+
+    if (formData.to) {
+      setSearchResult(
+        search.filter(
+          (flight) =>
             new Date(flight.depart_date).toISOString() >=
-              new Date(formData.from).toISOString()) ||
-          (formData.to &&
-            new Date(flight.return_date).toISOString() <=
-              new Date(formData.to).toISOString())
-      )
-    );
+            new Date(formData.from).toISOString()
+        )
+      );
+      search.filter(
+        (flight) =>
+          new Date(flight.return_date).toISOString() <=
+          new Date(formData.to).toISOString()
+      );
+    }
+    navigate("/flights");
   };
-  // console.log(searchResult);
   return (
     <>
       <section class="mb-16">
@@ -119,7 +156,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
-// https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKBuDQK2W4V4Y2yCf2MDEPvssI6hgedJI4YjonejXWQTzuZoG_
-// https://cdn-icons-png.flaticon.com/512/422/422943.png
-// https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSjHxdx8Oi2h0W1pjroXEPVsbR_RLc0NdrpviVX95-azW0TA4Jf

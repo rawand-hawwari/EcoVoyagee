@@ -11,7 +11,7 @@ const RoomDetailsModal = ({ children, onClose }) => {
         <br />
         <button
           onClick={onClose}
-          className="mt-4 ml-3 p-2 px-4 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color md:text-lg rounded-lg shadow-md"
+          className="mt-4 ml-3 p-2 px-4 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color md:text-lg rounded shadow-md"
         >
           Ok
         </button>

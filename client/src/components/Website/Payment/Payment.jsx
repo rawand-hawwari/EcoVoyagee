@@ -88,7 +88,7 @@ function Payment() {
   if (bookData && bookData.flights_id) {
     return (
       <div className="flex flex-wrap justify-center items-center my-5">
-        <div className="rounded-xl w-full md:w-3/5 border border-Base-color bg-transparent-first-color">
+        <div className="rounded w-full md:w-3/5 border border-Base-color bg-transparent-first-color">
           {/* <form onSubmit={(e)=>{e.preventDefault()}}> */}
           <div className="flex justify-center items-start md:items-center">
             <div className="py-8 px-12 w-full">
@@ -99,7 +99,7 @@ function Payment() {
               </div>
               <div className="space-y-4 flex flex-col justify-center items-center">
                 <div
-                  class="p-4 mb-4 self-start text-sm text-blue-800 rounded-lg bg-blue-50 border border-blue-900"
+                  class="p-4 mb-4 self-start text-sm text-center text-fourth-color rounded bg-light-pink/20 border border-fourth-color font-bold"
                   role="alert"
                 >
                   <span class="font-medium">
@@ -107,7 +107,7 @@ function Payment() {
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="w-6 h-6 text-blue-800 inline-block"
+                      className="w-6 h-6 text-fourth-color inline-block"
                     >
                       <path
                         fill-rule="evenodd"
@@ -129,7 +129,7 @@ function Payment() {
                     placeholder="First Name"
                     value={bookData && bookData.first_name}
                     onChange={(e) => handleChange(e)}
-                    className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+                    className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
                   />
                   <input
                     type="text"
@@ -137,7 +137,7 @@ function Payment() {
                     placeholder="Last Name"
                     value={bookData && bookData.last_name}
                     onChange={(e) => handleChange(e)}
-                    className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+                    className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
                   />
                 </div>
 
@@ -149,7 +149,7 @@ function Payment() {
                   placeholder="date"
                   value={bookData && bookData.address}
                   onChange={(e) => handleChange(e)}
-                  className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+                  className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
                 />
 
                 {/* Phone */}
@@ -160,12 +160,12 @@ function Payment() {
                   placeholder="Phone"
                   value={bookData && bookData.phone}
                   onChange={(e) => handleChange(e)}
-                  className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none"
+                  className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
                 />
               </div>
 
               <div className="flex flex-wrap justify-center my-5 items-center gap-2 md:gap-5">
-                <div class="w-32 h-44 md:w-52 md:h-60 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+                <div class="w-32 h-44 md:w-52 md:h-60 p-4 bg-white border border-gray-200 rounded shadow sm:p-8">
                   <div class="flex flex-col justify-center items-center w-full h-full gap-6 text-gray-900 dark:text-white">
                     <img
                       className="w-12 md:w-24"
@@ -200,7 +200,7 @@ function Payment() {
                   </div>
                   <div class="space-y-5 my-7"></div>
                 </div>
-                <div class="w-32 h-44 md:w-52 md:h-60 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div class="w-32 h-44 md:w-52 md:h-60 p-4 bg-white border border-gray-200 rounded shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                   <div class="flex flex-col justify-center items-center w-full h-full gap-6 text-gray-900 dark:text-white">
                     <img
                       className="w-12 md:w-24"
@@ -233,7 +233,7 @@ function Payment() {
                   </div>
                   <div class="space-y-5 my-7"></div>
                 </div>
-                <div class="w-32 h-44 md:w-52 md:h-60 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div class="w-32 h-44 md:w-52 md:h-60 p-4 bg-white border border-gray-200 rounded shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                   <div class="flex flex-col justify-center items-center w-full h-full gap-6 text-gray-900 dark:text-white">
                     <img
                       className="w-12 md:w-24"

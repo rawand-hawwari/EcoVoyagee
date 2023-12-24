@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [headers, setHeaders] = useState(null);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState("");
 
   useEffect(() => {
     // Check if the token is present in cookies
@@ -16,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       // Token exists, user is logged in
       setIsLoggedIn(true);
-      setHeaders({ "authorization": token });
+      setHeaders({ authorization: token });
       setIsAdmin(admin);
     } else {
       // Token does not exist, user is not logged in
@@ -44,6 +45,8 @@ export const AuthProvider = ({ children }) => {
     isLoggedIn,
     headers,
     isAdmin,
+    resetPasswordEmail,
+    setResetPasswordEmail,
     onLogin,
     login,
     logout,

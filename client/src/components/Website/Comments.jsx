@@ -147,7 +147,7 @@ const Comments = (id) => {
         <h1 className="text-third-color text-start text-3xl font-bold">Reviews</h1>
         <div className="p-5">
           {comments.map((comment, index) => (
-            <div className="p-5 border border-third-color rounded-xl my-3 w-3xl">
+            <div className="p-5 border border-third-color rounded my-3 w-3xl">
               <div className="flex gap-2 flex-wrap">
                 <h5 className="text-start text-xl font-bold">
                   {comment.first_name}
@@ -168,17 +168,17 @@ const Comments = (id) => {
           ))}
         </div>
         <div className="p-5">
-          <form action="" className="p-5 text-start" onSubmit={handleSubmit}>
+          <form action="" className="text-start" onSubmit={handleSubmit}>
             <label className="px-3 self-start">Add your comment</label>
             <textarea
               id="comment"
               value={formData.comment_text}
               onChange={(e) => setFormData({ comment_text: e.target.value })}
-              className="w-full mb-3 p-2 border border-third-color rounded-md"
+              className="w-full mb-3 p-2 border border-third-color rounded"
             />
             <button
               type="submit"
-              className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+              className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
             >
               Comment
             </button>

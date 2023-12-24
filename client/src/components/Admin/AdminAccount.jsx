@@ -60,7 +60,7 @@ const AdminAccount = () => {
           <div
             className={`${
               page === "profile" ? "block" : "hidden"
-            } lg:w-3/4 p-5`}
+            } lg:w-5/6 w-full self-end`}
           >
             <Profile />
           </div>

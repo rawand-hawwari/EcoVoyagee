@@ -153,6 +153,31 @@ const getActivitiesPaginated = async (page, pageSize, search) => {
     }
 };
 
+
+
+const BookActivity = async (activities_id, cost,user_id, address, phone, adults, children, date_from, date_to) => {
+    try {
+        return await db('booking')
+            .insert({
+                cost,
+                activities_id: activities_id,
+                user_id: user_id,
+                address: address,
+                phone: phone,
+                adults: adults,
+                children: children,
+                date_from:date_from, 
+                date_to:date_to,
+                is_shown : true
+            })
+            .returning('*');
+    } catch (err) {
+        console.error(err);
+        throw new Error('Error booking activity');
+    }
+};
+
+
 module.exports = {
     getActivities,
 
@@ -168,5 +193,7 @@ module.exports = {
 
     getActivitiesWithComments,
 
-    getActivitiesPaginated
+    getActivitiesPaginated,
+
+    BookActivity
 };

@@ -63,6 +63,8 @@ const Rooms = () => {
         accommodation_id: id,
         date_from: startDate,
         date_to: endDate,
+        adults: roomGuests[roomToSelect].adults,
+        children: roomGuests[roomToSelect].children,
       })
       .then((response) => {
         let data = response.data;
@@ -72,7 +74,7 @@ const Rooms = () => {
         // Handle errors here
         console.error("Error:", error);
       });
-  }, [startDate, endDate, id]);
+  }, []);
 
   const roomPerPage = 3;
   const indexOfLastRoom = currentPage * roomPerPage;
@@ -99,6 +101,8 @@ const Rooms = () => {
         accommodation_id: id,
         date_from: startDate,
         date_to: endDate,
+        adults: roomGuests[roomToSelect].adults,
+        children: roomGuests[roomToSelect].children,
       })
       .then((response) => {
         let data = response.data;
@@ -382,7 +386,7 @@ const Rooms = () => {
             <button
               id="dropdownInformationButton"
               data-dropdown-toggle="dropdownInformation"
-              className="text-Base-color bg-white hover:bg-transparent-first-color border border-third-color font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full"
+              className="text-Base-color bg-white hover:bg-transparent-first-color border border-third-color font-medium rounded text-sm px-5 py-2.5 text-center w-full"
               type="button"
               onClick={() => dropdownPopover()}
             >
@@ -398,7 +402,7 @@ const Rooms = () => {
               id="dropdownInformation"
               className={`z-10 absolute ${
                 dropdownPopoverShow ? "block" : "hidden"
-              } bg-white divide-y divide-gray-100 rounded-lg shadow w-full max-h-80 overflow-auto`}
+              } bg-white divide-y divide-gray-100 rounded shadow w-full max-h-80 overflow-auto`}
             >
               <div className="px-4 py-3 text-sm text-Base-color flex justify-between items-center">
                 <h1>Rooms</h1>
@@ -464,122 +468,6 @@ const Rooms = () => {
                   </button>
                 </fieldset>
               </div>
-              {/* <div className="px-4 py-3 text-sm text-Base-color flex justify-between items-center">
-                <h1>Adults</h1>
-                <fieldset className="input-number-wrapper group flex items-center">
-                  <button
-                    id="decremnt"
-                    className="decremnt-left-large bg-third-color text-second-color p-2 rounded-l border border-third-color hover:bg-white hover:text-third-color"
-                    onClick={() => {
-                      adults != 1 && setAdults(adults - 1);
-                    }}
-                    disabled={adults == 1}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.25 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  <input
-                    className="p-1.5 w-16 text-center border border-third-color"
-                    type="text"
-                    value={adults}
-                    onChange={(e) =>
-                      parseInt(e.target.value, 10) &&
-                      parseInt(e.target.value, 10) <= 4 &&
-                      setAdults(parseInt(e.target.value, 10) || 1)
-                    }
-                    inputmode="numeric"
-                  ></input>
-                  <button
-                    id="increment"
-                    className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
-                    onClick={() => {
-                      adults < 4 && setAdults(adults + 1);
-                    }}
-                    disabled={adults == 4}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M12 5.25a.75.75 0 01.75.75v5.25H18a.75.75 0 010 1.5h-5.25V18a.75.75 0 01-1.5 0v-5.25H6a.75.75 0 010-1.5h5.25V6a.75.75 0 01.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </fieldset>
-              </div>
-              <div className="px-4 py-3 text-sm text-Base-color flex justify-between items-center">
-                <h1>Children</h1>
-                <fieldset className="input-number-wrapper group flex items-center">
-                  <button
-                    id="decremnt"
-                    className="decremnt-left-large bg-third-color text-second-color p-2 rounded-l border border-third-color hover:bg-white hover:text-third-color"
-                    onClick={() => {
-                      children != 0 && setChildren(children - 1);
-                    }}
-                    disabled={children == 0}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.25 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  <input
-                    className="p-1.5 w-16 text-center border border-third-color"
-                    type="text"
-                    value={children}
-                    onChange={(e) =>
-                      parseInt(e.target.value, 10) &&
-                      parseInt(e.target.value, 10) <= 4 &&
-                      setChildren(parseInt(e.target.value, 10) || 0)
-                    }
-                    inputmode="numeric"
-                  ></input>
-                  <button
-                    id="increment"
-                    className="increment-right-large bg-third-color text-second-color p-2 rounded-r border border-third-color hover:bg-white hover:text-third-color"
-                    onClick={() => {
-                      children < 4 && setChildren(children + 1);
-                    }}
-                    disabled={children == 4}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M12 5.25a.75.75 0 01.75.75v5.25H18a.75.75 0 010 1.5h-5.25V18a.75.75 0 01-1.5 0v-5.25H6a.75.75 0 010-1.5h5.25V6a.75.75 0 01.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </fieldset>
-              </div> */}
 
               {renderRoomNumber()}
             </div>
@@ -589,13 +477,16 @@ const Rooms = () => {
             <label className="px-3">From:</label>
             <DatetimePicker
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => {
+                setStartDate(date);
+                setEndDate(date);
+              }}
               selectsStart
               startDate={startDate}
               endDate={endDate}
               minDate={new Date()}
               placeholderText="Start Date"
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-transparent-third-color outline-none focus:border-third-color"
+              className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none focus:border-third-color"
               calendarClassName="custom-calendar"
             />
 
@@ -609,24 +500,24 @@ const Rooms = () => {
               endDate={endDate}
               minDate={startDate}
               placeholderText="End Date"
-              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+              className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none focus:border-third-color"
               calendarClassName="custom-calendar"
             />
           </div>
           {/* search button */}
           <button
             onClick={() => handleSearch()}
-            className="border-fourth-color border-2 hover:bg-second-color bg-fourth-color hover:text-fourth-color text-second-color font-bold py-2 px-4 rounded-md"
+            className="border-fourth-color border-2 hover:bg-second-color bg-fourth-color hover:text-fourth-color text-second-color font-bold py-2 px-4 rounded"
           >
             Search
           </button>
         </div>
         {/* rooms list */}
-        <div className="flex flex-col lg:flex-row w-full">
+        <div className="flex flex-col-reverse lg:flex-row w-full">
           {/* summary */}
           <div
             className={`bg-white border relative border-third-color ${
-              rooms.length > 0 ? "lg:w-1/2" : "lg:w-1/4"
+              rooms.length > 0 ? "lg:w-1/3" : "lg:w-1/4"
             } h-fit lg:mx-5 my-6 text-start pb-10`}
           >
             <h1 className="text-third-color text-2xl md:text-4xl px-5 my-3">
@@ -738,9 +629,9 @@ const Rooms = () => {
                   className="flex flex-col lg:flex-row justify-center items-center gap-3"
                 >
                   <img
-                    src={room.image}
+                    src={room.room_image}
                     alt="room image"
-                    className="w-full lg:w-1/2"
+                    className="w-full lg:w-[500px]"
                   />
                   <div className="bg-transparent-first-color w-full lg:w-1/2 px-4 py-8">
                     <div className="flex flex-wrap justify-between pb-4">
@@ -798,7 +689,7 @@ const Rooms = () => {
                       </div>
                     </div>
                     <button
-                      className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:bg-second-color hover:text-fourth-color"
+                      className="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:bg-second-color hover:text-fourth-color"
                       onClick={() => handleRoomSelect(index)}
                     >
                       Select this room
@@ -883,3 +774,7 @@ const Rooms = () => {
 };
 
 export default Rooms;
+
+
+
+// pagination

@@ -23,6 +23,9 @@ import { useEffect, useState } from "react";
 import ActivityDetails from "./components/Website/ActivityDetails";
 import { useAuth } from "./components/Context/AuthContext";
 import Rooms from "./components/Website/Rooms";
+import ForgotPassword from "./components/Users/ForgitPassword";
+import VerifyCode from "./components/Users/VerifyCode";
+import ResetPassword from "./components/Users/ResetPassword";
 
 function App() {
   // const pathname = window.location.pathname;
@@ -56,6 +59,9 @@ function App() {
             <Route path="/flights" element={<Flights />} />
             <Route path="/flights/:id" element={<Flights />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-code" element={<VerifyCode />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

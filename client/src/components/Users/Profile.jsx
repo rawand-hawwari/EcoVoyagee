@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -26,6 +26,7 @@ const Profile = () => {
   const [password, setPassword] = useState(true);
   const [image, setImage] = useState(null);
   const { headers } = useAuth();
+  const fileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = React.useState("Profile");
   const data = [
@@ -79,7 +80,7 @@ const Profile = () => {
     };
   };
 
-  const changeProfile = () => {
+  useEffect(() => {
     if (image) {
       const imageUpdate = new FormData();
       imageUpdate.append("image", image);
@@ -103,8 +104,14 @@ const Profile = () => {
           });
         });
     } else {
-      setPreviewSrc(user.profileimage);
+      if (user.profileimage) {
+        setPreviewSrc(user.profileimage);
+      }
     }
+  }, [image]);
+
+  const handleClick = () => {
+    fileInputRef.current.click();
   };
 
   useEffect(() => {
@@ -113,24 +120,27 @@ const Profile = () => {
       axios
         .get("http://localhost:3999/getBookingOfUser", { headers: headers })
         .then((response) => {
-          setBookings(response.data);
+          if (response.data != "Booking not found for the user") {
+            setBookings(response.data);
+          }
         });
       axios
         .get("http://localhost:3999/getFlightsOfUser", { headers: headers })
         .then((response) => {
-          setFlights(response.data);
+          if (response.data != "Ticket not found for the user") {
+            setFlights(response.data);
+          }
         });
     }
   }, [headers]);
-console.log(headers);
   return (
     <div>
-      <div className="relative text-gray-900 py-20 px-0 w-full flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] ">
+      <div className="relative text-Base-color py-20 px-0 w-full flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] ">
         <div className="flex bg-white justify-center z-0 absolute top-1/4 left-1/2 transform -translate-x-1/2 border border-solid p-6 md:p-8 w-3/4 rounded-3xl mb-40 min-h-[500px]">
           <div className="w-full h-full">
             {/* profile info */}
             <div className="flex flex-col md:flex-row gap-12 pb-4 justify-center items-center">
-              <div className="shrink-0 flex flex-col justify-center items-center">
+              <div className="shrink-0 flex flex-col justify-center items-center relative">
                 <img
                   id="preview_img"
                   src={
@@ -141,7 +151,7 @@ console.log(headers);
                   alt="Profile image"
                   className="h-48 w-48 rounded-full object-cover"
                 />
-                <label className="block">
+                {/* <label className="block">
                   <span className="sr-only">Choose profile photo</span>
                   <input
                     type="file"
@@ -156,7 +166,34 @@ console.log(headers);
                       Change profile picture
                     </button>
                   )}
-                </label>
+                </label> */}
+                <div className="absolute bottom-3 right-3">
+                  <p
+                    className="cursor-pointer bg-third-color text-second-color p-2 rounded-full"
+                    onClick={handleClick}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                      />
+                    </svg>
+                  </p>
+                  <input
+                    type="file"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={(e) => loadFile(e)}
+                  />
+                </div>
               </div>
               <div className="text-start w-1/2">
                 <h1 className="text-2xl md:text-4xl">
@@ -225,8 +262,6 @@ console.log(headers);
         </div>
       </div>
       <div className="h-[650px] md:h-[600px]"></div>
-        
-      
     </div>
   );
 };

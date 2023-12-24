@@ -15,6 +15,7 @@ module.exports = {
         "transparent-third-color": "#0F766E99",//transparent green
         "transparent-fourth-color": "#0000004D",//transparent lighter black
         "light-pink": "#fb7185",
+        "yellow": "#ffdb6e",
       },
       fontFamily: {
         "grape-nuts": ["Grape Nuts", "sans-serif"],

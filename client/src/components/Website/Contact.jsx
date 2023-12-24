@@ -114,7 +114,7 @@ const Contact = () => {
                     value={firstName}
                     onChange={handleChange}
                     required
-                    className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 rounded w-full border border-[#0c4a6e69] outline-none"
                   />
                   <input
                     type="text"
@@ -123,7 +123,7 @@ const Contact = () => {
                     value={lastName}
                     onChange={handleChange}
                     required
-                    className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-3 px-4 rounded w-full border border-[#0c4a6e69] outline-none"
                   />
                 </div>
                 {/* email */}
@@ -134,7 +134,7 @@ const Contact = () => {
                   value={formData.email}
                   required
                   onChange={handleChange}
-                  className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-3 px-4 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
                 {/* subject */}
                 <input
@@ -144,14 +144,14 @@ const Contact = () => {
                   value={formData.subject}
                   required
                   onChange={handleChange}
-                  className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-3 px-4 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
                 {/* message */}
                 <textarea
                   id="message"
                   name="message"
                   rows="4"
-                  class="block p-2.5 w-full text-sm rounded-lg border border-[#0c4a6e69] outline-none"
+                  class="block p-2.5 w-full text-sm rounded border border-[#0c4a6e69] outline-none"
                   value={formData.message}
                   placeholder="Write your message..."
                   required
@@ -163,7 +163,7 @@ const Contact = () => {
               <div className="text-center mt-6">
                 <button
                   type="submit"
-                  className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+                  className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
                 >
                   Send Message
                 </button>

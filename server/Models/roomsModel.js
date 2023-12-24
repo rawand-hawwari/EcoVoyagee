@@ -1,4 +1,4 @@
-const db = require('./config/knexConfig');
+const db = require('../Models/config/knexConfig');
 
 const addRoom = async (roomData) => {
     try {
@@ -11,6 +11,17 @@ const addRoom = async (roomData) => {
     }
 };
 
+const updateRoom = async (room_id, roomData) => {
+    try {
+        return await db('rooms')
+            .where({ room_id: room_id })
+            .update(roomData)
+            .returning('*');
+    } catch (err) {
+        console.error(err);
+        throw new Error('Error updating room');
+    }
+};
 
 const getRooms = async () => {
     const trx = await db.transaction(); // Start a transaction
@@ -59,44 +70,25 @@ const getRooms = async () => {
     }
 };
 
-
-// const getFilteredRooms = async (date_from, date_to) => {
-//     try {
-//         const result = await db.raw(`
-//             SELECT *
-//             FROM room_booking2
-//             WHERE (
-//                 date_to < ? OR date_from > ?
-//             )
-//         `, [date_from, date_to]);
-
-//         return result.rows;
-//     } catch (err) {
-//         console.error(err);
-//         throw new Error('Error filtering rooms: ' + err.message);
-//     }
-// };
-
-
-const getFilteredRooms = async (accommodation_id, date_from, date_to) => {
+const getFilteredRooms = async (accommodation_id, date_from, date_to, adults, children) => {
+    const total_guests = adults + children;
     try {
-        const result = await db('room_booking2')
+        const result = await db('rooms')
             .select('*')
-            .join('rooms', 'room_booking2.room_id', 'rooms.room_id')
-            .where('rooms.accommodation_id', accommodation_id)
-            .andWhere(function () {
-                this.where('room_booking2.date_to', '<', date_from)
-                    .orWhere('room_booking2.date_from', '>', date_to);
+            .whereNotExists(function () {
+                this.select('*')
+                    .from('room_booking2')
+                    .whereRaw('room_booking2.room_id = rooms.room_id')
+                    .andWhere(function () {
+                        this.where('room_booking2.date_to', '>=', date_from)
+                            .andWhere('room_booking2.date_from', '<=', date_to);
+                    });
+            })
+            .andWhere('rooms.accommodation_id', accommodation_id)
+            .andWhere('rooms.capacity', '>=', total_guests)
+            .andWhere({
+                is_deleted: false,
             });
-
-        // const query = db('room_booking2')
-        //     .select('*')
-        //     .where(function () {
-        //         this.where('date_to', '>=', date_from)
-        //             .andWhere('date_from', '<=', date_to);
-        //     });
-
-        // console.log(query.toSQL());
 
         return result;
     } catch (err) {
@@ -105,27 +97,28 @@ const getFilteredRooms = async (accommodation_id, date_from, date_to) => {
     }
 };
 
-
 const BookRoom = async (user_id, room_id, accommodation_id, date_from, date_to) => {
     try {
-
         const isRoomAvailable = await getFilteredRooms(accommodation_id, date_from, date_to);
 
-        console.log('Filtered Rooms:', isRoomAvailable);
+        const selectedRoom = isRoomAvailable.filter((room) =>{
+            return room.room_id === room_id;
+        });
+    
+        // console.log('Room:', selectedRoom);
+        // console.log('Filtered Rooms:', isRoomAvailable);
 
-        if (isRoomAvailable.length === 0) {
-            // Room is available, proceed with the booking
+        if (selectedRoom.length > 0) {
             const bookingResult = await db('room_booking2').insert({
                 room_id: room_id,
                 user_id: user_id,
                 date_from: date_from,
                 date_to: date_to,
-                // Add other booking details as needed
+                accommodation_id: accommodation_id
             });
 
             return bookingResult;
         } else {
-            // Room is not available for the specified dates
             throw new Error('Room is not available for the specified dates.');
         }
     } catch (err) {
@@ -134,13 +127,27 @@ const BookRoom = async (user_id, room_id, accommodation_id, date_from, date_to) 
     }
 };
 
+const markRoomAsDeleted = async (room_id) => {
+    try {
+        return await db('rooms')
+            .where({ room_id: room_id })
+            .update({ is_deleted: true });
+    } catch (err) {
+        console.error(err);
+        throw new Error('Error marking room as deleted');
+    }
+};
 
 module.exports = {
     addRoom,
+
+    updateRoom,
 
     BookRoom,
 
     getFilteredRooms,
 
-    getRooms
+    getRooms,
+
+    markRoomAsDeleted
 }

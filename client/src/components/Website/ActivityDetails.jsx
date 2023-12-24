@@ -145,7 +145,7 @@ const ActivityDetails = () => {
           className="relative w-full"
           data-carousel="slide"
         >
-          <div className="relative h-[420px] overflow-hidden rounded-lg">
+          <div className="relative h-[420px] overflow-hidden rounded">
             {activity &&
               activity.imageactivity &&
               activity.imageactivity.map((image, id) => (
@@ -229,7 +229,7 @@ const ActivityDetails = () => {
                   <button
                     type="submit"
                     onClick={() => openBooking()}
-                    className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+                    className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
                   >
                     Book Activity
                   </button>
@@ -304,200 +304,6 @@ const ActivityDetails = () => {
                 <div className="py-12">
                   <Comments id={id} type="Activity"></Comments>
                 </div>
-
-                {/* booking form */}
-                {/* <div className="p-3 border border-third-color rounded-xl bg-gray-100">
-                  <form>
-                    <div className="min-h-screen flex justify-center items-start md:items-center">
-                      <div className="py-12 px-12 w-full">
-                        <h1 className="text-3xl text-sky-900 font-bold text-center mb-4 cursor-pointer">
-                          Book a room
-                        </h1>
-                        <div className="space-y-4 flex flex-col justify-center items-center"> */}
-                {/* name */}
-                {/* <label className="px-3 self-start">Name</label>
-                          <div className="flex w-full gap-5">
-                            <input
-                              type="text"
-                              name="first_name"
-                              placeholder="First Name"
-                              value={booking.first_name}
-                              onChange={handleChange}
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                            />
-                            <input
-                              type="text"
-                              name="last_name"
-                              placeholder="Last Name"
-                              value={booking.last_name}
-                              onChange={handleChange}
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                            />
-                          </div> */}
-
-                {/* address */}
-                {/* <label className="px-3 self-start">Address</label>
-                          <input
-                            type="text"
-                            name="address"
-                            placeholder="Address"
-                            value={booking.address}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          /> */}
-
-                {/* phone number */}
-                {/* <label className="px-3 self-start">Phone</label>
-                          <input
-                            type="number"
-                            name="phone"
-                            placeholder="Phone"
-                            value={booking.phone}
-                            onChange={handleChange}
-                            className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                          /> */}
-
-                {/* date from-to */}
-                {/* <label className="px-3 self-start">Date</label>
-                          <div className="flex gap-4 w-full items-center">
-                            <label className="px-3">From:</label>
-                            <DatetimePicker
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              selectsStart
-                              startDate={startDate}
-                              endDate={endDate}
-                              // dateFormat="yyyy-mm-dd"
-                              placeholderText="Start Date"
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-                            />
-
-                            <label className="px-3">To:</label>
-                            <DatetimePicker
-                              selected={endDate}
-                              name="date_to"
-                              onChange={(date) => setEndDate(date)}
-                              selectsEnd
-                              startDate={startDate}
-                              endDate={endDate}
-                              minDate={startDate}
-                              placeholderText="End Date"
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-                            />
-                          </div> */}
-
-                {/* room preference */}
-                {/* <label className="px-3 self-start">
-                            Room preference
-                          </label>
-                          <div className="flex flex-wrap gap-6 self-start px-3">
-                            <div class="flex items-center">
-                              <input
-                                checked={room === "Standard"}
-                                id="default-radio-1"
-                                type="radio"
-                                value=""
-                                name="default-radio"
-                                class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300"
-                                onChange={() => {
-                                  setBooking({
-                                    ...booking,
-                                    room_preference: "Standard",
-                                  });
-                                  setRoom("Standard");
-                                }}
-                              />
-                              <label
-                                for="default-radio-1"
-                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                              >
-                                Standard ({accommodation.pricing}JOD)
-                              </label>
-                            </div>
-                            <div class="flex items-center">
-                              <input
-                                checked={room === "Delux"}
-                                id="default-radio-2"
-                                type="radio"
-                                value=""
-                                name="default-radio"
-                                class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300"
-                                onChange={() => {
-                                  setBooking({
-                                    ...booking,
-                                    room_preference: "Delux",
-                                  });
-                                  setRoom("Delux");
-                                }}
-                              />
-                              <label
-                                for="default-radio-2"
-                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                              >
-                                Delux ({accommodation.pricing * 2}JOD)
-                              </label>
-                            </div>
-                            <div class="flex items-center">
-                              <input
-                                checked={room === "Suite"}
-                                id="default-radio-2"
-                                type="radio"
-                                value=""
-                                name="default-radio"
-                                class="w-4 h-4 text-sky-900 bg-gray-100 border-gray-300"
-                                onChange={() => {
-                                  setBooking({
-                                    ...booking,
-                                    room_preference: "Suite",
-                                  });
-                                  setRoom("Suite");
-                                }}
-                              />
-                              <label
-                                for="default-radio-2"
-                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                              >
-                                Suite ({accommodation.pricing * 3}JOD)
-                              </label>
-                            </div>
-                          </div> */}
-
-                {/* guests */}
-                {/* <label className="px-3 self-start">Guests</label>
-                          <div className="flex self-start w-1/2 gap-5 items-center">
-                            <label className="px-3">Adults:</label>
-                            <input
-                              type="number"
-                              name="adults"
-                              placeholder="Adults"
-                              value={booking.adults}
-                              onChange={handleChange}
-                              required
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                            />
-                            <label className="px-3">Children:</label>
-                            <input
-                              type="number"
-                              name="children"
-                              placeholder="Children"
-                              value={booking.children}
-                              onChange={handleChange}
-                              className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
-                            />
-                          </div> */}
-                {/* </div>
-                        <div className="text-center mt-6"> */}
-                {/* <button
-                            type="submit"
-                            className="py-3 w-64 text-xl text-second-color hover:text-sky-900 bg-sky-900 border-2 hover:bg-second-color border-sky-900 rounded-2xl"
-                          >
-                            Book
-                          </button> */}
-                {/* </div>
-                      </div>
-                    </div>
-                  </form> */}
-                {/* </div> */}
               </div>
             )}
           </div>
@@ -519,7 +325,7 @@ const ActivityDetails = () => {
                     placeholder="First Name"
                     value={booking.first_name}
                     onChange={handleChange}
-                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                   />
                   <input
                     type="text"
@@ -527,7 +333,7 @@ const ActivityDetails = () => {
                     placeholder="Last Name"
                     value={booking.last_name}
                     onChange={handleChange}
-                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                   />
                 </div>
 
@@ -539,7 +345,7 @@ const ActivityDetails = () => {
                   placeholder="Address"
                   value={booking.address}
                   onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
 
                 {/* phone */}
@@ -550,7 +356,7 @@ const ActivityDetails = () => {
                   placeholder="Phone"
                   value={booking.phone}
                   onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
 
                 {/* date from-to */}
@@ -573,7 +379,7 @@ const ActivityDetails = () => {
                     calendarClassName="custom-calendar"
                     minDate={new Date()}
                     placeholderText="Start Date"
-                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                    className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                   />
 
                   <label className="px-3">To:</label>
@@ -593,7 +399,7 @@ const ActivityDetails = () => {
                     minDate={startDate}
                     placeholderText="End Date"
                     calendarClassName="custom-calendar"
-                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
+                    className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                   />
                 </div>
 
@@ -606,7 +412,7 @@ const ActivityDetails = () => {
                     placeholder="Adults"
                     value={booking.adults}
                     onChange={handleChange}
-                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                   />
                   <input
                     type="number"
@@ -614,7 +420,7 @@ const ActivityDetails = () => {
                     placeholder="Children"
                     value={booking.children}
                     onChange={handleChange}
-                    className="block text-sm py-2 px-3 rounded-lg w-full border border-[#0c4a6e69] outline-none"
+                    className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                   />
                 </div>
                 <h1 className="text-Base-color text-lg w-full text-start px-5">

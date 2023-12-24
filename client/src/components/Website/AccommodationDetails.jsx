@@ -104,7 +104,7 @@ const AccommodationDetails = () => {
         className="relative w-full"
         data-carousel="slide"
       >
-        <div className="relative h-[420px] overflow-hidden rounded-lg">
+        <div className="relative h-[420px] overflow-hidden rounded">
           {accommodation &&
             accommodation.imageurl.map((image, id) => (
               <div
@@ -186,7 +186,7 @@ const AccommodationDetails = () => {
               <button
                 type="submit"
                 onClick={(e)=>handleSubmit(e)}
-                className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded-2xl"
+                className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
               >
                 Select Room
               </button>

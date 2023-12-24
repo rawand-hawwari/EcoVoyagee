@@ -126,7 +126,7 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
           </div>
         </div>
       </CardHeader>
-      <CardBody className="px-0 h-[466px] mb-auto overflow-auto">
+      <CardBody className="px-0 h-[400px] mb-auto overflow-auto">
         <table className="w-full min-w-max table-auto text-left">
           <thead className="bg-third-color text-second-color">
             <tr>

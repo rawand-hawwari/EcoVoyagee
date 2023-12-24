@@ -3,6 +3,8 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import BookFlightModal from "./BookFlightModal";
 import { useBooking } from "../Context/BookingContext";
+import NoMatchingResults from "./NoMatchingResults";
+import { useSearching } from "../Context/SearchHomePage";
 
 const Flights = () => {
   const [flights, setFlights] = useState([]);
@@ -23,18 +25,36 @@ const Flights = () => {
   const openFilter = () => {
     setFilterOpen(!filterOpen);
   };
+  const { searchResult, setSearchResult } = useSearching([]);
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [searchPrice, setSearchPrice] = useState(0);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    const options = { day: "numeric", month: "short", year: "numeric" };
+
     axios
       .get(`http://localhost:3999/getFlights`)
       .then((response) => {
-        let newData = response.data.map((data) => ({
-          ...data,
-          depart: new Date(data.depart_date).toLocaleDateString("en-GB"),
-          return: new Date(data.return_date).toLocaleDateString("en-GB"),
-        }));
+        let newData = response.data.map((data) => {
+          const departDate = new Date(data.depart_date).toLocaleDateString(
+            "en-US",
+            options
+          );
+          const returnDate = new Date(data.return_date).toLocaleDateString(
+            "en-US",
+            options
+          );
+          const [departDay, departYear] = departDate.split(", ");
+          const [returnDay, returnYear] = returnDate.split(", ");
+          return {
+            ...data,
+            depart_day: departDay,
+            depart_year: departYear,
+            return_day: returnDay,
+            return_year: returnYear,
+          };
+        });
         // Handle the response data here
         if (destination) {
           const filtered = newData.filter(
@@ -42,6 +62,10 @@ const Flights = () => {
           );
           setFlights(filtered);
           setFilteredFlights(filtered);
+        } else if(searchResult.length>0){
+          setFlights(searchResult);
+          setFilteredFlights(searchResult);
+          setSearchResult([]);
         } else {
           setFlights(newData);
           setFilteredFlights(newData);
@@ -55,7 +79,6 @@ const Flights = () => {
         console.error("Error:", error);
       });
   }, []);
-
   const openModal = (id) => {
     const flightToBook = flights.filter((flight) => flight.flights_id === id);
     setBookFilght(true);
@@ -236,13 +259,13 @@ const Flights = () => {
                   type="text"
                   id="simple-search"
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
+                  class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded block w-full p-2"
                   placeholder="Search branch name..."
                 />
               </div>
               <button
                 type="submit"
-                class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
+                class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:text-fourth-color hover:bg-second-color"
               >
                 <svg
                   class="w-4 h-4"
@@ -277,13 +300,13 @@ const Flights = () => {
                   type="number"
                   step="0.01"
                   onChange={(e) => setSearchPrice(e.target.value)}
-                  class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded-lg block w-full p-2"
+                  class="bg-second-color border border-transparent-third-color text-third-color text-sm rounded block w-full p-2"
                   placeholder="Search branch name..."
                 />
               </div>
               <button
                 type="submit"
-                class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded-lg border border-fourth-color hover:text-fourth-color hover:bg-second-color"
+                class="p-2.5 ms-2 text-sm font-medium text-second-color bg-fourth-color rounded border border-fourth-color hover:text-fourth-color hover:bg-second-color"
               >
                 <svg
                   class="w-4 h-4"
@@ -309,11 +332,11 @@ const Flights = () => {
 
       {/* flights list */}
       <div className="md:w-2/3 w-full">
-        <div className="flex flex-col my-3 md:my-16 w-full justify-center items-center md:justify-start md:items-start gap-5 min-h-[964px]">
-          {currentFlights &&
+        <div className="flex flex-col my-3 md:mt-16 md:mb-8 w-full justify-center items-center md:justify-start md:items-start gap-5 min-h-[964px]">
+          {currentFlights.length > 0 ? (
             currentFlights.map((flight, id) => (
               <div key={id} className=" w-11/12 mx-5">
-                <div className="flex flex-col py-3 px-5 md:mx-10 md:py-5 md:px-7 text-Base-color bg-transparent-first-color rounded-md w-full">
+                <div className="flex flex-col py-3 px-5 md:mx-10 md:py-5 md:px-7 text-Base-color bg-transparent-first-color rounded w-full">
                   <h1 className="text-start text-3xl flex items-center gap-3 pb-4">
                     Jordan
                     <svg
@@ -333,7 +356,7 @@ const Flights = () => {
                     {flight.destination_name}
                   </h1>
                   <div className="flex flex-col md:flex-row items-center justify-between gap-1 w-full">
-                    <div className="w-full flex flex-col justify-center items-center md:w-1/3 p-5">
+                    <div className="w-full flex flex-col justify-center items-center md:w-1/4 p-5">
                       <img
                         src={flight.imagecomp}
                         alt="Airline"
@@ -343,18 +366,24 @@ const Flights = () => {
                         <strong>Operated by:</strong> {flight.operatedby}
                       </h1>
                     </div>
-                    <div className="w-full md:w-1/3 p-5">
-                      <div className="felx flex-col justify-start items-center">
-                        {/* <h1 className="text-start">Depart: {flight.depart}</h1> */}
-                        <div className="flex justify-between items-center gap-5">
-                          <h1 className="text-xl">
-                            <strong>{flight.depart_time.boarding}</strong>
+                    <div className="w-full md:w-2/4 p-5">
+                      {/* depart */}
+                      <div className="flex justify-center gap-12 items-center w-full">
+                        <div className="w-1/4">
+                          <h1 className="font-bold text-lg">
+                            {flight.depart_day}
+                          </h1>
+                          <h1 className="text-md">{flight.depart_year}</h1>
+                        </div>
+                        <div className="flex justify-between items-center gap-8 text-third-color">
+                          <h1 className="text-md font-bold">
+                            {flight.depart_time.boarding}
                           </h1>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="w-10 h-10 text-xl text-gray-600"
+                            class="w-8 h-8 text-xl text-third-color"
                           >
                             <path
                               fill-rule="evenodd"
@@ -362,23 +391,30 @@ const Flights = () => {
                               clip-rule="evenodd"
                             />
                           </svg>
-                          <h1 className="text-xl">
-                            <strong>{flight.depart_time.arrival}</strong>
+                          <h1 className="text-md font-bold">
+                            {flight.depart_time.arrival}
                           </h1>
                         </div>
                       </div>
                       <br />
-                      <div className="felx flex-col justify-start items-center">
-                        {/* <h1 className="text-start">Return: {flight.return}</h1> */}
-                        <div className="flex justify-between items-center gap-5">
-                          <h1 className="text-xl">
-                            <strong>{flight.return_time.boarding}</strong>
+                      <br />
+                      {/* return */}
+                      <div className="flex justify-center gap-12 items-center w-full">
+                        <div className="w-1/4">
+                          <h1 className="font-bold text-lg">
+                            {flight.return_day}
+                          </h1>
+                          <h1 className="text-md">{flight.return_year}</h1>
+                        </div>
+                        <div className="flex justify-between items-center gap-8 text-third-color">
+                          <h1 className="text-md font-bold">
+                            {flight.return_time.boarding}
                           </h1>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="w-10 h-10 text-xl text-gray-600"
+                            class="w-8 h-8 text-xl text-third-color"
                           >
                             <path
                               fill-rule="evenodd"
@@ -386,17 +422,17 @@ const Flights = () => {
                               clip-rule="evenodd"
                             />
                           </svg>
-                          <h1 className="text-xl">
-                            <strong>{flight.return_time.arrival}</strong>
+                          <h1 className="text-md font-bold">
+                            {flight.return_time.arrival}
                           </h1>
                         </div>
                       </div>
                     </div>
-                    <div className="w-full text-2xl md:w-1/3 md:text-3xl p-5">
+                    <div className="w-full text-2xl md:w-1/4 md:text-3xl p-5">
                       <h1 className="font-bold">{flight.best} JOD</h1>
                       <button
                         onClick={(e) => openModal(flight.flights_id)}
-                        className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded-lg shadow-md"
+                        className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded shadow-md"
                       >
                         Book Now
                       </button>
@@ -409,7 +445,7 @@ const Flights = () => {
                       Book Your Flight
                     </h1>
                     <div className="flex flex-wrap justify-center my-5 items-center gap-5">
-                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded-lg shadow sm:p-8">
+                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded shadow sm:p-8">
                         <h5 class="mb-4 text-xl font-medium text-third-color">
                           Economy class
                         </h5>
@@ -443,14 +479,14 @@ const Flights = () => {
                                 bookingFlight(flight.flights_id, "economy")
                               }
                               type="button"
-                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded text-sm px-5 py-2 inline-flex justify-center w-full text-center"
                             >
                               Book Now
                             </button>
                           </div>
                         )}
                       </div>
-                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded-lg shadow sm:p-8">
+                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded shadow sm:p-8">
                         <h5 class="mb-4 text-xl font-medium text-third-color">
                           Business class
                         </h5>
@@ -483,14 +519,14 @@ const Flights = () => {
                                 bookingFlight(flight.flights_id, "business")
                               }
                               type="button"
-                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded text-sm px-5 py-2 inline-flex justify-center w-full text-center"
                             >
                               Book Now
                             </button>
                           </div>
                         )}
                       </div>
-                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded-lg shadow sm:p-8">
+                      <div class="w-auto max-w-sm p-4 h-auto bg-transparent-first-color border border-transparent-first-color rounded shadow sm:p-8">
                         <h5 class="mb-4 text-xl font-medium text-third-color">
                           First class
                         </h5>
@@ -523,7 +559,7 @@ const Flights = () => {
                                 bookingFlight(flight.flights_id, "first")
                               }
                               type="button"
-                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded-lg text-sm px-5 py-2 inline-flex justify-center w-full text-center"
+                              class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded text-sm px-5 py-2 inline-flex justify-center w-full text-center"
                             >
                               Book Now
                             </button>
@@ -535,7 +571,10 @@ const Flights = () => {
                 )}
                 <div id="root"></div>
               </div>
-            ))}
+            ))
+          ) : (
+            <NoMatchingResults />
+          )}
         </div>
         <div>
           <div className="flex justify-center gap-2">

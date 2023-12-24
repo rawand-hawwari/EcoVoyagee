@@ -2,8 +2,6 @@ const roomModel = require('../Models/roomsModel');
 
 const Firebase = require("../Middleware/FirebaseConfig/FireBaseConfig");
 
-const db = require('../Models/config/knexConfig');
-
 const addRoom = async (req, res) => {
     try {
         const roomData = req.body;
@@ -27,6 +25,36 @@ const addRoom = async (req, res) => {
 };
 
 
+const updateRooms = async (req, res) => {
+    const room_id = req.params.id;
+    try {
+        const roomData = req.body;
+
+        const files = req.files;
+        if (files && files.length > 0) {
+            const fileUrls = await Promise.all(files.map(async (file) => {
+                const fileName = `${Date.now()}_${file.originalname}`;
+                return await Firebase.uploadFileToFirebase(file, fileName);
+            }));
+            req.body.room_image = fileUrls;
+        }
+
+        const result = await roomModel.updateRoom(room_id, roomData);
+
+        if (!result.length) {
+            return res.status(404).json({ error: 'The room not found' });
+        } else {
+            res.status(200).json({
+                message: 'The room Updated!',
+                data: result[0],
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 const getRooms = async (req, res) => {
     try {
         const result = await roomModel.getRooms();
@@ -39,9 +67,12 @@ const getRooms = async (req, res) => {
 
 
 const getFilteredRooms = async (req, res) => {
-    const { accommodation_id, date_from, date_to } = req.body;
+    const { accommodation_id, date_from, date_to, adults, children } = req.body;
+
+    // console.log("acc: ", accommodation_id + 'from', date_from + 'to', date_to);
+
     try {
-        const result = await roomModel.getFilteredRooms(accommodation_id,date_from, date_to);
+        const result = await roomModel.getFilteredRooms(accommodation_id, date_from, date_to, adults, children);
         res.json(result);
     } catch (err) {
         console.error(err);
@@ -69,12 +100,34 @@ const BookRoom = async (req, res) => {
 };
 
 
+const markRoomAsDeleted = async (req, res) => {
+    const room_id = req.params.id;
+    try {
+        const result = await roomModel.markRoomAsDeleted(room_id);
+
+        if (!result) {
+            return res.status(404).json({ error: "The room not found" });
+        } else {
+            res.status(200).json({
+                message: 'The room Is Marked as Deleted!',
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 module.exports = {
     addRoom,
+
+    updateRooms,
 
     BookRoom,
 
     getRooms,
 
-    getFilteredRooms
+    getFilteredRooms,
+
+    markRoomAsDeleted
 }

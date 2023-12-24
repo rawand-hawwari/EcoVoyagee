@@ -7,7 +7,7 @@ const Testimonials = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3999/getContact?_limit=3")
+      .get("http://localhost:3999/getContact")
       .then((response) => {
         // Handle the response data here
         setTestimonials(response.data);

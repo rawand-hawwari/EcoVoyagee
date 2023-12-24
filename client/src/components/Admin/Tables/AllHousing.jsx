@@ -110,7 +110,6 @@ export const AllHousing = () => {
       fetchData();
     });
   };
-  console.log(filteredPlaces);
   return (
     <Card className="lg:ml-80 p-2 w-full h-full border border-Base-color bg-second-color">
       <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">

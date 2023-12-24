@@ -10,7 +10,7 @@ const BookFlightModal = ({ children, onClose }) => {
         {children}
         <button
           onClick={onClose}
-          className="mt-4 ml-3 p-2 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color md:text-lg rounded-lg shadow-md"
+          className="mt-4 ml-3 p-2 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color md:text-lg rounded shadow-md"
         >
           Close
         </button>
