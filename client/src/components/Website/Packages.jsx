@@ -273,7 +273,7 @@ const Packages = () => {
           </div>
         </div>
         {/* packages list */}
-        <div className="my-16 mx-8">
+        <div className="md:my-16 mx-8">
           <div className={`flex flex-col gap-5 max-w-3xl md:w-[768px] ${currentPackages.length>0?"min-h-[835px]":"h-[700px]"} mb-5`}>
             {currentPackages.length>0?currentPackages.map((data, id) => (
               <div key={id}>

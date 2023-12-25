@@ -96,7 +96,7 @@ export const AllPackages = () => {
     });
   };
   return (
-    <Card className="lg:ml-80 p-2 w-screen lg:w-full h-full border border-Base-color bg-second-color">
+    <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-Base-color bg-second-color">
       <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Packages
       </h1>
@@ -106,7 +106,7 @@ export const AllPackages = () => {
         shadow={false}
         className="rounded-none bg-second-color"
       >
-        <div className="flex items-center justify-between gap-8 m-4">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 m-4">
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
@@ -147,7 +147,7 @@ export const AllPackages = () => {
               </button>
             </div>
           </form>
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <div className="flex w-full md:w-auto shrink-0 flex-col gap-2 sm:flex-row">
             <Button
               className="flex items-center gap-3 border border-fourth-color bg-fourth-color hover:bg-second-color hover:text-fourth-color"
               size="sm"

@@ -73,7 +73,7 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
         shadow={false}
         className="rounded-none bg-second-color"
       >
-        <div className="flex items-center justify-between gap-8 m-4">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 m-4">
           <form className="w-full lg:w-1/3" onSubmit={handleSearch}>
             <label
               for="default-search"
@@ -114,7 +114,7 @@ const totalPages = Math.ceil(totalCount/ itemsPerPage);
               </button>
             </div>
           </form>
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <div className="flex w-full md:w-auto shrink-0 flex-col gap-2 sm:flex-row">
             <Button
               variant="outlined"
               size="sm"

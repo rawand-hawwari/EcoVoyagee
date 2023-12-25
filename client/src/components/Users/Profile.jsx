@@ -18,39 +18,11 @@ const Profile = () => {
   const [user, setUser] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [flights, setFlights] = useState([]);
-  const [userData, setUserData] = useState([]);
-  const [firstName, setFirstName] = useState(true);
-  const [lastName, setLastName] = useState(true);
-  const [country, setCountry] = useState(true);
-  const [email, setEmail] = useState(true);
-  const [password, setPassword] = useState(true);
   const [image, setImage] = useState(null);
   const { headers } = useAuth();
   const fileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = React.useState("Profile");
-  const data = [
-    {
-      label: "Profile",
-      value: "profile",
-      // element: <ProfileData></ProfileData>,
-      element: "hey",
-    },
-    {
-      label: "Flights",
-      value: "flights",
-      // element: <Profile></Profile>,
-      element: "whatever",
-    },
-    {
-      label: "Bookings",
-      value: "bookings",
-      // element: <BookingHistory></BookingHistory>,
-      element: "hello",
-    },
-  ];
-
-  // const [activeTab, setActiveTab] = useState('Dashboard');
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -151,22 +123,6 @@ const Profile = () => {
                   alt="Profile image"
                   className="h-48 w-48 rounded-full object-cover"
                 />
-                {/* <label className="block">
-                  <span className="sr-only">Choose profile photo</span>
-                  <input
-                    type="file"
-                    onChange={(e) => loadFile(e)}
-                    className="block mb-2 w-full text-sm text-third-color file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-transparent-first-color file:text-Base-color hover:file:bg-transparent-third-color/30"
-                  />
-                  {previewSrc !== "" && (
-                    <button
-                      onClick={() => changeProfile()}
-                      className="block mb-2 w-full text-sm text-third-color py-2 px-4 file:rounded-full border-0 font-semibold bg-transparent-first-color hover:bg-transparent-third-color/30"
-                    >
-                      Change profile picture
-                    </button>
-                  )}
-                </label> */}
                 <div className="absolute bottom-3 right-3">
                   <p
                     className="cursor-pointer bg-third-color text-second-color p-2 rounded-full"
@@ -196,10 +152,10 @@ const Profile = () => {
                 </div>
               </div>
               <div className="text-start w-1/2">
-                <h1 className="text-2xl md:text-4xl">
+                <h1 className="text-xl sm:text-2xl md:text-4xl">
                   {user && user.first_name + " " + user.last_name}
                 </h1>
-                <p className="text-gray-700">
+                <p className="text-gray-700 text-sm sm:text-lg md:text-xl">
                   {flights && flights.length} Flights{" "}
                   {bookings && bookings.length} Bookings
                 </p>

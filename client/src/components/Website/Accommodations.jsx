@@ -532,7 +532,7 @@ const Accommodations = () => {
           </div>
         </div>
         {/* content list */}
-        <div className="my-16 mx-8">
+        <div className="md:my-16 mx-8">
           <div
             className={`flex flex-col gap-5 mb-5 max-w-3xl md:w-[768px] ${
               currentAccommodations.length > 0

@@ -50,7 +50,7 @@ const DestinationDetails = () => {
         <div className="w-2/3">
           {destination && (
             <div className="flex flex-col gap-10">
-              <div className="flex flex-wrap justify-between items-center">
+              <div className="flex flex-wrap justify-between items-center gap-4">
                 <h1 className="text-third-color text-start text-3xl font-bold">
                   {destination.title}
                 </h1>

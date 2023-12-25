@@ -21,7 +21,6 @@ const PackageDetails = () => {
   const [total, setTotal] = useState(0);
   const history = useNavigate();
 
-
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -33,7 +32,6 @@ const PackageDetails = () => {
     adults: 1,
     children: 0,
   });
-
 
   const handleDate = (date) => {
     setStartDate(date);
@@ -181,7 +179,7 @@ const PackageDetails = () => {
         className="relative w-full"
         data-carousel="slide"
       >
-        <div className="relative h-[420px] overflow-hidden rounded">
+        <div className="relative h-[200px] md:h-[420px] overflow-hidden rounded">
           {packageData &&
             packageData.imagePAC &&
             packageData.imagePAC.map((image, id) => (
@@ -206,7 +204,7 @@ const PackageDetails = () => {
           className="absolute top-0 left-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-prev
         >
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900/40 group-hover:bg-gray-900/50">
             <svg
               className="w-4 h-4 text-second-color rtl:rotate-180"
               aria-hidden="true"
@@ -231,7 +229,7 @@ const PackageDetails = () => {
           className="absolute top-0 right-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
           data-carousel-next
         >
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900/40 group-hover:bg-gray-900/50">
             <svg
               className="w-4 h-4 text-second-color dark:text-gray-800 rtl:rotate-180"
               aria-hidden="true"
@@ -257,7 +255,7 @@ const PackageDetails = () => {
           {packageData && (
             <div className="flex flex-col gap-10">
               {/* title */}
-              <div className="flex flex-wrap justify-between">
+              <div className="flex flex-wrap justify-between gap-4">
                 <h1 className="text-Base-color text-start text-3xl font-bold">
                   {packageData.title}{" "}
                   <span className="text-light-pink text-xl font-normal">
@@ -381,12 +379,11 @@ const PackageDetails = () => {
               <div className="py-12">
                 <Comments id={id} type="Packages"></Comments>
               </div>
-
-              {/* book form */}
             </div>
           )}
         </div>
       </div>
+      {/* book form */}
       <div id="booking"></div>
       {isBooking && (
         <BookingModal onClose={closeBookingModal}>
@@ -451,7 +448,7 @@ const PackageDetails = () => {
                   minDate={new Date()}
                   placeholderText="Start Date"
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-              calendarClassName="custom-calendar"
+                  calendarClassName="custom-calendar"
                 />
 
                 <label className="px-3">To:</label>
@@ -465,7 +462,7 @@ const PackageDetails = () => {
                   minDate={startDate}
                   placeholderText="End Date"
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
-              calendarClassName="custom-calendar"
+                  calendarClassName="custom-calendar"
                 />
               </div>
 
@@ -489,7 +486,9 @@ const PackageDetails = () => {
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
               </div>
-              <h1 className="text-Base-color text-lg w-full text-start px-5">Total: {total} JOD</h1>
+              <h1 className="text-Base-color text-lg w-full text-start px-5">
+                Total: {total} JOD
+              </h1>
             </div>
           </div>
         </BookingModal>

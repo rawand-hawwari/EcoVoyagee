@@ -171,7 +171,7 @@ const Contact = () => {
   };
 
   return (
-    <Card className="p-2 lg:ml-80 m-5 w-full h-full border border-Base-color bg-second-color">
+    <Card className="p-2 lg:ml-80 m-5 w-auto h-full border border-third-color bg-second-color">
       <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Messages
       </h1>
@@ -181,7 +181,7 @@ const Contact = () => {
         shadow={false}
         className="rounded-none mt-0 bg-second-color"
       >
-        <div className="flex items-center justify-between gap-8 m-4">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 m-4">
           {/* search */}
           <form className="w-full lg:w-1/3" onSubmit={(e) => handleSearch(e)}>
             <label
@@ -223,7 +223,7 @@ const Contact = () => {
               </button>
             </div>
           </form>
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          {/* <div className="flex w-full md:w-auto shrink-0 flex-col gap-2 sm:flex-row">
             <Button
               variant="outlined"
               size="sm"
@@ -231,7 +231,7 @@ const Contact = () => {
             >
               view all
             </Button>
-          </div>
+          </div> */}
         </div>
       </CardHeader>
       <CardBody className="px-3 pt-0 h-[450px] overflow-auto">
@@ -394,7 +394,7 @@ const Contact = () => {
       </CardFooter>
       {isMessageOpened && (
         <div className="fixed x-[55] top-0 left-0 w-full h-full flex items-center justify-center bg-black/30 bg-opacity-50">
-          <div className="bg-second-color p-6 rounded shadow-lg w-full md:w-2/5 text-black flex flex-col gap-3 justify-center">
+          <div className="bg-second-color p-6 rounded shadow-lg w-full lg:w-2/5 text-black flex flex-col gap-3 justify-center">
             <div className="text-start text-Base-color flex justify-between items-center">
               <h1 className="font-bold">
                 {messages[msgIndex].fullname}
@@ -408,7 +408,7 @@ const Contact = () => {
               <button
                 onClick={closeMessage}
                 className="p-2 text-third-color hover:text-fourth-color"
-                // className="mt-4 ml-3 p-2 px-4 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color md:text-lg rounded-lg shadow-md"
+                // className="mt-4 ml-3 p-2 px-4 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color lg:text-lg rounded-lg shadow-md"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

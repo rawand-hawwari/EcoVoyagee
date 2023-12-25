@@ -115,7 +115,7 @@ export const ActivitiesTable = () => {
     });
   };
   return (
-    <Card className="p-2 w-full md:w-1/2 h-full border border-Base-color bg-second-color">
+    <Card className="p-2 w-full lg:w-1/2 h-full border border-Base-color bg-second-color">
       <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Activities
       </h1>

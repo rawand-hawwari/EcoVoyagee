@@ -57,8 +57,8 @@ const Testimonials = () => {
                   }`}
                   data-te-carousel-item
                 >
-                  <div className="flex flex-wrap justify-center">
-                    <div className="w-full text-start shrink-0 grow-0 basis-auto px-10 lg:w-8/12 py-4 rounded-xl bg-transparent-first-color">
+                  <div className="flex flex-wrap justify-center p-5">
+                    <div className="w-full text-start mx-8 md:mx-0 px-10 lg:w-8/12 py-4 rounded-xl bg-transparent-first-color">
                       <h5 className=" text-lg text-Base-color font-bold">
                         {testimonial.fullname}
                       </h5>

@@ -75,7 +75,6 @@ const Signup = () => {
   }, [userGoogle, navigate]);
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
 
     // validateForm();
     // if (!errors) {
@@ -142,21 +141,21 @@ const Signup = () => {
     return /^[A-Za-z\s]{3,20}$/.test(last_name);
   };
   return (
-    <div className="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] py-10">
-      <form action="" onSubmit={(e) => handleSubmit(e)}>
+    <div className="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] py-10 bg-no-repeat bg-cover bg-center">
+      <form className="scale-75 sm:scale-100" action="" onSubmit={(e) => handleSubmit(e)}>
         <div className="min-h-screen flex justify-center items-center">
-          <div className="py-12 px-12 bg-second-color rounded-2xl shadow-xl z-20">
+          <div className="sm:p-12 p-8 bg-second-color rounded-2xl shadow-xl z-20">
             <div className="flex flex-col justify-center items-center">
               <div className="flex items-center gap-5 mb-5">
                 <img className=" w-16" src={logo} alt="EcoVoyage logo" />
-                <h1 className="text-5xl font-bold text-fourth-color font-grape-nuts">
+                <h1 className="text-3xl sm:text-5xl font-bold text-fourth-color font-grape-nuts">
                   EcoVoyage
                 </h1>
               </div>
-              <h1 className="text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
+              <h1 className="text-xl sm:text-3xl text-Base-color font-bold text-center mb-4 cursor-pointer">
                 Create An Account
               </h1>
-              <p className="w-80 self-center text-center text-sm mb-8 font-semibold text-third-color tracking-wide cursor-pointer">
+              <p className="sm:w-80 w-72 self-center text-center text-sm mb-8 font-semibold text-third-color tracking-wide cursor-pointer">
                 Embark on Your Journey with Us - Sign Up Today!
               </p>
             </div>

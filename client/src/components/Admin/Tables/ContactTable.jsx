@@ -376,7 +376,7 @@ const ContactTable = () => {
       </CardFooter>
       {isMessageOpened && (
         <div className="fixed z-[55] top-0 left-0 w-full h-full flex items-center justify-center bg-black/30 bg-opacity-50">
-          <div className="bg-second-color p-6 rounded shadow-lg w-full md:w-2/5 text-black flex flex-col gap-3 justify-center">
+          <div className="bg-second-color p-6 rounded shadow-lg w-full lg:w-2/5 text-black flex flex-col gap-3 justify-center">
             <div className="text-start text-Base-color flex justify-between items-center">
               <h1 className="font-bold">
                 {messages[msgIndex].fullname}
@@ -390,7 +390,7 @@ const ContactTable = () => {
               <button
                 onClick={closeMessage}
                 className="p-2 text-third-color hover:text-fourth-color"
-                // className="mt-4 ml-3 p-2 px-4 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color md:text-lg rounded-lg shadow-md"
+                // className="mt-4 ml-3 p-2 px-4 bg-white hover:bg-gray-200 border text-fourth-color border-fourth-color lg:text-lg rounded-lg shadow-md"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -8,22 +8,28 @@ function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const { setResetPasswordEmail } = useAuth();
+  const [error, setError] = useState("");
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3999/sendEmail", {
-        email,
-      });
-
-      navigate("/verify-code");
-    } catch (error) {}
+      const response = await axios
+        .post("http://localhost:3999/sendEmail", {
+          email,
+        })
+        .then(() => {
+          setError("");
+          navigate("/verify-code");
+        });
+    } catch (error) {
+      setError("Invalid Emai, Please enter a valid email");
+    }
   };
   return (
-    <div class="w-full h-screen bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
+    <div class="w-full h-screen bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-no-repeat bg-cover bg-center">
       <div class="flex flex-col items-center justify-center w-full h-full  p-4 space-y-4 antialiased text-Base-color ">
         <div class="w-full px-8 max-w-lg space-y-6 bg-second-color rounded py-16">
-          <h1 class=" mb-6 text-3xl font-bold text-center">Forgot Password?</h1>
+          <h1 class=" mb-6 text-2xl sm:text-3xl font-bold text-center">Forgot Password?</h1>
           <p class="text-center mx-12 text-third-color">
             Enter your email address
           </p>
@@ -39,6 +45,7 @@ function ForgotPassword() {
               placeholder="Email address"
               required
             />
+            <p className="text-start text-sm sm:text-md text-red-500">{error!==""&&error}</p>
             <div>
               <button
                 type="submit"

@@ -151,7 +151,7 @@ const Statstics = () => {
 
   return (
     <div className="">
-      <div className="flex flex-col md:flex-row gap-6 flex-wrap py-12 pr-4 justify-between items-center">
+      <div className="flex flex-col md:flex-row gap-6 flex-wrap py-12 px-4 md:pr-4 justify-between items-center">
 {topics.map((topic,id)=>(
     <CounterCard key={id} finalCount={topic.count} title={topic.title} icon={topic.icon} />
 ))}

@@ -46,7 +46,11 @@ const Header = () => {
   return (
     <div
       className={`sticky ${
-        scrollDirection === "down" ? "-top-32" : "top-0"
+        scrollDirection === "down"
+          ? isMenuOpened
+            ? "-top-[35rem]"
+            : "-top-32"
+          : "top-0"
       } transition-all duration-1000 w-full z-50`}
     >
       {/* logo need change */}
@@ -93,10 +97,11 @@ const Header = () => {
               </span>
             </Link>
           </div>
+          {/* right side buttons */}
           <div
             className={`${
               isLoggedIn ? "flex" : "hidden"
-            } my-1 items-center lg:my-0 lg:ml-auto`}
+            } scale-75 sm:scale-100 my-1 items-center lg:my-0 lg:ml-auto`}
           >
             <Link to="/profile">
               <button
@@ -132,7 +137,7 @@ const Header = () => {
           <div
             className={`${
               isLoggedIn ? "hidden" : "flex"
-            } my-1 items-center lg:my-0 lg:ml-auto`}
+            } scale-75 sm:scale-100 my-1 items-center lg:my-0 lg:ml-auto`}
           >
             <Link to="/login">
               <button

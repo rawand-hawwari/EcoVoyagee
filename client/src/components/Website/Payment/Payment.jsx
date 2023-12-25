@@ -87,11 +87,11 @@ function Payment() {
   // };
   if (bookData && bookData.flights_id) {
     return (
-      <div className="flex flex-wrap justify-center items-center my-5">
+      <div className="flex flex-wrap justify-center items-center mx-5 my-5">
         <div className="rounded w-full md:w-3/5 border border-Base-color bg-transparent-first-color">
           {/* <form onSubmit={(e)=>{e.preventDefault()}}> */}
           <div className="flex justify-center items-start md:items-center">
-            <div className="py-8 px-12 w-full">
+            <div className="py-8 px-5 md:px-12 w-full">
               <div className="flex flex-col justify-center">
                 <h1 className="text-3xl text-Base-color font-bold text-start mb-4 cursor-pointer">
                   Trip Details
@@ -281,7 +281,6 @@ function Payment() {
               </div>
             </div>
           </div>
-          {/* </form> */}
         </div>
       </div>
     );

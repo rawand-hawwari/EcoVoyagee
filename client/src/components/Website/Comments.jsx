@@ -178,7 +178,7 @@ const Comments = (id) => {
             />
             <button
               type="submit"
-              className="py-3 w-64 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
+              className="w-full py-3 sm:w-52 text-xl text-second-color hover:text-fourth-color bg-fourth-color border-2 hover:bg-second-color border-fourth-color rounded"
             >
               Comment
             </button>

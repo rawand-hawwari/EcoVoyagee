@@ -376,7 +376,7 @@ const Activites = () => {
           </div>
         </div>
         {/* content list */}
-        <div className="my-10 md:my-16 mx-8 md:w-2/3">
+        <div className="md:my-16 mx-8 md:w-2/3">
           <div className="flex flex-col flex-wrap justify-start items-start md:flex-row gap-4 min-h-[735px] pb-5">
             {currentActivities.length > 0 ? (
               currentActivities.map((activity, id) => (

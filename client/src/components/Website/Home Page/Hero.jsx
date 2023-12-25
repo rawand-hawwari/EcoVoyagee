@@ -99,7 +99,7 @@ const Hero = () => {
   return (
     <>
       <section class="mb-16">
-        <div class="relative overflow-hidden bg-cover bg-no-repeat bg-[50%] h-[560px] bg-[url('https://ik.imgkit.net/3vlqs5axxjf/TAW/uploadedImages/Professional_Development/Opinion/VirtuosoSustainability2022_Hero.jpg?tr=w-1200%2Cfo-auto')]">
+        <div class="relative overflow-hidden bg-cover bg-no-repeat bg-[50%] h-[600px] md:h-[560px] bg-[url('https://ik.imgkit.net/3vlqs5axxjf/TAW/uploadedImages/Professional_Development/Opinion/VirtuosoSustainability2022_Hero.jpg?tr=w-1200%2Cfo-auto')]">
           <div class="absolute top-0 right-0 bottom-0 left-0 h-full w-full overflow-hidden bg-fixed bg-transparent-fourth-color">
             <div class="flex flex-col h-full items-center justify-center">
               <div class="px-6 text-second-color text-left md:px-12">

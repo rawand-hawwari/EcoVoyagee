@@ -325,8 +325,8 @@ const Destinations = () => {
         </div>
       </div>
       {/* list */}
-      <div className="my-16 mx-8">
-        <div className={`flex flex-col gap-8 max-w-3xl md:w-[768px] ${currentDestinations.length>0?"h-[901.6px]":"h-[700px]"}`}>
+      <div className="md:my-16 mx-8">
+        <div className={`flex flex-col gap-8 max-w-3xl lg:w-[768px] ${currentDestinations.length>0?"min-h-[901.6px]":"min-h-[700px]"}`}>
           {currentDestinations.length>0?currentDestinations.map((destination, id) => (
             <div key={id}>
               <article className=" flex flex-wrap sm:flex-nowrap shadow-lg border border-transparent-third-color mx-auto max-w-3xl group transform duration-500 hover:-translate-y-1 mb-2">

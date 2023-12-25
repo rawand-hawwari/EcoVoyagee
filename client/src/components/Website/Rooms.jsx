@@ -31,6 +31,7 @@ const Rooms = () => {
   const [roomToSelect, setRoomToSelect] = useState(0);
   const [isBooking, setIsBooking] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [errorToShow, setErrorToShow] = useState("");
 
   const [booking, setBooking] = useState({
     adults: bookData.adults || 1,
@@ -101,8 +102,18 @@ const Rooms = () => {
         accommodation_id: id,
         date_from: startDate,
         date_to: endDate,
-        adults: roomGuests[roomToSelect].adults,
-        children: roomGuests[roomToSelect].children,
+        adults:
+          roomGuests.length > roomToSelect
+            ? roomGuests[roomToSelect].adults
+            : roomToSelect == 0
+            ? roomGuests[0].adults
+            : roomGuests[roomToSelect - 1].adults,
+        children:
+          roomGuests.length > roomToSelect
+            ? roomGuests[roomToSelect].children
+            : roomToSelect == 0
+            ? roomGuests[0].children
+            : roomGuests[roomToSelect - 1].children,
       })
       .then((response) => {
         let data = response.data;
@@ -128,11 +139,14 @@ const Rooms = () => {
       booking.rooms = roomsNum;
 
       try {
+        setErrorToShow("");
         onBooking(booking);
         setIsBooking(true);
       } catch (error) {
-        console.error("Error:", error);
+        setErrorToShow("Something went wrong please try again");
       }
+    } else {
+      setErrorToShow("No room selected");
     }
   }
   const handleRoomSelect = (index) => {
@@ -145,6 +159,9 @@ const Rooms = () => {
         )
       );
       setRoomToSelect(roomToSelect + 1);
+      if (errorToShow !== "") {
+        setErrorToShow("");
+      }
     } else {
       Swal.fire({
         icon: "error",
@@ -513,7 +530,7 @@ const Rooms = () => {
           </button>
         </div>
         {/* rooms list */}
-        <div className="flex flex-col-reverse lg:flex-row w-full">
+        <div className="flex flex-col-reverse lg:flex-row mx-5">
           {/* summary */}
           <div
             className={`bg-white border relative border-third-color ${
@@ -602,6 +619,7 @@ const Rooms = () => {
               </svg>
               Add room
             </button>
+            <p className="px-5 text-start text-red-500">{errorToShow}</p>
             <div className="flex justify-between p-4 font-bold">
               <h1>
                 {adults} {adults > 1 ? "Adults," : "Adult,"}{" "}
@@ -631,7 +649,7 @@ const Rooms = () => {
                   <img
                     src={room.room_image}
                     alt="room image"
-                    className="w-full lg:w-[500px]"
+                    className="w-full lg:w-[500px] h-full object-cover"
                   />
                   <div className="bg-transparent-first-color w-full lg:w-1/2 px-4 py-8">
                     <div className="flex flex-wrap justify-between pb-4">
@@ -774,7 +792,5 @@ const Rooms = () => {
 };
 
 export default Rooms;
-
-
 
 // pagination

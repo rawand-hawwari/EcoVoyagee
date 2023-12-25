@@ -36,10 +36,10 @@ const Dashboard = () => {
         <FlightsTable />
       </div>
       <div className="flex justify-center items-center m-5 lg:ml-80 gap-5 flex-col lg:flex-row">
-        <div className="md:w-1/3">
+        <div className="w-full lg:w-1/3">
           <ContactTable />
         </div>
-        <div className="w-full md:w-2/3">
+        <div className="w-full lg:w-2/3">
           <HousingTable />
         </div>
       </div>

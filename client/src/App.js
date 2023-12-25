@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./components/Website/Home";
@@ -19,54 +19,73 @@ import AdminAccount from "./components/Admin/AdminAccount";
 import Payment from "./components/Website/Payment/Payment";
 import Flights from "./components/Website/Flights";
 import Profile from "./components/Users/Profile";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ActivityDetails from "./components/Website/ActivityDetails";
-import { useAuth } from "./components/Context/AuthContext";
 import Rooms from "./components/Website/Rooms";
 import ForgotPassword from "./components/Users/ForgitPassword";
 import VerifyCode from "./components/Users/VerifyCode";
 import ResetPassword from "./components/Users/ResetPassword";
+import { useCookies } from "react-cookie";
 
 function App() {
-  // const pathname = window.location.pathname;
-  // const [spaces, setSpaces] = useState("pt-28");
-  const { isAdmin } = useAuth();
+  const [cookies] = useCookies(["token", "isAdmin"]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (cookies["isAdmin"]) {
+      if (location.pathname !== "/dashboard") {
+        navigate("/dashboard");
+      }
+    } else if (cookies["token"]) {
+      if (
+        location.pathname == "/login" ||
+        location.pathname == "/signup" ||
+        location.pathname == "/forgot-password" ||
+        location.pathname == "/verify-code" ||
+        location.pathname == "/reset-password"
+      ) {
+        navigate("/profile");
+      }
+    } else {
+      if (
+        location.pathname == "/profile" ||
+        location.pathname == "/payment" ||
+        location.pathname == "/dashboard"
+      ) {
+        navigate("/login");
+      }
+    }
+  }, [location.pathname]);
   return (
     <div className="App bg-second-color">
-      <Router>
-        <Header />
-        <div className="min-h-screen" id="root">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/destinations" element={<Destinations />} />
-            <Route path="/accommodations" element={<Accommodations />} />
-            <Route path="/packages" element={<Packages />} />
-            <Route path="/activities" element={<Activites />} />
-            <Route path="/activity/:id" element={<ActivityDetails />} />
-            <Route path="/destination/:id" element={<DestinationDetails />} />
-            <Route
-              path="/accommodation/:id"
-              element={<AccommodationDetails />}
-            />
-            <Route path="/package/:id" element={<PackageDetails />} />
-            <Route path="/rooms/:id" element={<Rooms />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/dashboard" element={<AdminAccount />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/flights" element={<Flights />} />
-            <Route path="/flights/:id" element={<Flights />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/verify-code" element={<VerifyCode />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
-        <Footer />
-      </Router>
+      <Header />
+      <div className="min-h-screen" id="root">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/destinations" element={<Destinations />} />
+          <Route path="/destination/:id" element={<DestinationDetails />} />
+          <Route path="/flights" element={<Flights />} />
+          <Route path="/accommodations" element={<Accommodations />} />
+          <Route path="/accommodation/:id" element={<AccommodationDetails />} />
+          <Route path="/rooms/:id" element={<Rooms />} />
+          <Route path="/packages" element={<Packages />} />
+          <Route path="/package/:id" element={<PackageDetails />} />
+          <Route path="/activities" element={<Activites />} />
+          <Route path="/activity/:id" element={<ActivityDetails />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/dashboard" element={<AdminAccount />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
   );
 }

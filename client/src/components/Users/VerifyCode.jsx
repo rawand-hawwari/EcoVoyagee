@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,21 @@ function VerifyCode() {
   const navigate = useNavigate();
   const { resetPasswordEmail } = useAuth();
   const inputRefs = useRef([]);
+  const [countdown, setCountdown] = useState(60);
+  const [isCounting, setIsCounting] = useState(true);
+  useEffect(() => {
+    let countdownInterval;
+
+    if (isCounting && countdown > 0) {
+      countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+    } else {
+      setIsCounting(false);
+    }
+
+    return () => clearInterval(countdownInterval);
+  }, [isCounting, countdown]);
 
   const handleInputChange = (index, value) => {
     const updatedCode = [...verificationCode];
@@ -45,15 +60,24 @@ function VerifyCode() {
   };
   const resendVerificationCode = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:3999/sendEmail", {
-        email: resetPasswordEmail,
-      });
-    } catch (error) {}
+    if (!isCounting) {
+      try {
+        const response = await axios
+          .post("http://localhost:3999/sendEmail", {
+            email: resetPasswordEmail,
+          })
+          .then(() => {
+            setIsCounting(true);
+            setCountdown(60);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen py-12 bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
-      <div className="bg-second-color px-6 py-10 shadow-xl mx-auto w-full max-w-lg rounded">
+    <div className="flex justify-center items-center min-h-screen py-12 bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-no-repeat bg-cover bg-center">
+      <div className="bg-second-color px-6 py-10 shadow-xl mx-auto w-full max-w-lg rounded scale-75 sm:scale-100">
         <div className="flex flex-col items-center justify-center text-center space-y-2 text-Base-color">
           <div className="font-semibold text-3xl">
             <p>Email Verification</p>
@@ -64,9 +88,9 @@ function VerifyCode() {
         </div>
 
         <form onSubmit={handleVerificationCodeSubmit}>
-          <div className="grid grid-cols-6 gap-4 mt-8">
+          <div className="flex gap-2 justify-between sm:gap-4 mt-8 w-full">
             {[...Array(6)].map((_, index) => (
-              <div key={index} className="w-16 h-16">
+              <div key={index} className="h-12 w-12 sm:h-16 sm:w-16">
                 <input
                   className="w-full h-full flex items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
                   type="text"
@@ -93,8 +117,9 @@ function VerifyCode() {
               <button
                 className="flex items-center text-fourth-color"
                 onClick={resendVerificationCode}
+                disabled={isCounting}
               >
-                Resend
+                {isCounting ? `Resend in ${countdown}s` : "Resend"}
               </button>
             </div>
           </div>

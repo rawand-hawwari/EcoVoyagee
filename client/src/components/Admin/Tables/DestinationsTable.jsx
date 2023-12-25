@@ -119,7 +119,7 @@ export const DestinationsTable = () => {
     });
   };
   return (
-    <Card className="p-2 w-full md:w-1/2 h-full border border-Base-color bg-second-color">
+    <Card className="p-2 w-full lg:w-1/2 h-full border border-Base-color bg-second-color">
       <h1 className="text-Base-color text-start mt-5 mx-5 text-lg font-bold">
         Destinations
       </h1>
@@ -170,7 +170,7 @@ export const DestinationsTable = () => {
               </button>
             </div>
           </form>
-          <div className="flex shrink-0 justify-between flex-col w-full gap-2 sm:flex-row">
+          <div className="flex shrink-0 w-full flex-col justify-between gap-2 sm:flex-row">
             <Button
               variant="outlined"
               size="sm"

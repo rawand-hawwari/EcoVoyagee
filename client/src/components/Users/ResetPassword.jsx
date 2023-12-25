@@ -61,8 +61,8 @@ function ResetPassword() {
   };
 
   return (
-    <section class="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
-      <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section class="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-no-repeat bg-cover bg-center">
+      <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0 scale-75 sm:scale-100">
         <div class="bg-second-color px-6 py-10 shadow-xl mx-auto w-full max-w-lg rounded">
           <h2 class="mb-1 text-xl font-bold leading-tight tracking-tight text-Base-color md:text-2xl dark:text-white">
             Change Password

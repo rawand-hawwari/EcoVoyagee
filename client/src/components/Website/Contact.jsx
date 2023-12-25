@@ -78,9 +78,9 @@ const Contact = () => {
   }
 
   return (
-    <div className="grid md:grid-cols-2">
+    <div className="flex flex-col md:flex-row gap-4">
       {/* side image */}
-      <div className="mb-4 md:mb-0">
+      <div className="mb-4 md:mb-0 md:w-4/5">
         <img
           className="brightness-150 w-full object-cover md:object-contain h-96 md:h-screen"
           src="https://images.unsplash.com/photo-1507812984078-917a274065be?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"

@@ -133,9 +133,7 @@ const ActivityDetails = () => {
       });
     }
   }
-  useEffect(() => {
-    console.log(bookData);
-  }, [bookData]);
+  useEffect(() => {}, [bookData]);
   return (
     <>
       <div>
@@ -145,7 +143,7 @@ const ActivityDetails = () => {
           className="relative w-full"
           data-carousel="slide"
         >
-          <div className="relative h-[420px] overflow-hidden rounded">
+          <div className="relative h-[200px] md:h-[420px] overflow-hidden rounded">
             {activity &&
               activity.imageactivity &&
               activity.imageactivity.map((image, id) => (
@@ -170,7 +168,7 @@ const ActivityDetails = () => {
             className="absolute top-0 left-5 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             data-carousel-prev
           >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900/40 group-hover:bg-gray-900/50">
               <svg
                 className="w-4 h-4 text-second-color rtl:rotate-180"
                 aria-hidden="true"
@@ -195,7 +193,7 @@ const ActivityDetails = () => {
             className="absolute top-0 right-5 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             data-carousel-next
           >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-second-color/30 group-hover:bg-second-color/40 group-focus:ring-4">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900/40 group-hover:bg-gray-900/50">
               <svg
                 className="w-4 h-4 text-second-color dark:text-gray-800 rtl:rotate-180"
                 aria-hidden="true"
@@ -222,7 +220,7 @@ const ActivityDetails = () => {
             {activity && (
               <div className="flex flex-col gap-10">
                 {/* title */}
-                <div className="flex flex-wrap justify-between">
+                <div className="flex flex-wrap justify-between gap-4">
                   <h1 className="text-Base-color text-start text-3xl font-bold">
                     {activity.title}
                   </h1>
@@ -237,7 +235,7 @@ const ActivityDetails = () => {
                 <h5 className="text-start text-xl">
                   {activity.activity_details}
                 </h5>
-                <div className="flex justify-between">
+                <div className="flex justify-between flex-wrap gap-4">
                   {/* price */}
                   <div className="flex flex-col gap-6">
                     <h1 className="text-third-color text-start text-3xl font-bold">
@@ -248,7 +246,7 @@ const ActivityDetails = () => {
                     </h5>
                   </div>
                   {/* location */}
-                  <div className="w-1/2">
+                  <div className="md:w-1/2">
                     <h5 className="text-start text-third-color text-2xl font-bold">
                       Location
                     </h5>
@@ -278,17 +276,17 @@ const ActivityDetails = () => {
                               to={`/activity/${item.activities_id}`}
                             >
                               <article
-                                className="w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[410px] transform duration-500 hover:-translate-y-2 cursor-pointer group"
+                                className="max-w-[20rem] shadow-xl bg-cover bg-center overflow-hidden h-[490px] transform duration-500 hover:-translate-y-2 cursor-pointer group"
                                 style={{
                                   backgroundImage: `url(${item.imageactivity[0]})`,
                                 }}
                               >
-                                <div className="text-start hover:bg-transparent-second-color bg-transparent-fourth-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-44 hover:bg-opacity-75 transform duration-300">
+                                <div className="text-start hover:bg-transparent-second-color bg-transparent-fourth-color bg-opacity-20 h-full px-5 flex flex-wrap flex-col pt-60 hover:bg-opacity-75 transform duration-300">
                                   <h1 className="text-second-color text-2xl mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300">
                                     {item.title}
                                   </h1>
                                   <div className="w-16 h-2 bg-fourth-color rounded-full mb-5 transform translate-y-20 group-hover:translate-y-0 duration-300"></div>
-                                  <p className="my-3 py-3 opacity-0 max-h-[90px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
+                                  <p className="my-3 py-3 opacity-0 max-h-[95px] overflow-hidden text-second-color text-xl group-hover:opacity-80 transform duration-500">
                                     {item.activity_details}
                                   </p>
                                 </div>

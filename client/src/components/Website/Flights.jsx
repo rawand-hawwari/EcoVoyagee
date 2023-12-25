@@ -336,7 +336,7 @@ const Flights = () => {
           {currentFlights.length > 0 ? (
             currentFlights.map((flight, id) => (
               <div key={id} className=" w-11/12 mx-5">
-                <div className="flex flex-col py-3 px-5 md:mx-10 md:py-5 md:px-7 text-Base-color bg-transparent-first-color rounded w-full">
+                <div className="flex flex-col py-3 px-5 lg:mx-10 lg:py-5 lg:px-7 text-Base-color bg-transparent-first-color rounded w-full">
                   <h1 className="text-start text-3xl flex items-center gap-3 pb-4">
                     Jordan
                     <svg
@@ -355,8 +355,8 @@ const Flights = () => {
                     </svg>
                     {flight.destination_name}
                   </h1>
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-1 w-full">
-                    <div className="w-full flex flex-col justify-center items-center md:w-1/4 p-5">
+                  <div className="flex flex-col lg:flex-row items-center justify-between gap-1 w-full">
+                    <div className="w-full flex flex-col justify-center items-center lg:w-1/4 p-5">
                       <img
                         src={flight.imagecomp}
                         alt="Airline"
@@ -366,7 +366,7 @@ const Flights = () => {
                         <strong>Operated by:</strong> {flight.operatedby}
                       </h1>
                     </div>
-                    <div className="w-full md:w-2/4 p-5">
+                    <div className="w-full lg:w-2/4 p-5">
                       {/* depart */}
                       <div className="flex justify-center gap-12 items-center w-full">
                         <div className="w-1/4">
@@ -428,7 +428,7 @@ const Flights = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="w-full text-2xl md:w-1/4 md:text-3xl p-5">
+                    <div className="w-full text-2xl lg:w-1/4 lg:text-3xl p-5">
                       <h1 className="font-bold">{flight.best} JOD</h1>
                       <button
                         onClick={(e) => openModal(flight.flights_id)}
