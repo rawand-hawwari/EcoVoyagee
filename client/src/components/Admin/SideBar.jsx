@@ -10,12 +10,11 @@ const SideBar = () => {
   const [user, setUser] = useState([]);
   const [photoPreview, setPhotoPreview] = useState(null);
   const { page, onSelectedPage } = usePage();
-  const [cookie, removeCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["token", "isAdmin"]);
   const history = useNavigate();
   function logout() {
-    onSelectedPage("dashboard");
     removeCookie("token");
-    // removeCookie("isAdmin");
+    removeCookie("isAdmin");
     history("/");
   }
 

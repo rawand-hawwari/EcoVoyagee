@@ -108,7 +108,7 @@ const Profile = () => {
         setPreviewSrc(user.profileimage);
       }
     }
-  }, [image]);
+  }, [image,headers]);
 
   const handleClick = () => {
     fileInputRef.current.click();
