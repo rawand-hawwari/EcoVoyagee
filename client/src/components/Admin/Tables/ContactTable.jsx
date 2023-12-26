@@ -422,7 +422,7 @@ const ContactTable = () => {
               {messages[msgIndex].message}
             </div>
             <div className="text-end">
-              <Tooltip content="Reply to message">
+              <Tooltip content="Reply to message" className="z-[60]">
                 <IconButton onClick={() => replyToMsg()} variant="text">
                   <svg
                     className="text-third-color w-6 h-6 rotate-[315deg]"
@@ -443,7 +443,7 @@ const ContactTable = () => {
                 </IconButton>
               </Tooltip>
               {!messages[msgIndex].is_shown ? (
-                <Tooltip content="Add message to home page">
+                <Tooltip content="Add message to home page" className="z-[60]">
                   <IconButton
                     onClick={() => addToHome(messages[msgIndex].contact_id)}
                     variant="text"
@@ -468,7 +468,7 @@ const ContactTable = () => {
                   </IconButton>
                 </Tooltip>
               ) : (
-                <Tooltip content="Remove message from home page">
+                <Tooltip content="Remove message from home page" className="z-[60]">
                   <IconButton
                     onClick={() =>
                       deleteFromHome(messages[msgIndex].contact_id)
@@ -494,7 +494,7 @@ const ContactTable = () => {
                   </IconButton>
                 </Tooltip>
               )}
-              <Tooltip content="Delete message">
+              <Tooltip content="Delete message" className="z-[60]">
                 <IconButton
                   onClick={() => handleDelete(messages[msgIndex].contact_id)}
                   variant="text"
