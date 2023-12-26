@@ -35,6 +35,8 @@ function Payment() {
     });
     if (value == "") {
       setError("Please fill all fields");
+    }else{
+      setError("");
     }
   };
   
