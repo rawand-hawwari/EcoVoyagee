@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assests/Images/logo.png";
@@ -77,28 +77,24 @@ const Login = () => {
 
       // Handle successful sign-in, e.g., redirect or show a success message
       // alert("Sign-in successful:", response.data);
-      console.log("Sign-in successful:", response.data);
     } catch (error) {
       // Delay the error message and handle it
-      setTimeout(() => {
-        console.error("Sign-in error:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Sign-in failed. Email or password is invalid.",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton:
-              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
-          },
-        });
-        setError("Sign-in failed. Email or password is invalid");
-      }, 100);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Sign-in failed. Email or password is invalid.",
+        confirmButtonText: "OK",
+        customClass: {
+          confirmButton:
+            "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+        },
+      });
+      setError("Sign-in failed. Email or password is invalid");
     }
   };
 
   useEffect(() => {
-   if (userGoogle.access_token) {
+    if (userGoogle.access_token) {
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`
@@ -133,7 +129,11 @@ const Login = () => {
 
   return (
     <div className="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-no-repeat bg-cover bg-center">
-      <form className="scale-75 sm:scale-100" action="" onSubmit={(e) => handleSubmit(e)}>
+      <form
+        className="scale-75 sm:scale-100"
+        action=""
+        onSubmit={(e) => handleSubmit(e)}
+      >
         <div className="min-h-screen flex justify-center items-center">
           <div className="py-8 px-12 bg-second-color rounded-2xl shadow-xl z-20">
             <div className="flex flex-col justify-center items-center">

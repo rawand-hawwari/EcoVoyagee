@@ -24,7 +24,7 @@ export default function CheckoutForm() {
       type: "card",
       card: elements.getElement(CardElement),
     });
-
+if(token){
     if (!error) {
       try {
         const { id } = paymentMethod;
@@ -167,6 +167,21 @@ export default function CheckoutForm() {
     } else {
       console.log(error.message);
     }
+  }else{
+    Swal.fire({
+      title: "Warninng",
+      text: "Must login before proceed with payment!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Login"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/login");
+      }
+    });
+  }
   };
 
   return (

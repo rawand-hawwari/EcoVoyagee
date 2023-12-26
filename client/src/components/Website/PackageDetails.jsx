@@ -392,27 +392,6 @@ const PackageDetails = () => {
               Book your trip
             </h1>
             <div className="space-y-2 flex flex-col justify-center items-center">
-              {/* name */}
-              <label className="px-3 self-start">Name</label>
-              <div className="flex w-full gap-5">
-                <input
-                  type="text"
-                  name="first_name"
-                  placeholder="First Name"
-                  value={booking.first_name}
-                  onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
-                />
-                <input
-                  type="text"
-                  name="last_name"
-                  placeholder="Last Name"
-                  value={booking.last_name}
-                  onChange={handleChange}
-                  className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
-                />
-              </div>
-
               {/* address */}
               <label className="px-3 self-start">Address</label>
               <input

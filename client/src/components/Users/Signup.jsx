@@ -5,6 +5,7 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useAuth } from "../Context/AuthContext";
 import { useGoogleLogin } from "@react-oauth/google";
+import Swal from "sweetalert2";
 
 const Signup = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -119,7 +120,29 @@ const Signup = () => {
         history("/");
       }
     } catch (error) {
-      console.error("Error:", error);
+      if (error.response.data.error == "Email already exists") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Email already exist.",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Sign-in failed. Email or password is invalid.",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton:
+              "bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color py-2 px-4 rounded",
+          },
+        });
+      }
     }
     // }
   }
@@ -142,7 +165,11 @@ const Signup = () => {
   };
   return (
     <div className="bg-[url('https://images.unsplash.com/photo-1529718836725-f449d3a52881?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] py-10 bg-no-repeat bg-cover bg-center">
-      <form className="scale-75 sm:scale-100" action="" onSubmit={(e) => handleSubmit(e)}>
+      <form
+        className="scale-75 sm:scale-100"
+        action=""
+        onSubmit={(e) => handleSubmit(e)}
+      >
         <div className="min-h-screen flex justify-center items-center">
           <div className="sm:p-12 p-8 bg-second-color rounded-2xl shadow-xl z-20">
             <div className="flex flex-col justify-center items-center">

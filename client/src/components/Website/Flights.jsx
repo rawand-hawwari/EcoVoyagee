@@ -5,6 +5,8 @@ import BookFlightModal from "./BookFlightModal";
 import { useBooking } from "../Context/BookingContext";
 import NoMatchingResults from "./NoMatchingResults";
 import { useSearching } from "../Context/SearchHomePage";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 
 const Flights = () => {
   const [flights, setFlights] = useState([]);
@@ -22,11 +24,13 @@ const Flights = () => {
   const [first, setFirst] = useState(0);
   const { bookData, onBooking } = useBooking();
   const navigate = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const token = cookies["token"];
   const openFilter = () => {
     setFilterOpen(!filterOpen);
   };
   const { searchResult, setSearchResult } = useSearching([]);
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchPrice, setSearchPrice] = useState(0);
   useEffect(() => {
@@ -62,7 +66,7 @@ const Flights = () => {
           );
           setFlights(filtered);
           setFilteredFlights(filtered);
-        } else if(searchResult.length>0){
+        } else if (searchResult.length > 0) {
           setFlights(searchResult);
           setFilteredFlights(searchResult);
           setSearchResult([]);
@@ -105,7 +109,23 @@ const Flights = () => {
       flights_id: id,
       ticket_type: seat,
     });
-    navigate("/payment");
+    if (token) {
+      navigate("/payment");
+    } else {
+      Swal.fire({
+        title: "Warninng",
+        text: "Must login before proceed with payment!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }
   };
 
   const flightsPerPage = 3;
