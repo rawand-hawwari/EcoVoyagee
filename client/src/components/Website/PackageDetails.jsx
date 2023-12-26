@@ -362,19 +362,6 @@ const PackageDetails = () => {
                   </ol>
                 </div>
               </div>
-              {/* location */}
-              <h5 className="text-start text-third-color text-2xl font-bold">
-                Location
-              </h5>
-              <iframe
-                title="Google Map"
-                width="100%"
-                height="100%"
-                // frameBorder="0"
-                style={{ border: 0 }}
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d217782.0981603825!2d34.446245060239825!3d31.473441914110314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14fd7f054e542767%3A0x7ff98dc913046392!2sGaza!5e0!3m2!1sen!2sus!4v1699644333625!5m2!1sen!2sus"
-                allowFullScreen
-              />
               {/* reviews */}
               <div className="py-12">
                 <Comments id={id} type="Packages"></Comments>
@@ -398,7 +385,7 @@ const PackageDetails = () => {
                 type="text"
                 name="address"
                 placeholder="Address"
-                value={booking.address}
+                value={bookData?bookData.address:booking.address}
                 onChange={handleChange}
                 className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
               />
@@ -409,7 +396,7 @@ const PackageDetails = () => {
                 type="number"
                 name="phone"
                 placeholder="Phone"
-                value={booking.phone}
+                value={bookData?bookData.phone:booking.phone}
                 onChange={handleChange}
                 className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
               />
@@ -419,11 +406,11 @@ const PackageDetails = () => {
               <div className="flex gap-4 w-full items-center">
                 <label className="px-3">From:</label>
                 <DatetimePicker
-                  selected={startDate}
+                  selected={bookData?bookData.date_from:startDate}
                   onChange={(date) => handleDate(date)}
                   selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
+                  startDate={bookData?bookData.date_from:startDate}
+                  endDate={bookData?bookData.date_to:endDate}
                   minDate={new Date()}
                   placeholderText="Start Date"
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
@@ -432,13 +419,13 @@ const PackageDetails = () => {
 
                 <label className="px-3">To:</label>
                 <DatetimePicker
-                  selected={endDate}
+                  selected={bookData?bookData.date_to:endDate}
                   name="date_to"
                   disabled
                   selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                  minDate={startDate}
+                  startDate={bookData?bookData.date_from:startDate}
+                  endDate={bookData?bookData.date_to:endDate}
+                  minDate={bookData?bookData.date_from:startDate}
                   placeholderText="End Date"
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none focus:border-third-color"
                   calendarClassName="custom-calendar"
@@ -452,7 +439,7 @@ const PackageDetails = () => {
                   type="number"
                   name="adults"
                   placeholder="Adults"
-                  value={booking.adults}
+                  value={bookData?bookData.adults:booking.adults}
                   onChange={handleChange}
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
@@ -460,13 +447,13 @@ const PackageDetails = () => {
                   type="number"
                   name="children"
                   placeholder="Children"
-                  value={booking.children}
+                  value={bookData?bookData.children:booking.children}
                   onChange={handleChange}
                   className="block text-sm py-2 px-3 rounded w-full border border-[#0c4a6e69] outline-none"
                 />
               </div>
               <h1 className="text-Base-color text-lg w-full text-start px-5">
-                Total: {total} JOD
+                Total: {bookData?bookData.cost:total} JOD
               </h1>
             </div>
           </div>

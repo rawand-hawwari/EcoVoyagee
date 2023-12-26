@@ -282,7 +282,7 @@ export const AllPackages = () => {
                     </div>
                   </td>
                   <td className={`${classes} text-end`}>
-                    <Tooltip content="Edit package">
+                    <Tooltip content="Edit package" className="bg-black/80">
                       <IconButton
                         onClick={() => handleEdit(pac.packages_id)}
                         variant="text"
@@ -290,7 +290,7 @@ export const AllPackages = () => {
                         <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip content="Delete package">
+                    <Tooltip content="Delete package" className="bg-black/80">
                       <IconButton
                         onClick={() => handleDelete(pac.packages_id)}
                         variant="text"

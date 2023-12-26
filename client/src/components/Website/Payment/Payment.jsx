@@ -100,7 +100,7 @@ function Payment() {
                 type="date"
                 name="dateof_birth"
                 placeholder="date"
-                value={bookData && bookData.address}
+                value={bookData && bookData.dateof_birth}
                 onChange={(e) => handleChange(e)}
                 className="block text-sm py-3 px-4 rounded w-full border border-transparent-third-color outline-none"
               />

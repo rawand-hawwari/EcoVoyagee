@@ -276,7 +276,7 @@ export const DestinationsTable = () => {
                     </div>
                   </td>
                   <td className={`${classes} flex flex-nowrap`}>
-                    <Tooltip content="Edit Place">
+                    <Tooltip content="Edit Place" className="bg-black/80">
                       <IconButton
                         onClick={() => handleEdit(place.destinations_id)}
                         variant="text"
@@ -284,7 +284,7 @@ export const DestinationsTable = () => {
                         <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip content="Delete Place">
+                    <Tooltip content="Delete Place" className="bg-black/80">
                       <IconButton
                         onClick={() => handleDelete(place.destinations_id)}
                         variant="text"

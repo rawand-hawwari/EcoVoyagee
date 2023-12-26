@@ -62,18 +62,6 @@ const DestinationDetails = () => {
                 </Link>
               </div>
               <h5 className="text-start text-xl text-Base-color">{destination.details}</h5>
-              <h5 className="text-start text-third-color text-2xl font-bold">
-                Location
-              </h5>
-              <iframe
-                title="Google Map"
-                width="100%"
-                height="100%"
-                // frameBorder="0"
-                style={{ border: 0 }}
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d217782.0981603825!2d34.446245060239825!3d31.473441914110314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14fd7f054e542767%3A0x7ff98dc913046392!2sGaza!5e0!3m2!1sen!2sus!4v1699644333625!5m2!1sen!2sus"
-                allowFullScreen
-              />
               {filteredDestination && filteredDestination.length !== 0 ? (
                 <>
                   <h5 className="text-start text-thord-color text-2xl font-bold text-third-color">

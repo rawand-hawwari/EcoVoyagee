@@ -25,7 +25,7 @@ const ContactTable = () => {
   const [totalCount, setTotalCount] = useState(1);
   const [isMessageOpened, setIsMessageOpened] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
-  const itemsPerPage = 3;
+  const itemsPerPage = 4;
   const { headers } = useAuth();
   const { page, onSelectedPage, selectedId, onSelectedId } = usePage();
   //   const flightsPerPage = 3;
@@ -45,8 +45,13 @@ const ContactTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
-
+  const totalPages = Math.ceil(filteredMsgs.length / itemsPerPage);
+  const indexOfLastMessages = currentPage * itemsPerPage;
+  const indexOfFirstMessages = indexOfLastMessages - itemsPerPage;
+  const currentConatct = filteredMsgs.slice(
+    indexOfFirstMessages,
+    indexOfLastMessages
+  );
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery === "") {
@@ -276,7 +281,7 @@ const ContactTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredMsgs.map((message, index) => {
+            {currentConatct.map((message, index) => {
               const isLast =
                 (index === filteredMsgs.length) === 0
                   ? messages.length - 1
@@ -319,7 +324,7 @@ const ContactTable = () => {
                     </div>
                   </td>
                   <td className={`${classes} text-center`}>
-                    <Tooltip content="Open Message">
+                    <Tooltip content="Open Message" className="bg-black/80">
                       <IconButton
                         onClick={() => openMessage(index)}
                         variant="text"
@@ -422,7 +427,7 @@ const ContactTable = () => {
               {messages[msgIndex].message}
             </div>
             <div className="text-end">
-              <Tooltip content="Reply to message" className="z-[60]">
+              <Tooltip content="Reply to message" className="z-[60] bg-black/80">
                 <IconButton onClick={() => replyToMsg()} variant="text">
                   <svg
                     className="text-third-color w-6 h-6 rotate-[315deg]"
@@ -443,7 +448,7 @@ const ContactTable = () => {
                 </IconButton>
               </Tooltip>
               {!messages[msgIndex].is_shown ? (
-                <Tooltip content="Add message to home page" className="z-[60]">
+                <Tooltip content="Add message to home page" className="z-[60] bg-black/80">
                   <IconButton
                     onClick={() => addToHome(messages[msgIndex].contact_id)}
                     variant="text"
@@ -468,7 +473,10 @@ const ContactTable = () => {
                   </IconButton>
                 </Tooltip>
               ) : (
-                <Tooltip content="Remove message from home page" className="z-[60]">
+                <Tooltip
+                  content="Remove message from home page"
+                  className="z-[60] bg-black/80"
+                >
                   <IconButton
                     onClick={() =>
                       deleteFromHome(messages[msgIndex].contact_id)

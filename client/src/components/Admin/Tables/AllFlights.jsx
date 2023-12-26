@@ -382,7 +382,7 @@ const AllFlights = () => {
                     </div>
                   </td>
                   <td className={`${classes} text-end`}>
-                    <Tooltip content="Edit flight">
+                    <Tooltip content="Edit flight" className="bg-black/80">
                       <IconButton
                         onClick={() => handleEdit(flight.flights_id)}
                         variant="text"
@@ -390,7 +390,7 @@ const AllFlights = () => {
                         <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip content="Delete flight">
+                    <Tooltip content="Delete flight" className="bg-black/80">
                       <IconButton
                         onClick={() => handleDelete(flight.flights_id)}
                         variant="text"

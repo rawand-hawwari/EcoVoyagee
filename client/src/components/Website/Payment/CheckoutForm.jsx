@@ -38,15 +38,14 @@ export default function CheckoutForm({ emptyField }) {
       }
     }
   }, [bookData]);
-  console.log(bookData);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      emptyField != "Please fill all fields" &&
-      errorToShow != "Please fill all fields"
-    ) {
-      if (token) {
+    if (token) {
+      if (
+        emptyField != "Please fill all fields" &&
+        errorToShow != "Please fill all fields"
+      ) {
         const { error, paymentMethod } = await stripe.createPaymentMethod({
           type: "card",
           card: elements.getElement(CardElement),
@@ -192,21 +191,22 @@ export default function CheckoutForm({ emptyField }) {
         } else {
           console.log(error.message);
         }
-      } else {
-        Swal.fire({
-          title: "Warninng",
-          text: "Must login before proceed with payment!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Login",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/login");
-          }
-        });
+        onBooking([]);
       }
+    } else {
+      Swal.fire({
+        title: "Warninng",
+        text: "Must login before proceed with payment!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
     }
   };
 

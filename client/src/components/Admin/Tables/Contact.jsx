@@ -44,7 +44,13 @@ const Contact = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const totalPages = Math.ceil(filteredMsgs.length / itemsPerPage);
+  const indexOfLastMessages = currentPage * itemsPerPage;
+  const indexOfFirstMessages = indexOfLastMessages - itemsPerPage;
+  const currentConatct = filteredMsgs.slice(
+    indexOfFirstMessages,
+    indexOfLastMessages
+  );
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -74,7 +80,7 @@ const Contact = () => {
     setIsMessageOpened(false);
   };
 
-  const replyToMsg = ()=>{}
+  const replyToMsg = () => {};
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -255,7 +261,7 @@ const Contact = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredMsgs.map((message, index) => {
+            {currentConatct.map((message, index) => {
               const isLast =
                 (index === filteredMsgs.length) === 0
                   ? messages.length - 1
@@ -318,7 +324,7 @@ const Contact = () => {
                     </div>
                   </td>
                   <td className={`${classes} text-center`}>
-                    <Tooltip content="Open Message">
+                    <Tooltip content="Open Message" className="bg-black/80">
                       <IconButton
                         onClick={() => openMessage(index)}
                         variant="text"
@@ -348,14 +354,7 @@ const Contact = () => {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Page {currentPage} of{" "}
-          {Math.ceil(
-            filteredMsgs.length === 0
-              ? messages.length === 0
-                ? 1
-                : messages.length / itemsPerPage
-              : filteredMsgs.length / itemsPerPage
-          )}
+          Page {currentPage} of {totalPages}
         </Typography>
         <div className="flex gap-2">
           <Button
@@ -440,8 +439,8 @@ const Contact = () => {
               {messages[msgIndex].message}
             </div>
             <div className="text-end">
-              <Tooltip content="Reply to message">
-                <IconButton onClick={()=>replyToMsg()} variant="text">
+              <Tooltip content="Reply to message" className="z-[60] bg-black/80">
+                <IconButton onClick={() => replyToMsg()} variant="text">
                   <svg
                     className="text-third-color w-6 h-6 rotate-[315deg]"
                     xmlns="http://www.w3.org/2000/svg"
@@ -461,7 +460,7 @@ const Contact = () => {
                 </IconButton>
               </Tooltip>
               {!messages[msgIndex].is_shown ? (
-                <Tooltip content="Add message to home page">
+                <Tooltip content="Add message to home page" className="z-[60] bg-black/80">
                   <IconButton
                     onClick={() => addToHome(messages[msgIndex].contact_id)}
                     variant="text"
@@ -486,7 +485,7 @@ const Contact = () => {
                   </IconButton>
                 </Tooltip>
               ) : (
-                <Tooltip content="Remove message from home page">
+                <Tooltip content="Remove message from home page" className="z-[60] bg-black/80">
                   <IconButton
                     onClick={() =>
                       deleteFromHome(messages[msgIndex].contact_id)
@@ -512,7 +511,7 @@ const Contact = () => {
                   </IconButton>
                 </Tooltip>
               )}
-              <Tooltip content="Delete message">
+              <Tooltip content="Delete message" className="z-[60] bg-black/80">
                 <IconButton
                   onClick={() => handleDelete(messages[msgIndex].contact_id)}
                   variant="text"

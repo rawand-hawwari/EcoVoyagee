@@ -263,7 +263,7 @@ export const AllActivities = () => {
                     </div>
                   </td>
                   <td className={classes}>
-                    <Tooltip content="Edit Activity">
+                    <Tooltip content="Edit Activity" className="bg-black/80">
                       <IconButton
                         onClick={() => {
                           handleEdit(activity.activities_id);
@@ -273,7 +273,7 @@ export const AllActivities = () => {
                         <PencilIcon className="h-4 w-4 text-Base-color" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip content="Delete Activity">
+                    <Tooltip content="Delete Activity" className="bg-black/80">
                       <IconButton
                         onClick={() => {
                           handleDelete(activity.activities_id);

@@ -222,7 +222,7 @@ const AllUsers = () => {
                     </div>
                   </td>
                   <td className={`${classes}`}>
-                    <Tooltip content="Assign as admin">
+                    <Tooltip content="Assign as admin" className="bg-black/80">
                       <IconButton
                         variant="text"
                         onClick={() => {
