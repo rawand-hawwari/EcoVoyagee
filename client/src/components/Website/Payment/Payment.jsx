@@ -37,57 +37,7 @@ function Payment() {
       setError("Please fill all fields");
     }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     let booking = {
-  //       first_name: bookData.first_name,
-  //       last_name: bookData.last_name,
-  //       phone_number: bookData.phone_number,
-  //       dateof_birth: bookData.dateof_birth,
-  //       bag_details: bookData.bag_details,
-  //       cost: bookData.cost,
-  //     };
-  //     console.log("hi");
-  //     if (bookData.bag_details === "1 X 25KG") {
-  //       booking.cost = bookData.cost + 40;
-  //     } else if (bookData.bag_details === "1 X 30KG") {
-  //       booking.cost = bookData.cost + 80;
-  //     }
-
-  //     const response = await axios.post(
-  //       `http://localhost:3999/addTicket`,
-  //       booking,
-  //       {
-  //         headers: headers,
-  //       }
-  //     );
-  //     console.log("whatever");
-
-  //     Swal.fire({
-  //       title: "Payment Successful!",
-  //       icon: "success",
-  //       showCancelButton: false,
-  //       confirmButtonText: "OK",
-  //       customClass: {
-  //         confirmButton:
-  //           "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-  //       },
-  //     });
-  //     navigate(-1);
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Oops...",
-  //       text: error.message,
-  //       confirmButtonText: "OK",
-  //       customClass: {
-  //         confirmButton:
-  //           "bg-sky-900 hover:bg-white text-white hover:text-sky-900 border border-sky-900 py-2 px-4 rounded",
-  //       },
-  //     });
-  //   }
-  // };
+  
   return (
     <div className="flex flex-wrap justify-center items-center mx-5 my-5">
       <div className="rounded w-full md:w-3/5 border border-Base-color bg-transparent-first-color">
