@@ -18,32 +18,39 @@ export default function CheckoutForm({ emptyField }) {
   const token = cookies["token"];
   const { headers } = useAuth();
   const [errorToShow, setErrorToShow] = useState("");
+  // let errorToShow = "";
 
+  useEffect(() => {
+    if (bookData.flights_id) {
+      if (
+        !bookData.ticket_type ||
+        !bookData.cost ||
+        !bookData.flights_id ||
+        !bookData.first_name ||
+        !bookData.last_name ||
+        !bookData.phone_number ||
+        !bookData.bag_details ||
+        !bookData.dateof_birth
+      ) {
+        setErrorToShow("Please fill all fields");
+      } else {
+        setErrorToShow("");
+      }
+    }
+  }, [bookData]);
+  console.log(bookData);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
-      !bookData.ticket_type ||
-      !bookData.ticket_type ||
-      !bookData.cost ||
-      !bookData.flights_id ||
-      !bookData.first_name ||
-      !bookData.last_name ||
-      !bookData.phone_number ||
-      !bookData.bag_details ||
-      !bookData.dateof_birth
-    ) {
-      setErrorToShow("Please fill all fields");
-    }
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement),
-    });
-    if (
-      emptyField != "Please fill all fields" ||
+      emptyField != "Please fill all fields" &&
       errorToShow != "Please fill all fields"
     ) {
       if (token) {
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+          type: "card",
+          card: elements.getElement(CardElement),
+        });
         if (!error) {
           try {
             const { id } = paymentMethod;
@@ -205,7 +212,9 @@ export default function CheckoutForm({ emptyField }) {
 
   return (
     <div>
-      <p className="text-start px-10 text-red-500">{errorToShow}</p>
+      <p className="text-start px-10 text-red-500">
+        {emptyField != "" ? "" : errorToShow}
+      </p>
       <form
         className="flex flex-col gap-3 px-5"
         onSubmit={(e) => handleSubmit(e)}
