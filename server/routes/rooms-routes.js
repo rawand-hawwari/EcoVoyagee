@@ -11,7 +11,7 @@ const verifyJWT = require('../Middleware/VerifyJWT');
 
 router.post('/addRoom', upload.array('image', 4), verifyJWT.authorize([2]), roomsController.addRoom);
 
-router.put('/updateRoom/:id', upload.array('image', 6), verifyJWT.authorize([2]), roomsController.updateRooms);
+router.put(`/updateRoom/:id`, upload.array('image', 6), verifyJWT.authorize([2]), roomsController.updateRooms);
 
 router.post('/getFilteredRooms', roomsController.getFilteredRooms);
 

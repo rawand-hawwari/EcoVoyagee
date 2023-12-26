@@ -85,10 +85,10 @@ const getFilteredRooms = async (req, res) => {
 const BookRoom = async (req, res) => {
     try {
         const user_id = req.user.user_id;
-        const { room_id, accommodation_id, date_from, date_to } = req.body;
+        const { room_id, accommodation_id, date_from, date_to, adults, children } = req.body;
 
         // Call the BookRoom function to book the room
-        const bookingResult = await roomModel.BookRoom(user_id, room_id, accommodation_id, date_from, date_to);
+        const bookingResult = await roomModel.BookRoom(user_id, room_id, accommodation_id, date_from, date_to, adults, children);
 
         // Send a success response
         res.status(200).json({ message: 'Room booked successfully', bookingResult });

@@ -9,10 +9,10 @@ router.get("/getTickets", TicketController.getTickets);
 
 router.get("/getTicketByID/:id", TicketController.getTicketByID);
 
-router.post("/addTicket", verifyJWT.authorize([1, 2]),TicketController.addTicket);
+router.post("/addTicket", verifyJWT.authorize([1, 2]), TicketController.addTicket);
 
-router.put("/updateTicket/:id", verifyJWT.authorize([1 , 2]),TicketController.updateTicket);
+router.put("/updateTicket/:id", verifyJWT.authorize([1, 2]), TicketController.updateTicket);
 
-router.put("/markTicketAsDeleted/:id", verifyJWT.authorize([2]),TicketController.markTicketAsDeleted);
+router.put("/markTicketAsDeleted/:id", verifyJWT.authorize([2]), TicketController.markTicketAsDeleted);
 
 module.exports = router;

@@ -7,7 +7,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const verifyJWT = require('../Middleware/VerifyJWT');
 
-router.post("/addFlight",  upload.array('files[]'), verifyJWT.authorize([2]), flightController.addFlight);
+router.post("/addFlight", upload.single('image'), verifyJWT.authorize([2]), flightController.addFlight);
 
 router.get("/getFlights", flightController.getFlights);
 

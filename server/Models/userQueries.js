@@ -169,6 +169,7 @@ const getBookingOfUser = async (user_id) => {
             .select(
                 'book_id',
                 'phone',
+                'cost',
                 'adults',
                 'children',
                 'user_id',
@@ -180,6 +181,7 @@ const getBookingOfUser = async (user_id) => {
         throw error;
     }
 };
+
 const getFlightsOfUser = async (user_id) => {
     try {
         const result = await knex('ticketbooking')

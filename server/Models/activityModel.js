@@ -1,4 +1,5 @@
 const db = require('../Models/config/knexConfig');
+const Joi = require('joi');
 
 const getActivities = async () => {
     try {
@@ -30,8 +31,12 @@ const getActivitiesByID = async (activities_id) => {
     }
 };
 
+
+
+
 const addActivities = async (activitiesData) => {
     try {
+
         return await db('activities')
             .insert(activitiesData)
             .returning('*');
@@ -154,9 +159,26 @@ const getActivitiesPaginated = async (page, pageSize, search) => {
 };
 
 
+// Validation function
+const validateUserInput = ({ address, phone }) => {
+    const schema = Joi.object({
+        address: Joi.string().min(3).max(15).required(),
+        phone: Joi.string().pattern(/^[0-9]{10}$/).required()
+    });
 
-const BookActivity = async (activities_id, cost,user_id, address, phone, adults, children, date_from, date_to) => {
+    const { error } = schema.validate({ address, phone });
+    return error ? { error: error.details } : {};
+};
+
+const BookActivity = async (activities_id, cost, user_id, address, phone, adults, children, date_from, date_to) => {
     try {
+
+        const validationError = validateUserInput({ address, phone });
+
+        if (validationError.error) {
+            return { error: validationError.error };
+        }
+
         return await db('booking')
             .insert({
                 cost,
@@ -166,9 +188,9 @@ const BookActivity = async (activities_id, cost,user_id, address, phone, adults,
                 phone: phone,
                 adults: adults,
                 children: children,
-                date_from:date_from, 
-                date_to:date_to,
-                is_shown : true
+                date_from: date_from,
+                date_to: date_to,
+                is_shown: true
             })
             .returning('*');
     } catch (err) {

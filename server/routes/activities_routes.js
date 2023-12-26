@@ -13,7 +13,7 @@ router.get('/getActivitiesPaginated', activitiesController.getActivitiesPaginate
 
 router.post('/addActivities', upload.array('files[]'), activitiesController.addActivities);
 
-router.put('/updateActivities/:id', upload.array('files[]'), verifyJWT.authorize([2]), activitiesController.updateActivities);
+router.put(`/updateActivities/:id`, upload.array('files[]'), verifyJWT.authorize([2]), activitiesController.updateActivities);
 
 router.put('/markActivityAsDeleted/:id', verifyJWT.authorize([2]), activitiesController.markActivityAsDeleted);
 

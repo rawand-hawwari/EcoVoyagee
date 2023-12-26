@@ -22,6 +22,7 @@ const Flights = () => {
   const [economy, setEconomy] = useState(0);
   const [business, setBusiness] = useState(0);
   const [first, setFirst] = useState(0);
+  const [flightId, setFlightId] = useState(0);
   const { bookData, onBooking } = useBooking();
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
@@ -94,7 +95,9 @@ const Flights = () => {
   const closeModal = () => {
     setBookFilght(false);
   };
-  const bookingFlight = (id, seat) => {
+  const bookingFlight = (seat) => {
+  console.log(flightId);
+
     let cost = 0;
     if (seat === "economy") {
       cost = price;
@@ -106,7 +109,7 @@ const Flights = () => {
     onBooking({
       ...bookData,
       cost: cost,
-      flights_id: id,
+      flights_id: flightId,
       ticket_type: seat,
     });
     if (token) {
@@ -451,7 +454,7 @@ const Flights = () => {
                     <div className="w-full text-2xl lg:w-1/4 lg:text-3xl p-5">
                       <h1 className="font-bold">{flight.best} JOD</h1>
                       <button
-                        onClick={(e) => openModal(flight.flights_id)}
+                        onClick={(e) => {openModal(flight.flights_id); setFlightId(flight.flights_id)}}
                         className="sm:mt-3 my-2 py-2 px-5 bg-fourth-color hover:bg-second-color text-second-color hover:text-fourth-color border border-fourth-color md:text-lg rounded shadow-md"
                       >
                         Book Now
@@ -495,8 +498,9 @@ const Flights = () => {
                             </div>
                             {/* <div class="space-y-5 my-7"></div> */}
                             <button
-                              onClick={(e) =>
-                                bookingFlight(flight.flights_id, "economy")
+                              onClick={(e) =>{
+                                bookingFlight("economy");
+                              }
                               }
                               type="button"
                               class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded text-sm px-5 py-2 inline-flex justify-center w-full text-center"
@@ -536,7 +540,7 @@ const Flights = () => {
                             </div>
                             <button
                               onClick={(e) =>
-                                bookingFlight(flight.flights_id, "business")
+                                bookingFlight("business")
                               }
                               type="button"
                               class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded text-sm px-5 py-2 inline-flex justify-center w-full text-center"
@@ -576,7 +580,7 @@ const Flights = () => {
                             </div>
                             <button
                               onClick={(e) =>
-                                bookingFlight(flight.flights_id, "first")
+                                bookingFlight("first")
                               }
                               type="button"
                               class="text-second-color bg-fourth-color hover:bg-second-color hover:text-fourth-color border-2 border-fourth-color font-medium rounded text-sm px-5 py-2 inline-flex justify-center w-full text-center"

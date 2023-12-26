@@ -9,8 +9,6 @@ const getAccommodations = async () => {
             .where({
                 is_deleted: false,
             })
-        // .orderBy('titile', 'desc') // Assuming 'created_at' is the timestamp for when the accommodation was created
-        // .limit(5);
     } catch (err) {
         console.error(err);
         throw new Error('Error fetching accommodations');
@@ -163,6 +161,7 @@ const getBookAccommodations = async (accommodation_id) => {
                 'accommodation.accommodation_id',
                 'booking.book_id',
                 'booking.phone',
+                // 'booking.room_preference',
                 'booking.adults',
                 'booking.children',
                 'users.user_id',

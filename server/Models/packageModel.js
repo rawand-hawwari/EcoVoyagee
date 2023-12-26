@@ -1,6 +1,8 @@
 // const db = require('./config/db');
 const db = require('./config/knexConfig');
 
+const Joi = require('joi');
+
 const getPackages = async () => {
     try {
         return await db
@@ -119,8 +121,27 @@ const getPackagesWithComments = async (packages_id) => {
     }
 };
 
+
+// Validation function
+const validateUserInput = ({ address, phone }) => {
+    const schema = Joi.object({
+        address: Joi.string().min(3).max(15).required(),
+        phone: Joi.string().pattern(/^[0-9]{10}$/).required()
+    });
+
+    const { error } = schema.validate({ address, phone });
+    return error ? { error: error.details } : {};
+};
+
 const BookPackage = async (packages_id, cost,user_id, address, phone, adults, children, date_from, date_to) => {
     try {
+
+        const validationError = validateUserInput({ address, phone });
+
+        if (validationError.error) {
+            return { error: validationError.error };
+        }
+
         return await db('booking')
             .insert({
                 cost,
@@ -128,13 +149,14 @@ const BookPackage = async (packages_id, cost,user_id, address, phone, adults, ch
                 user_id: user_id,
                 address: address,
                 phone: phone,
+                // room_preference: room_preference,
                 adults: adults,
                 children: children,
                 date_from:date_from, 
                 date_to:date_to,
                 is_shown : true
             })
-            // .returning('*');
+            .returning('*');
     } catch (err) {
         console.error(err);
         throw new Error('Error booking packages');
@@ -153,6 +175,7 @@ const getBookPackages = async (packages_id) => {
                 'packages.packages_id',
                 'booking.book_id',
                 'booking.phone',
+                // 'booking.room_preference',
                 'booking.adults',
                 'booking.children',
                 'users.user_id',

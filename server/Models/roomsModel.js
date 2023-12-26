@@ -24,51 +24,19 @@ const updateRoom = async (room_id, roomData) => {
 };
 
 const getRooms = async () => {
-    const trx = await db.transaction(); // Start a transaction
-
     try {
-        // const now = new Date(); // Current date and time
-
-        const rooms = await trx
+        return await db
             .select('*')
-            .from('room_booking2')
-        // .where({
-        //     is_deleted: false,
-        // });
-
-        // await Promise.all(
-        //     rooms.map(async (room) => {
-        //         if (now > new Date(room.date_to) && now < new Date(room.newdate_from)) {
-        //             // Replace date_from and date_to with newdate_from and newdate_to
-        //             await trx('rooms')
-        //                 .where('room_id', room.room_id)
-        //                 .update({
-        //                     date_from: room.newdate_from,
-        //                     date_to: room.newdate_to,
-        //                 });
-        //         }
-        //     })
-        // );
-
-        // // Commit the transaction
-        // await trx.commit();
-
-        // // Fetch the updated rooms after the update
-        // const updatedRooms = await db
-        //     .select('*')
-        //     .from('rooms')
-        //     .where({
-        //         is_deleted: false,
-        //     });
-
-        return rooms;
+            .from('rooms')
+            .where({
+                is_deleted: false,
+            })
     } catch (err) {
-        // Rollback the transaction in case of an error
-        await trx.rollback();
         console.error(err);
-        throw new Error('Error fetching and updating rooms');
+        throw new Error('Error fetching rooms');
     }
 };
+
 
 const getFilteredRooms = async (accommodation_id, date_from, date_to, adults, children) => {
     const total_guests = adults + children;
@@ -97,14 +65,14 @@ const getFilteredRooms = async (accommodation_id, date_from, date_to, adults, ch
     }
 };
 
-const BookRoom = async (user_id, room_id, accommodation_id, date_from, date_to) => {
+const BookRoom = async (user_id, room_id, accommodation_id, date_from, date_to, adults, children) => {
     try {
-        const isRoomAvailable = await getFilteredRooms(accommodation_id, date_from, date_to);
+        const isRoomAvailable = await getFilteredRooms(accommodation_id, date_from, date_to, adults, children);
 
-        const selectedRoom = isRoomAvailable.filter((room) =>{
+        const selectedRoom = isRoomAvailable.filter((room) => {
             return room.room_id === room_id;
         });
-    
+
         // console.log('Room:', selectedRoom);
         // console.log('Filtered Rooms:', isRoomAvailable);
 

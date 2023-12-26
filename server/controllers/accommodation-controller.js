@@ -10,6 +10,7 @@ const addAccommodation = async (req, res) => {
         if (accommodationData.amenities) {
             accommodationData.amenities = accommodationData.amenities.split(',');
         }
+        
         const files = req.files;
         if (files && files.length > 0) {
             const fileUrls = await Promise.all(files.map(async (file) => {

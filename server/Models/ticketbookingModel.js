@@ -1,5 +1,6 @@
-// const db = require('./config/db');
 const db = require('../Models/config/knexConfig');
+
+const Joi = require('joi');
 
 const getTickets = async () => {
     try {
@@ -30,10 +31,33 @@ const getTicketByID = async (ticket_id) => {
         throw new Error('Error fetching Ticket by ID');
     }
 };
+
+
+
+// Validation function
+const validateUserInput = ({ first_name, last_name, phone_number, bag_details, dateof_birth }) => {
+    const schema = Joi.object({
+        first_name: Joi.string().min(3).max(15).required(),
+        last_name: Joi.string().min(3).max(15).required(),
+        phone_number: Joi.string().pattern(/^[0-9]{10}$/).required(),
+        bag_details:Joi.required(),
+        dateof_birth:Joi.required(),
+    });
+
+    const { error } = schema.validate({ first_name, last_name, phone_number, bag_details, dateof_birth });
+    return error ? { error: error.details } : {};
+};
+
 const addTicket = async (ticketData, user_id) => {
     const transaction = await db.transaction();
 
     try {
+        const validationError = validateUserInput(ticketData);
+
+        if (validationError.error) {
+            return { error: validationError.error };
+        }
+
         const userResult = await db('users')
             .where({ user_id: user_id })
             .first();
@@ -59,7 +83,6 @@ const addTicket = async (ticketData, user_id) => {
         }
 
         const flightId = ticketData.flights_id; // Assuming flight_id is present in ticketData
-
         // Check if the value for the specified type is greater than zero before decrementing
         const currentCount = await transaction('flights')
             .where('flights_id', flightId)
@@ -87,8 +110,6 @@ const addTicket = async (ticketData, user_id) => {
                 currentCounts.business === 0 &&
                 currentCounts.economy === 0 &&
                 currentCounts.first === 0;
-
-
             if (allTypesZero) {
                 await transaction('flights')
                     .where('flights_id', flightId)
@@ -97,8 +118,8 @@ const addTicket = async (ticketData, user_id) => {
 
             // Commit the transaction
             await transaction.commit();
-            // console.log(currentCounts);
-            // console.log(currentCounts.business, currentCounts.economy, currentCounts.first);
+            console.log(currentCounts);
+            console.log(currentCounts.business, currentCounts.economy, currentCounts.first);
             return insertedTicket;
         } else {
             throw new Error('No available tickets for the specified flight.');

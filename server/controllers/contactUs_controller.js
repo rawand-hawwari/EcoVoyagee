@@ -10,8 +10,8 @@ const db = require("../Models/config/db");
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'ecovoyagetravelling@gmail.com',
-        pass: 'zlzleujqnzunqqhl',
+        user: process.env.EMAILNODEMAILER,
+        pass: process.env.PASSWORDNODEMAILER,
     },
     tls: {
         rejectUnauthorized: false

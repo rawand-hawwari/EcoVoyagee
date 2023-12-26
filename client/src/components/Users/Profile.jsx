@@ -33,7 +33,6 @@ const Profile = () => {
       .get("http://localhost:3999/getUserId", { headers: headers })
       .then((response) => {
         setUser(response.data[0]);
-        // setUserData(response.data[0]);
       });
   }
   const [previewSrc, setPreviewSrc] = useState("");

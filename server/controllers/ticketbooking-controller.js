@@ -1,22 +1,24 @@
-const db = require('../Models/config/knexConfig');
-
 const ticketBookingModel = require('../Models/ticketbookingModel');
 
 const addTicket = async (req, res) => {
     const user_id = req.user.user_id;
     try {
         const ticketData = req.body;
-        // console.log(ticketData.ticket_type);
-        
+
         const result = await ticketBookingModel.addTicket(ticketData, user_id);
 
-        res.json({ message: 'Ticket has been added!', data: result });
+        if (result) {
+            res.json(result);
+        } else {
+            res.status(400).json({ error: 'Failed to add ticket' });
+        }
 
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 const getTickets = async (req, res) => {
     try {

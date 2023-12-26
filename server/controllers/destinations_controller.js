@@ -1,5 +1,3 @@
-const db = require('../Models/config/knexConfig');
-
 const destinationsModel = require('../Models/destinationsModel');
 
 const Firebase = require("../Middleware/FirebaseConfig/FireBaseConfig");
@@ -98,7 +96,7 @@ const markDestinationsAsDeleted = async (req, res) => {
 const getDestinationsPaginated = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 3;
+        const pageSize = parseInt(req.query.pageSize) || 4;
         const search = req.query.search;
 
         if (isNaN(page) || isNaN(pageSize) || page <= 0 || pageSize <= 0) {
