@@ -9,7 +9,6 @@ export const BookProvider = ({ children }) => {
   }, [bookData]);
   const onBooking = (data) => {
     setBookData(data);
-    console.log(data);
   };
 
   const bookContextValue = {

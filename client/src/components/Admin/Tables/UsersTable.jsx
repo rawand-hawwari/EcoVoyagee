@@ -37,7 +37,6 @@ export const UsersTable = () => {
       // Assuming the API response has a data property that contains the rows
       setUsers(response.data.data);
       setFilteredUsers(response.data.data);
-      // console.log('asdkjasdnkj',response.data.data.data.data);
       setTotalCount(response.data.totalCount);
     })
     .catch((error) => {

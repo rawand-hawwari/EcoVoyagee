@@ -16,7 +16,6 @@ const AddActivity = () => {
         ...formData,
         files: Array.from(e.target.files),
       });
-      console.log(e.target.files);
     } else {
       setFormData({
         ...formData,

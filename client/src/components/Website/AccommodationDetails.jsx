@@ -87,7 +87,6 @@ const AccommodationDetails = () => {
     booking.date_to = endDate;
     booking.date_from = startDate;
 
-    console.log(booking);
     try {
       onBooking(booking);
       history(`/rooms/${id}`);

@@ -297,11 +297,6 @@ const ActivityDetails = () => {
                     </>
                   )}
                 </div>
-
-                {/* comments */}
-                <div className="py-12">
-                  <Comments id={id} type="Activity"></Comments>
-                </div>
               </div>
             )}
           </div>

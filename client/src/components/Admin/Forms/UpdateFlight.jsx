@@ -71,7 +71,6 @@ const UpdateFlight = ({ id }) => {
       });
     });
   }, [id]);
-console.log(formData);
   // handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -84,7 +84,6 @@ const AllFlights = () => {
     setCurrentPage(1);
   };
   const handleEdit = (id) => {
-    console.log(id);
     onSelectedId(id);
     onSelectedPage("updateFlight");
   };

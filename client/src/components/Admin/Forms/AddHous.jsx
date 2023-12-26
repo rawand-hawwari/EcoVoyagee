@@ -57,7 +57,6 @@ const AddHouse = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     setFormData({
       ...formData,
       type: selectedType === "inside" ? "inside" : "outside",

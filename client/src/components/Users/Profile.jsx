@@ -26,7 +26,6 @@ const Profile = () => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    // You can add additional logic here when a tab is clicked
   };
 
   async function fetchData() {

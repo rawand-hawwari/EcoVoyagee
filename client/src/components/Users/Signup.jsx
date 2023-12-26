@@ -48,15 +48,11 @@ const Signup = () => {
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`
         )
         .then(async (res) => {
-          // console.log("Google User Info:", res.data);
-          console.log("googlData", res.data);
-
           try {
             const response = await axios.post(
               "http://localhost:3999/google",
               res.data
             );
-            console.log("Server response:", response.data);
 
             const token = response.data.token;
 

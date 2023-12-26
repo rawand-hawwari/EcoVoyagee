@@ -63,7 +63,6 @@ export const AllDestinations = () => {
         setFilteredPlaces(response.data.data);
         setTotalCount(response.data.totalCount);
 
-        console.log("ttttt", response.data.totalCount);
       })
       .catch((error) => {
         console.error("Error fetching data.data:", error);
@@ -71,7 +70,6 @@ export const AllDestinations = () => {
     setCurrentPage(1);
   };
   const handleEdit = (id) => {
-    console.log(id);
     onSelectedId(id);
     onSelectedPage("updateDestination");
   };

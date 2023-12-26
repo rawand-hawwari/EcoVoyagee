@@ -174,7 +174,6 @@ const UpdatePackage = ({ id }) => {
       setExclusion(updatedExclusion);
     }
   };
-  // console.log(formData);
   return (
     <div>
       <div className="flex flex-col justify-center top-64 items-center lg:ml-28 h-full w-auto">

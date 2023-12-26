@@ -38,7 +38,6 @@ export const DestinationsTable = () => {
         // Assuming the API response has a data property that contains the rows
         setDestinations(response.data.data);
         setFilteredPlaces(response.data.data);
-        // console.log('asdkjasdnkj',response.data.data.data.data);
         setTotalCount(response.data.totalCount);
       })
       .catch((error) => {
@@ -62,10 +61,8 @@ export const DestinationsTable = () => {
         // Assuming the API response has a data property that contains the rows
         setDestinations(response.data.data);
         setFilteredPlaces(response.data.data);
-        // console.log('asdkjasdnkj',response.data.data.data.data);
         setTotalCount(response.data.totalCount);
 
-        console.log("ttttt", response.data.totalCount);
       })
       .catch((error) => {
         console.error("Error fetching data.data:", error);
@@ -74,7 +71,6 @@ export const DestinationsTable = () => {
   };
 
   const handleEdit = (id) => {
-    console.log(id);
     onSelectedId(id);
     onSelectedPage("updateDestination");
   };

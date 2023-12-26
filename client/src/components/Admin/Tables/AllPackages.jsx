@@ -53,7 +53,6 @@ export const AllPackages = () => {
     setCurrentPage(1);
   };
   const handleEdit = (id) => {
-    console.log(id);
     onSelectedId(id);
     onSelectedPage("updatePackage");
   };

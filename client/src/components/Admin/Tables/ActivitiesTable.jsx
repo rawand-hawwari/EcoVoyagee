@@ -64,7 +64,6 @@ export const ActivitiesTable = () => {
         // Assuming the API response has a data property that contains the rows
         setActivities(response.data.data);
         setFilteredActivities(response.data.data);
-        // console.log('asdkjasdnkj',response.data.data.data.data);
         setTotalCount(response.data.totalCount);
       })
       .catch((error) => {

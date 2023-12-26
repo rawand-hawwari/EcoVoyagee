@@ -43,7 +43,6 @@ const Rooms = () => {
     accommodation_id: bookData.accommodation_id,
     rooms_ids: bookData.rooms_ids || [],
   });
-  // console.log(bookData);
   const [rooms, setRooms] = useState([]);
   const [roomGuests, setRoomGuests] = useState([{ adults: 1, children: 0 }]);
   // options for date
@@ -84,7 +83,6 @@ const Rooms = () => {
   const totalPages = Math.ceil(rooms.length / roomPerPage);
 
   const openModal = (id) => {
-    console.log(id);
     setRoomModal(rooms.filter((room) => room.room_id === id));
     setRoomDetails(true);
     setIndex(id);

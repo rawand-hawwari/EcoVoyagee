@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 
 const Comments = (id) => {
-  // console.log(id)
   const [comments, setComments] = useState([]);
   // const [endpoint, setEndpoint] = useState(``);
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
@@ -139,7 +138,6 @@ const Comments = (id) => {
   useEffect(() => {
     fetchComments();
   }, [id]);
-  //   console.log(comments);
 
   return (
     <div>
