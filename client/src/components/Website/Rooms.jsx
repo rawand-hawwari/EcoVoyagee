@@ -742,7 +742,7 @@ const Rooms = () => {
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        <span>{roomModal[0].view} View</span>
+                        <span>{roomModal[0].view}</span>
                       </p>
                       <p className="flex items-center">
                         <span>Size: </span>
